@@ -1,26 +1,12 @@
 package com.oot.clinic.doctor;
 
-import jakarta.persistence.*;
-
-@Entity
 public class Doctor {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    private final String name;
-    private final String surname;
-    private final String pesel;
+    private String name;
+    private String surname;
+    private String pesel;
     private String specialization;
     private String address;
-
-    // Required by JPA (must be protected or public, no-args)
-    protected Doctor() {
-        this.name = null;
-        this.surname = null;
-        this.pesel = null;
-    }
 
     public Doctor(String name, String surname, String pesel, String specialization, String address) {
         this.name = name;
@@ -30,11 +16,10 @@ public class Doctor {
         this.address = address;
     }
 
-    // GETTERS AND SETTERS
-
-    public Long getId() {
-        return id;
+    public Doctor() {
     }
+
+    // GETTERS AND SETTERS
 
     public String getName() {
         return name;
@@ -63,4 +48,5 @@ public class Doctor {
     public void setAddress(String address) {
         this.address = address;
     }
+
 }

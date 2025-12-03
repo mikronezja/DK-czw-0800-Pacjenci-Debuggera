@@ -1,8 +1,6 @@
 package com.oot.clinic.doctor;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -10,14 +8,26 @@ import java.util.List;
 @RequestMapping("/doctors")
 public class DoctorController {
 
-    private final DoctorRepository repo;
+    private final DoctorService doctorService;
 
-    public DoctorController(DoctorRepository repo) {
-        this.repo = repo;
+    public DoctorController(DoctorService doctorService) {
+        this.doctorService = doctorService;
+    }
+
+    @PostMapping("/add")
+    public void addDoctor(@RequestBody Doctor doctor) {
+        doctorService.addDoctor(
+                doctor.getName(),
+                doctor.getSurname(),
+                doctor.getPesel(),
+                doctor.getSpecialization(),
+                doctor.getAddress()
+        );
     }
 
     @GetMapping
-    public List<Doctor> getAll() {
-        return repo.findAll();
+    public List<Doctor> getDoctors() {
+        return doctorService.getDoctors();
     }
 }
+
