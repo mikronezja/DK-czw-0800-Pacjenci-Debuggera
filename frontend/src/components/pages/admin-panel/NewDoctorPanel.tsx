@@ -1,8 +1,14 @@
 import React, { useState } from "react";
 import ActionButton from "./ActionButton";
 import axios from "axios";
+import type { Doctor } from "@/types/doctor";
 
-const NewDoctorPanel = () => {
+interface DoctorDisplayProps {
+  dataArray: Array<Doctor>;
+  setDataArray: React.Dispatch<React.SetStateAction<Array<Doctor>>>;
+}
+
+const NewDoctorPanel = ({ dataArray, setDataArray }: DoctorDisplayProps) => {
   const [formData, setFormData] = useState({
     name: "",
     surname: "",
@@ -15,11 +21,13 @@ const NewDoctorPanel = () => {
     e.preventDefault();
 
     axios
-      .post("http://localhost:8080/add", formData)
+      .post("http://localhost:8080/doctors/add", formData)
       .then((res) => {
         console.log("Doctor saved:", res.data);
+        setDataArray([...dataArray, { ...formData, id: res.data.id }]);
       })
       .catch((err) => {
+        console.log(formData);
         console.error("Error saving doctor:", err);
       });
   };

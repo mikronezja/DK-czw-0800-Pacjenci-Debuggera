@@ -7,7 +7,6 @@ const Navbar = () => {
     <div>
       <RouteButton path={HOME_ROUTE} label="Home" />
       <RouteButton path={ADMIN_PANEL_ROUTE} label="Admin Panel" />
-      <RouteButton path={DETAILS_ROUTE} label="Details" />
     </div>
   );
 };

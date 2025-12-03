@@ -1,5 +1,11 @@
 package com.oot.clinic.doctor;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+
+@Entity
 public class Doctor {
 
     private String name;
@@ -7,6 +13,9 @@ public class Doctor {
     private String pesel;
     private String specialization;
     private String address;
+    @Id
+    @GeneratedValue
+    private Long id;
 
     public Doctor(String name, String surname, String pesel, String specialization, String address) {
         this.name = name;
@@ -48,5 +57,4 @@ public class Doctor {
     public void setAddress(String address) {
         this.address = address;
     }
-
 }
