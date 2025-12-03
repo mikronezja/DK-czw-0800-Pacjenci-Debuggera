@@ -1,10 +1,11 @@
 package com.oot.clinic.doctor;
 
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
-@RequestMapping("doctors")
+@RequestMapping("/doctors")
 public class DoctorController {
 
     private final DoctorService doctorService;
@@ -13,5 +14,20 @@ public class DoctorController {
         this.doctorService = doctorService;
     }
 
-    // todo
+    @PostMapping("/add")
+    public void addDoctor(@RequestBody Doctor doctor) {
+        doctorService.addDoctor(
+                doctor.getName(),
+                doctor.getSurname(),
+                doctor.getPesel(),
+                doctor.getSpecialization(),
+                doctor.getAddress()
+        );
+    }
+
+    @GetMapping
+    public List<Doctor> getDoctors() {
+        return doctorService.getDoctors();
+    }
 }
+

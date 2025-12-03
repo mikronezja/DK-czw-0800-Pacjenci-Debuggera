@@ -2,9 +2,9 @@ package com.oot.clinic.doctor;
 
 public class Doctor {
 
-    private final String name;
-    private final String surname;
-    private final String pesel;
+    private String name;
+    private String surname;
+    private String pesel;
     private String specialization;
     private String address;
 
@@ -14,6 +14,9 @@ public class Doctor {
         this.pesel = pesel;
         this.specialization = specialization;
         this.address = address;
+    }
+
+    public Doctor() {
     }
 
     // GETTERS AND SETTERS
