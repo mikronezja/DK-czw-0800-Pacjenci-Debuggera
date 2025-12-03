@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import ActionButton from "./ActionButton";
+import axios from "axios";
 
 const NewDoctorPanel = () => {
   const [formData, setFormData] = useState({
@@ -8,11 +9,19 @@ const NewDoctorPanel = () => {
     pesel: "",
     specialization: "",
     address: "",
-    id: "",
   });
 
   const saveDoctor = (e: React.SyntheticEvent) => {
     e.preventDefault();
+
+    axios
+      .post("http://localhost:8080/add", formData)
+      .then((res) => {
+        console.log("Doctor saved:", res.data);
+      })
+      .catch((err) => {
+        console.error("Error saving doctor:", err);
+      });
   };
   const deleteDoctor = () => {
     setFormData({
@@ -21,7 +30,6 @@ const NewDoctorPanel = () => {
       pesel: "",
       specialization: "",
       address: "",
-      id: "",
     });
   };
 

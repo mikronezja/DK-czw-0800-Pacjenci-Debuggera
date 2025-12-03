@@ -22,8 +22,10 @@ const DoctorDisplay = () => {
   // map -> doctors for each doctor i can display
   return (
     <div>
-      {dataArray.map((item, index) => (
-        <li key={index}>{JSON.stringify(item)}</li>
+      {dataArray.map(({ name, surname, specialization }, index) => (
+        <li key={index}>
+          {name} {surname} {specialization}
+        </li>
       ))}
     </div>
   );
