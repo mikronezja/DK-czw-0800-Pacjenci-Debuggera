@@ -8,6 +8,7 @@ const NewDoctorPanel = () => {
     pesel: "",
     specialization: "",
     address: "",
+    id: "",
   });
 
   const saveDoctor = (e: React.SyntheticEvent) => {
@@ -20,6 +21,7 @@ const NewDoctorPanel = () => {
       pesel: "",
       specialization: "",
       address: "",
+      id: "",
     });
   };
 
