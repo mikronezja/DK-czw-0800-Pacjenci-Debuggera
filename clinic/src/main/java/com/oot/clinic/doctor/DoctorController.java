@@ -26,14 +26,14 @@ public class DoctorController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Doctor> getLekarzById(@PathVariable Long id) {
+    public ResponseEntity<Doctor> getDoctorById(@PathVariable Long id) {
         return doctorService.getDoctorById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteLekarz(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteDoctor(@PathVariable Long id) {
         if (doctorService.getDoctorById(id).isPresent()) {
             doctorService.deleteDoctorById(id);
             return ResponseEntity.noContent().build();

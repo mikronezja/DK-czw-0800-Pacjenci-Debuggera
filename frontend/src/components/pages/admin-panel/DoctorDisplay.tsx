@@ -56,7 +56,7 @@ const DoctorDisplay = ({ dataArray, setDataArray }: DoctorDisplayProps) => {
     >
       {dataArray.map(({ name, surname, specialization, id }, index) => (
         <div key={index} style={{ display: "flex", gap: "10px" }}>
-          {name} {surname} {specialization} {id}
+          {name} {surname} {specialization}
           <button
             onClick={() => {
               getDetailsPage(id);
