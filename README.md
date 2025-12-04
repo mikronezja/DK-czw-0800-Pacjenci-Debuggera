@@ -37,3 +37,6 @@ npm run dev
 ```
 
 Frontend: `http://localhost:5173`
+
+#### Aktualnie funcjonalności są dostępne na podstronie Admin Panel
+
