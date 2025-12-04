@@ -26,10 +26,16 @@ const DetailsPage = () => {
     getDetails(Number(idValue)!);
   }, []);
   return (
-    <div>
-      {`Szczegóły dla dr. ${doctor.name} ${doctor.surname}`}
-      {`Specjalizacja: ${doctor.specialization}`}
-      {`Adres: ${doctor.address}`}
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+      }}
+    >
+      <div>{`Szczegóły dla dr. ${doctor.name} ${doctor.surname}`}</div>
+      <div>{`Specjalizacja: ${doctor.specialization}`}</div>
+      <div>{`Adres: ${doctor.address}`}</div>
     </div>
   );
 };
