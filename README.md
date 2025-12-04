@@ -1,5 +1,9 @@
 # DK-czw-0800-Pacjenci-Debuggera
 
+## Diagram UML
+
+![UML](assets/uml.png)
+
 ## Zaimplementowane funkcjonalności m1
 
 ### Zarządzanie lekarzami
