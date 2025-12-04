@@ -4,16 +4,16 @@
 
 ### Zarządzanie lekarzami
 
-1. **Dodanie lekarza** - `POST /api/lekarze`
+1. **Dodanie lekarza** - `POST /doctors/add`
    - Pola: imię, nazwisko, PESEL, specjalizacja, adres
 
-2. **Wyświetlenie listy lekarzy** - `GET /api/lekarze`
+2. **Wyświetlenie listy lekarzy** - `GET /doctors`
    - Zwraca: imię, nazwisko, specjalizacja
 
-3. **Wyświetlenie szczegółów lekarza** - `GET /api/lekarze/{id}`
+3. **Wyświetlenie szczegółów lekarza** - `GET /doctors/{id}`
    - Zwraca: imię, nazwisko, specjalizacja, adres
 
-4. **Usunięcie lekarza** - `DELETE /api/lekarze/{id}`
+4. **Usunięcie lekarza** - `DELETE /doctors/{id}`
 
 ## Uruchomienie backendu
 
