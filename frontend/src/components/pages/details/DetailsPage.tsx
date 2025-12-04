@@ -6,16 +6,16 @@ import { useParams } from "react-router-dom";
 const DetailsPage = () => {
   const { idValue } = useParams();
   const [doctor, setDoctor] = useState<Doctor>({
-    id: "",
+    id: 0,
     name: "",
     surname: "",
     specialization: "",
     pesel: "",
     address: "",
   });
-  const getDetails = (id: string) => {
+  const getDetails = (id: number) => {
     axios
-      .get(`http://localhost:8080/doctors/id=${idValue}`)
+      .get(`http://localhost:8080/doctors/${idValue}`)
       .then((res) => {
         console.log("worked!", res.data);
         setDoctor(res.data);
@@ -23,7 +23,7 @@ const DetailsPage = () => {
       .catch((err) => console.error(err));
   };
   useEffect(() => {
-    getDetails(idValue!);
+    getDetails(Number(idValue)!);
   }, []);
   return (
     <div>

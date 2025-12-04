@@ -4,5 +4,5 @@ export interface Doctor {
   specialization: string;
   pesel: string;
   address: string;
-  id: string;
+  id: number;
 }

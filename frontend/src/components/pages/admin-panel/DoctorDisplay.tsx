@@ -10,21 +10,21 @@ interface DoctorDisplayProps {
 
 const DoctorDisplay = ({ dataArray, setDataArray }: DoctorDisplayProps) => {
   const navigate = useNavigate();
-  const deleteDoctor = (id: string) => {
+  const deleteDoctor = (id: number) => {
     axios
-      .delete(`http://localhost:8080/doctors/id=${id}`)
+      .delete(`http://localhost:8080/doctors/${id}`)
       .then((res) => {
         console.log("worked!", res.data);
-        setDataArray(res.data);
+        // setDataArray(res.data); - nie robimy tego bo ustawia na undefined
       })
       .catch((err) => console.error(err));
     setDataArray(
-      dataArray.filter((doctor: { id: string }) => doctor.id !== id)
+      dataArray.filter((doctor: { id: number }) => doctor.id !== id)
     );
   };
 
-  const getDetailsPage = (id: string) => {
-    navigate(`/details/id=${id}`);
+  const getDetailsPage = (id: number) => {
+    navigate(`/details/${id}`);
   };
 
   const fetchData = () => {
@@ -32,6 +32,8 @@ const DoctorDisplay = ({ dataArray, setDataArray }: DoctorDisplayProps) => {
       .get("http://localhost:8080/doctors")
       .then((res) => {
         console.log("worked!", res.data);
+        console.log("Dane z backendu:", res.data);
+        console.log("Pierwsze id:", res.data[0]?.id); // Sprawdź pierwsze id
         setDataArray(res.data);
       })
       .catch((err) => console.error(err));
