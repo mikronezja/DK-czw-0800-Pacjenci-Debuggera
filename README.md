@@ -1,1 +1,42 @@
 # DK-czw-0800-Pacjenci-Debuggera
+
+## Diagram UML
+
+![UML](assets/uml.png)
+
+## Zaimplementowane funkcjonalności m1
+
+### Zarządzanie lekarzami
+
+1. **Dodanie lekarza** - `POST /doctors/add`
+   - Pola: imię, nazwisko, PESEL, specjalizacja, adres
+
+2. **Wyświetlenie listy lekarzy** - `GET /doctors`
+   - Zwraca: imię, nazwisko, specjalizacja
+
+3. **Wyświetlenie szczegółów lekarza** - `GET /doctors/{id}`
+   - Zwraca: imię, nazwisko, specjalizacja, adres
+
+4. **Usunięcie lekarza** - `DELETE /doctors/{id}`
+
+## Uruchomienie backendu
+
+```bash
+cd clinic
+./gradlew bootRun
+```
+
+Backend: `http://localhost:8080`
+
+## Uruchomienie frontendu
+
+```bash
+npm install -g npm
+npm i
+npm run dev
+```
+
+Frontend: `http://localhost:5173`
+
+#### Aktualnie funcjonalności są dostępne na podstronie Admin Panel
+
