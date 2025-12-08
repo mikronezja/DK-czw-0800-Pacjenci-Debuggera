@@ -18,15 +18,21 @@ public class DoctorService {
         return doctorRepository.save(doctor);
     }
 
-    public List<Doctor> getDoctors() {
-        return doctorRepository.findAll();
+    public List<DoctorDTO> getDoctors() {
+        return doctorRepository.findAll().stream()
+                .map(DoctorDTO::new)
+                .toList();
     }
 
     public Optional<Doctor> getDoctorById(Long id) {
         return doctorRepository.findById(id);
     }
 
-    public void deleteDoctorById(Long id) {
+    public boolean deleteDoctorById(Long id) {
+        if (!doctorRepository.existsById(id)) {
+            return false;
+        }
         doctorRepository.deleteById(id);
+        return true;
     }
 }
