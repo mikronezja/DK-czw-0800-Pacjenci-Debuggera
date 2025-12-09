@@ -47,6 +47,7 @@ const NewDoctorPanel = ({
         console.log(formData);
         console.error("Error saving doctor:", err);
       });
+    setAddDoctorOpen(false);
   };
   const deleteDoctor = () => {
     setFormData({
