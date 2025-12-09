@@ -2,11 +2,28 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { data, useNavigate } from "react-router-dom";
 import type { Doctor } from "@/types/doctor";
+import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableFooter,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import styled from "styled-components";
+import { Button } from "@/components/ui/button";
 
 interface DoctorDisplayProps {
   dataArray: Array<Doctor>;
   setDataArray: React.Dispatch<React.SetStateAction<Array<Doctor>>>;
 }
+
+const TableStyled = styled(Table)`
+  overflow-y: auto;
+  height: 100%;
+`;
 
 const DoctorDisplay = ({ dataArray, setDataArray }: DoctorDisplayProps) => {
   const navigate = useNavigate();
@@ -15,7 +32,6 @@ const DoctorDisplay = ({ dataArray, setDataArray }: DoctorDisplayProps) => {
       .delete(`http://localhost:8080/doctors/${id}`)
       .then((res) => {
         console.log("worked!", res.data);
-        // setDataArray(res.data); - nie robimy tego bo ustawia na undefined
       })
       .catch((err) => console.error(err));
     setDataArray(
@@ -45,35 +61,45 @@ const DoctorDisplay = ({ dataArray, setDataArray }: DoctorDisplayProps) => {
 
   // map -> doctors for each doctor i can display
   return (
-    <div
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        gap: "10px",
-        justifyContent: "center",
-        alignItems: "center",
-      }}
-    >
-      {dataArray.map(({ name, surname, specialization, id }, index) => (
-        <div key={index} style={{ display: "flex", gap: "10px" }}>
-          {name} {surname} {specialization}
-          <button
-            onClick={() => {
-              getDetailsPage(id);
-            }}
-          >
-            Szczegóły{" "}
-          </button>
-          <button
-            onClick={() => {
-              deleteDoctor(id);
-            }}
-          >
-            Usuń
-          </button>
-        </div>
-      ))}
-    </div>
+    <TableStyled>
+      <TableCaption>Lista lekarzy</TableCaption>
+      <TableHeader>
+        <TableRow>
+          <TableHead>Imię</TableHead>
+          <TableHead className="w-[100px]">Nazwisko</TableHead>
+          <TableHead className="text-right">Specjalizacja</TableHead>
+          <TableHead className="text-right"></TableHead>
+          <TableHead className="text-right"></TableHead>
+        </TableRow>
+      </TableHeader>
+      <TableBody>
+        {dataArray.map(({ name, surname, specialization, id }, index) => (
+          <TableRow key={index}>
+            <TableCell>{name}</TableCell>
+            <TableCell>{surname}</TableCell>
+            <TableCell className="text-right">{specialization}</TableCell>
+            <TableCell className="text-right">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => getDetailsPage(id)}
+              >
+                Szczegóły
+              </Button>
+            </TableCell>
+            <TableCell className="text-right">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => deleteDoctor(id)}
+              >
+                Usuń
+              </Button>
+            </TableCell>
+          </TableRow>
+        ))}
+      </TableBody>
+    </TableStyled>
   );
 };
 // /doctors/id=5 <- get

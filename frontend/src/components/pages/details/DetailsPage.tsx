@@ -2,6 +2,24 @@ import React, { use, useEffect, useState } from "react";
 import axios from "axios";
 import type { Doctor } from "@/types/doctor";
 import { useParams } from "react-router-dom";
+import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableFooter,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import styled from "styled-components";
+
+const TableStyled = styled(Table)`
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+`;
 
 const DetailsPage = () => {
   const { idValue } = useParams();
@@ -26,17 +44,26 @@ const DetailsPage = () => {
     getDetails(Number(idValue)!);
   }, []);
   return (
-    <div
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-      }}
-    >
-      <div>{`Szczegóły dla dr. ${doctor.name} ${doctor.surname}`}</div>
-      <div>{`Specjalizacja: ${doctor.specialization}`}</div>
-      <div>{`Adres: ${doctor.address}`}</div>
-    </div>
+    <TableStyled>
+      <div>
+        <TableHeader>
+          <TableRow>
+            <TableHead>Imię</TableHead>
+            <TableHead className="w-[100px]">Nazwisko</TableHead>
+            <TableHead>Specjalizacja</TableHead>
+            <TableHead>Adres</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          <TableRow>
+            <TableCell>{doctor.name}</TableCell>
+            <TableCell>{doctor.surname}</TableCell>
+            <TableCell>{doctor.specialization}</TableCell>
+            <TableCell>{doctor.address}</TableCell>
+          </TableRow>
+        </TableBody>
+      </div>
+    </TableStyled>
   );
 };
 

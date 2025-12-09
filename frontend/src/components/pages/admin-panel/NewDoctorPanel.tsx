@@ -2,12 +2,24 @@ import React, { useState } from "react";
 import ActionButton from "./ActionButton";
 import axios from "axios";
 import type { Doctor } from "@/types/doctor";
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
+import styled from "styled-components";
+import { Label } from "@/components/ui/label";
 
 interface DoctorDisplayProps {
   dataArray: Array<Doctor>;
   setDataArray: React.Dispatch<React.SetStateAction<Array<Doctor>>>;
   setAddDoctorOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
+
+const FormStyled = styled.form`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  gap: 10px;
+`;
 
 const NewDoctorPanel = ({
   dataArray,
@@ -48,64 +60,63 @@ const NewDoctorPanel = ({
   };
 
   return (
-    <form
-      style={{
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        flexDirection: "column",
-        gap: "10px",
-      }}
-    >
-      <label style={{ display: "flex", flexDirection: "column" }}>
+    <FormStyled>
+      <Label style={{ display: "flex", flexDirection: "column" }}>
         Imię:
-        <textarea
+        <Textarea
           value={formData.name}
           onChange={(e) => {
             setFormData({ ...formData, name: e.target.value });
           }}
         />
-      </label>
-      <label style={{ display: "flex", flexDirection: "column" }}>
+      </Label>
+      <Label style={{ display: "flex", flexDirection: "column" }}>
         Nazwisko:
-        <textarea
+        <Textarea
           value={formData.surname}
           onChange={(e) => {
             setFormData({ ...formData, surname: e.target.value });
           }}
         />
-      </label>
-      <label style={{ display: "flex", flexDirection: "column" }}>
+      </Label>
+      <Label style={{ display: "flex", flexDirection: "column" }}>
         PESEL:
-        <textarea
+        <Textarea
           value={formData.pesel}
           onChange={(e) => {
             setFormData({ ...formData, pesel: e.target.value });
           }}
         />
-      </label>
-      <label style={{ display: "flex", flexDirection: "column" }}>
+      </Label>
+      <Label style={{ display: "flex", flexDirection: "column" }}>
         Specjalizacja:
-        <textarea
+        <Textarea
           value={formData.specialization}
           onChange={(e) => {
             setFormData({ ...formData, specialization: e.target.value });
           }}
         />
-      </label>
-      <label style={{ display: "flex", flexDirection: "column" }}>
+      </Label>
+      <Label
+        className="text-left"
+        style={{ display: "flex", flexDirection: "column" }}
+      >
         Adres:
-        <textarea
+        <Textarea
           value={formData.address}
           onChange={(e) => {
             setFormData({ ...formData, address: e.target.value });
           }}
         />
-      </label>
+      </Label>
 
-      <ActionButton handleClick={saveDoctor} label="Zapisz" />
-      <ActionButton handleClick={deleteDoctor} label="Usuń" />
-    </form>
+      <Button variant="outline" size="sm" onClick={saveDoctor}>
+        Zapisz
+      </Button>
+      <Button variant="outline" size="sm" onClick={deleteDoctor}>
+        Anuluj
+      </Button>
+    </FormStyled>
   );
 };
 
