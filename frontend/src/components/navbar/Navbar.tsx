@@ -1,15 +1,40 @@
 import React from "react";
-import RouteButton from "./RouteButton";
-import { ADMIN_PANEL_ROUTE, HOME_ROUTE } from "@/text/navbar";
+import { ROUTES } from "@/text/navbar";
 import { DarkModeSwitch } from "./DarkModeSwitch";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { useNavigate } from "react-router-dom";
 
 const Navbar = () => {
+  const [page, setPage] = React.useState<string>("Home");
+  const navigate = useNavigate();
   return (
-    <div>
-      <RouteButton path={HOME_ROUTE} label="Home" />
-      <RouteButton path={ADMIN_PANEL_ROUTE} label="Admin Panel" />
+    <>
+      <Select
+        value={page}
+        onValueChange={(value) => {
+          setPage(value);
+          navigate(ROUTES[value as keyof typeof ROUTES]);
+        }}
+      >
+        <SelectTrigger className="w-[180px]">
+          <SelectValue placeholder="Theme" />
+        </SelectTrigger>
+        <SelectContent>
+          {Object.keys(ROUTES).map((route) => (
+            <SelectItem key={route} value={route}>
+              {route}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
       <DarkModeSwitch />
-    </div>
+    </>
   );
 };
 
