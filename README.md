@@ -31,6 +31,7 @@ Backend: `http://localhost:8080`
 ## Uruchomienie frontendu
 
 ```bash
+cd frontend
 npm install -g npm
 npm i
 npm run dev
