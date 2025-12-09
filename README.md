@@ -56,5 +56,11 @@ Teraz mamy wyświetloną listę wszystkich dostępnych lekarzy
 ### Funkcjonalności
 
 * Aby wyświetlić szczegóły klikamy w oko
-* Aby usunąć lekarza klikamy w x
+
+![add-doctor](assets/details.png)
+
 * Aby dodać lekarza klikamy w +
+
+![add-doctor](assets/add-doctor.png)
+
+* Aby usunąć lekarza klikamy w x
