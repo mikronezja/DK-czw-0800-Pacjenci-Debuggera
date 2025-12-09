@@ -3,6 +3,6 @@ export const HOME_ROUTE = "/";
 export const DETAILS_ROUTE = "/details";
 
 export const ROUTES = {
-  "Admin Panel": ADMIN_PANEL_ROUTE,
+  "Panel Admina": ADMIN_PANEL_ROUTE,
   Home: HOME_ROUTE,
 };

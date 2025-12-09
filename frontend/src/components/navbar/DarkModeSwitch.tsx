@@ -12,7 +12,9 @@ export function DarkModeSwitch() {
   return (
     <div className="flex items-center space-x-2">
       <Switch id="dark-mode" onCheckedChange={onCheckedChange} />
-      <Label htmlFor="dark-mode">Light Mode</Label>
+      <Label htmlFor="dark-mode">
+        Tryb {theme.theme === "light" ? "ciemny" : "jasny"}
+      </Label>
     </div>
   );
 }

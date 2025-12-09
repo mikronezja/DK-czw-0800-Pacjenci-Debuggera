@@ -39,5 +39,22 @@ npm run dev
 
 Frontend: `http://localhost:5173`
 
-#### Aktualnie funcjonalności są dostępne na podstronie Admin Panel
+## Korzystanie z aplikacji
 
+Na początku znajdujemy się na stronie głównej 
+
+![HOME](assets/home-page.png) 
+
+Aby zmienić stronę klikamy w Selecta i zmieniamy na Panel Admina
+
+![Select](assets/select.png) 
+
+Teraz mamy wyświetloną listę wszystkich dostępnych lekarzy
+
+![Doctors](assets/doctors.png)
+
+### Funkcjonalności
+
+* Aby wyświetlić szczegóły klikamy w oko
+* Aby usunąć lekarza klikamy w x
+* Aby dodać lekarza klikamy w +
