@@ -13,7 +13,11 @@ const AdminPanel = () => {
       <button onClick={() => setAddDoctorOpen(true)}>Dodaj</button>
       <div style={{ display: "flex", flexDirection: "column", gap: "50px" }}>
         {addDoctorOpen && (
-          <NewDoctorPanel dataArray={dataArray} setDataArray={setDataArray} />
+          <NewDoctorPanel
+            dataArray={dataArray}
+            setDataArray={setDataArray}
+            setAddDoctorOpen={setAddDoctorOpen}
+          />
         )}
         <DoctorDisplay dataArray={dataArray} setDataArray={setDataArray} />
       </div>

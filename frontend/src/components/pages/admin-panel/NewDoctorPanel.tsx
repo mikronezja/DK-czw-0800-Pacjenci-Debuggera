@@ -6,9 +6,14 @@ import type { Doctor } from "@/types/doctor";
 interface DoctorDisplayProps {
   dataArray: Array<Doctor>;
   setDataArray: React.Dispatch<React.SetStateAction<Array<Doctor>>>;
+  setAddDoctorOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const NewDoctorPanel = ({ dataArray, setDataArray }: DoctorDisplayProps) => {
+const NewDoctorPanel = ({
+  dataArray,
+  setDataArray,
+  setAddDoctorOpen,
+}: DoctorDisplayProps) => {
   const [formData, setFormData] = useState({
     name: "",
     surname: "",
@@ -39,6 +44,7 @@ const NewDoctorPanel = ({ dataArray, setDataArray }: DoctorDisplayProps) => {
       specialization: "",
       address: "",
     });
+    setAddDoctorOpen(false);
   };
 
   return (
