@@ -1,12 +1,19 @@
-import { Switch } from "@radix-ui/react-switch";
-import React from "react";
+import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
+import { useTheme } from "../ThemeProvider";
 
-const DarkModeSwitch = () => {
+export function DarkModeSwitch() {
+  const theme = useTheme();
+
+  const onCheckedChange = (checked: boolean) => {
+    console.log("DarkModeSwitch onCheckedChange:", checked);
+    theme.setTheme(checked ? "dark" : "light");
+  };
+
   return (
-    <div>
-      <Switch />
+    <div className="flex items-center space-x-2">
+      <Switch id="dark-mode" onCheckedChange={onCheckedChange} />
+      <Label htmlFor="dark-mode">Dark Mode</Label>
     </div>
   );
-};
-
-export default DarkModeSwitch;
+}

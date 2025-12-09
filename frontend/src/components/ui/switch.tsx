@@ -1,22 +1,34 @@
-import * as React from "react";
-import { Switch } from "@radix-ui/react-switch";
-import "./styles.css";
+import React from "react";
+import * as SwitchPrimitive from "@radix-ui/react-switch";
 
-const SwitchDemo = () => (
-  <form>
-    <div style={{ display: "flex", alignItems: "center" }}>
-      <label
-        className="Label"
-        htmlFor="airplane-mode"
-        style={{ paddingRight: 15 }}
+type Props = React.ComponentProps<typeof SwitchPrimitive.Root> & {
+  className?: string;
+};
+
+const Switch = React.forwardRef<HTMLButtonElement, Props>(
+  ({ className = "", ...props }, ref) => {
+    return (
+      <SwitchPrimitive.Root
+        ref={ref}
+        className={
+          "relative inline-flex items-center w-10 h-6 rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 bg-muted " +
+          "data-[state=checked]:bg-primary " +
+          className
+        }
+        {...props}
       >
-        Airplane mode
-      </label>
-      <Switch.Root className="SwitchRoot" id="airplane-mode">
-        <Switch.Thumb className="SwitchThumb" />
-      </Switch.Root>
-    </div>
-  </form>
+        <SwitchPrimitive.Thumb
+          className={
+            "block w-4 h-4 bg-background rounded-full shadow transform transition-transform duration-200 " +
+            "translate-x-0 data-[state=checked]:translate-x-4"
+          }
+          aria-hidden
+        />
+      </SwitchPrimitive.Root>
+    );
+  }
 );
 
-export default SwitchDemo;
+Switch.displayName = "Switch";
+
+export { Switch };
