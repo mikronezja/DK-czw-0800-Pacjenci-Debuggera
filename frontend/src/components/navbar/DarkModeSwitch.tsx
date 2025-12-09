@@ -6,14 +6,13 @@ export function DarkModeSwitch() {
   const theme = useTheme();
 
   const onCheckedChange = (checked: boolean) => {
-    console.log("DarkModeSwitch onCheckedChange:", checked);
-    theme.setTheme(checked ? "dark" : "light");
+    theme.setTheme(checked ? "light" : "dark");
   };
 
   return (
     <div className="flex items-center space-x-2">
       <Switch id="dark-mode" onCheckedChange={onCheckedChange} />
-      <Label htmlFor="dark-mode">Dark Mode</Label>
+      <Label htmlFor="dark-mode">Light Mode</Label>
     </div>
   );
 }

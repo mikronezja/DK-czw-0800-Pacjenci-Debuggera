@@ -15,10 +15,14 @@ import {
 import styled from "styled-components";
 
 const TableStyled = styled(Table)`
-  display: flex;
   justify-content: center;
-  flex-direction: column;
   align-items: center;
+  display: flex;
+  flex-direction: column;
+  padding: 30px;
+  margin: 30px auto;
+  min-width: 400px;
+  width: auto;
 `;
 
 const DetailsPage = () => {
@@ -31,7 +35,8 @@ const DetailsPage = () => {
     pesel: "",
     address: "",
   });
-  const getDetails = (id: number) => {
+
+  const getDetails = () => {
     axios
       .get(`http://localhost:8080/doctors/${idValue}`)
       .then((res) => {
@@ -41,8 +46,9 @@ const DetailsPage = () => {
       .catch((err) => console.error(err));
   };
   useEffect(() => {
-    getDetails(Number(idValue)!);
+    getDetails();
   }, []);
+
   return (
     <TableStyled>
       <div>

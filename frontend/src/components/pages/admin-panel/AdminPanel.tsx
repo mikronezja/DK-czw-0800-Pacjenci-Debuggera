@@ -30,14 +30,16 @@ const AdminPanel = () => {
   return (
     <CenteredAdminPanelContainer>
       <AdminPanelContainer>
-        <Button
-          variant="outline"
-          size="icon"
-          aria-label="Add"
-          onClick={() => setAddDoctorOpen(true)}
-        >
-          <Plus />
-        </Button>
+        {!addDoctorOpen && (
+          <Button
+            variant="outline"
+            size="icon"
+            aria-label="Add"
+            onClick={() => setAddDoctorOpen(true)}
+          >
+            <Plus />
+          </Button>
+        )}
         <div>
           {addDoctorOpen ? (
             <NewDoctorPanel

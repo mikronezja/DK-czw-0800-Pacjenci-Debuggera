@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { ROUTES } from "@/text/navbar";
 import { DarkModeSwitch } from "./DarkModeSwitch";
 import {
@@ -13,6 +13,7 @@ import styled from "styled-components";
 import { usePage } from "../PageProvider";
 import { Button } from "../ui/button";
 import { ArrowLeft } from "lucide-react";
+import { useLocation } from "react-router-dom";
 
 const NavBarStyled = styled.div`
   display: flex;
@@ -33,9 +34,26 @@ const LeftBarStyled = styled.div`
 const Navbar = () => {
   const { page, setPage } = usePage();
   const navigate = useNavigate();
+  const { pathname } = useLocation();
+
+  useEffect(() => {
+    const matchingKey = Object.keys(ROUTES).find(
+      (key) => ROUTES[key as keyof typeof ROUTES] === pathname
+    );
+    if (matchingKey) {
+      setPage(matchingKey);
+    }
+  }, [pathname]);
+
   return (
     <NavBarStyled>
-      <Button variant="ghost" size="icon" onClick={() => window.history.back()}>
+      <Button
+        variant="ghost"
+        size="icon"
+        onClick={() => {
+          navigate(-1);
+        }}
+      >
         <ArrowLeft className="h-4 w-4" />
       </Button>
       <LeftBarStyled>

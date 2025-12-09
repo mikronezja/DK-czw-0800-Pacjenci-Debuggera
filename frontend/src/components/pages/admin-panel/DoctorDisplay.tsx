@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/table";
 import styled from "styled-components";
 import { Button } from "@/components/ui/button";
+import { Eye, X } from "lucide-react";
 
 interface DoctorDisplayProps {
   dataArray: Array<Doctor>;
@@ -82,18 +83,20 @@ const DoctorDisplay = ({ dataArray, setDataArray }: DoctorDisplayProps) => {
               <Button
                 variant="outline"
                 size="sm"
+                className="rounded-full w-8 h-8"
                 onClick={() => getDetailsPage(id)}
               >
-                Szczegóły
+                <Eye />
               </Button>
             </TableCell>
             <TableCell className="text-right">
               <Button
                 variant="outline"
                 size="sm"
+                className="rounded-full w-8 h-8"
                 onClick={() => deleteDoctor(id)}
               >
-                Usuń
+                <X />
               </Button>
             </TableCell>
           </TableRow>

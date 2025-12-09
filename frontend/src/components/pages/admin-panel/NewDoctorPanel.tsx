@@ -65,6 +65,7 @@ const NewDoctorPanel = ({
         Imię:
         <Textarea
           value={formData.name}
+          className="h-1"
           onChange={(e) => {
             setFormData({ ...formData, name: e.target.value });
           }}
@@ -80,7 +81,7 @@ const NewDoctorPanel = ({
         />
       </Label>
       <Label style={{ display: "flex", flexDirection: "column" }}>
-        PESEL:
+        <div>PESEL:</div>
         <Textarea
           value={formData.pesel}
           onChange={(e) => {
