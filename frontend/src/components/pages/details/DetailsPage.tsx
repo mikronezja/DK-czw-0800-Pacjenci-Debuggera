@@ -25,6 +25,19 @@ const TableStyled = styled(Table)`
   width: auto;
 `;
 
+const formatSpecialization = (specialization: string): string => {
+  const mapping: Record<string, string> = {
+    KARDIOLOG: "Kardiolog",
+    DERMATOLOG: "Dermatolog",
+    NEUROLOG: "Neurolog",
+    OKULISTA: "Okulista",
+    ORTOPEDA: "Ortopeda",
+    CHIRURG: "Chirurg",
+    PEDIATRA: "Pediatra",
+  };
+  return mapping[specialization] || specialization;
+};
+
 const DetailsPage = () => {
   const { idValue } = useParams();
   const [doctor, setDoctor] = useState<Doctor>({
@@ -64,7 +77,7 @@ const DetailsPage = () => {
           <TableRow>
             <TableCell>{doctor.name}</TableCell>
             <TableCell>{doctor.surname}</TableCell>
-            <TableCell>{doctor.specialization}</TableCell>
+            <TableCell>{formatSpecialization(doctor.specialization)}</TableCell>
             <TableCell>{doctor.address}</TableCell>
           </TableRow>
         </TableBody>

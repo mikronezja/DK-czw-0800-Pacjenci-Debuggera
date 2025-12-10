@@ -6,6 +6,13 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import styled from "styled-components";
 import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 interface DoctorDisplayProps {
   dataArray: Array<Doctor>;
@@ -92,12 +99,25 @@ const NewDoctorPanel = ({
       </Label>
       <Label style={{ display: "flex", flexDirection: "column" }}>
         Specjalizacja:
-        <Textarea
+        <Select
           value={formData.specialization}
-          onChange={(e) => {
-            setFormData({ ...formData, specialization: e.target.value });
+          onValueChange={(value) => {
+            setFormData({ ...formData, specialization: value });
           }}
-        />
+        >
+          <SelectTrigger>
+            <SelectValue placeholder="Wybierz specjalizację" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="KARDIOLOG">Kardiolog</SelectItem>
+            <SelectItem value="DERMATOLOG">Dermatolog</SelectItem>
+            <SelectItem value="NEUROLOG">Neurolog</SelectItem>
+            <SelectItem value="OKULISTA">Okulista</SelectItem>
+            <SelectItem value="ORTOPEDA">Ortopeda</SelectItem>
+            <SelectItem value="CHIRURG">Chirurg</SelectItem>
+            <SelectItem value="PEDIATRA">Pediatra</SelectItem>
+          </SelectContent>
+        </Select>
       </Label>
       <Label
         className="text-left"

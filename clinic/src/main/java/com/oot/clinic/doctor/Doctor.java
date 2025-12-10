@@ -1,6 +1,8 @@
 package com.oot.clinic.doctor;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.EnumType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 
@@ -10,13 +12,14 @@ public class Doctor {
     private String name;
     private String surname;
     private String pesel;
-    private String specialization;
+    @Enumerated(EnumType.STRING)
+    private Specialization specialization;
     private String address;
     @Id
     @GeneratedValue
     private Long id;
 
-    public Doctor(String name, String surname, String pesel, String specialization, String address) {
+    public Doctor(String name, String surname, String pesel, Specialization specialization, String address) {
         this.name = name;
         this.surname = surname;
         this.pesel = pesel;
@@ -53,11 +56,11 @@ public class Doctor {
         this.surname = surname;
     }
 
-    public String getSpecialization() {
+    public Specialization getSpecialization() {
         return specialization;
     }
 
-    public void setSpecialization(String specialization) {
+    public void setSpecialization(Specialization specialization) {
         this.specialization = specialization;
     }
 

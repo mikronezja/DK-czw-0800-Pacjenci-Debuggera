@@ -5,7 +5,7 @@ public class DoctorDTO {
 
     private final String name;
     private final String surname;
-    private final String specialization;
+    private final Specialization specialization;
     private Long id;
 
     DoctorDTO(Doctor doctor) {
@@ -25,7 +25,7 @@ public class DoctorDTO {
         return surname;
     }
 
-    public String getSpecialization() {
+    public Specialization getSpecialization() {
         return specialization;
     }
 

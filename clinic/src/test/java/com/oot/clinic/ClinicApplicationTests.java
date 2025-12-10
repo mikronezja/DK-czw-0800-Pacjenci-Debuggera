@@ -3,6 +3,7 @@ package com.oot.clinic;
 import com.oot.clinic.doctor.Doctor;
 import com.oot.clinic.doctor.DoctorRepository;
 import com.oot.clinic.doctor.DoctorService;
+import com.oot.clinic.doctor.Specialization;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -34,7 +35,7 @@ class ClinicApplicationTests {
 				"Jan",
 				"Kowalski",
 				"80010112345",
-				"Kardiolog",
+				Specialization.KARDIOLOG,
 				"Warszawa"
 		);
 
@@ -54,7 +55,7 @@ class ClinicApplicationTests {
 				"Anna",
 				"Nowak",
 				"82030554321",
-				"Dermatolog",
+				Specialization.DERMATOLOG,
 				"Kraków"
 		);
 
@@ -68,7 +69,7 @@ class ClinicApplicationTests {
 	@Test
 	@DirtiesContext
 	void deleteDoctorByIdShouldRemoveDoctorFromDatabase() {
-		Doctor doctor = new Doctor("Marek", "Zielony", "90010112345", "Ortopeda", "Poznań");
+		Doctor doctor = new Doctor("Marek", "Zielony", "90010112345", Specialization.ORTOPEDA, "Poznań");
 		Doctor saved = doctorRepository.save(doctor);
 
 		boolean deleted = doctorService.deleteDoctorById(saved.getId());
@@ -94,7 +95,7 @@ class ClinicApplicationTests {
 	@Test
 	@DirtiesContext
 	void doctorEntityShouldStoreAllFieldsCorrectly() {
-		Doctor doctor = new Doctor("Adam", "Kłos", "70010112345", "Neurolog", "Łódź");
+		Doctor doctor = new Doctor("Adam", "Kłos", "70010112345", Specialization.NEUROLOG, "Łódź");
 		Doctor saved = doctorRepository.save(doctor);
 
 		var found = doctorRepository.findById(saved.getId());
@@ -104,28 +105,28 @@ class ClinicApplicationTests {
 		assertEquals("Adam", d.getName());
 		assertEquals("Kłos", d.getSurname());
 		assertEquals("70010112345", d.getPesel());
-		assertEquals("Neurolog", d.getSpecialization());
+		assertEquals(Specialization.NEUROLOG, d.getSpecialization());
 		assertEquals("Łódź", d.getAddress());
 	}
 
 	@Test
 	@DirtiesContext
 	void updateDoctorDataShouldPersistNewValues() {
-		Doctor doctor = doctorRepository.save(new Doctor("Marek", "Stary", "70010112345", "Ortopeda", "Poznań"));
+		Doctor doctor = doctorRepository.save(new Doctor("Marek", "Stary", "70010112345", Specialization.ORTOPEDA, "Poznań"));
 
 		doctor.setSurname("Nowy");
-		doctor.setSpecialization("Chirurg");
+		doctor.setSpecialization(Specialization.CHIRURG);
 
 		Doctor updated = doctorRepository.save(doctor);
 
 		assertEquals("Nowy", updated.getSurname());
-		assertEquals("Chirurg", updated.getSpecialization());
+		assertEquals(Specialization.CHIRURG, updated.getSpecialization());
 	}
 
 	@Test
 	@DirtiesContext
 	void savingDoctorShouldTrimWhitespaces() {
-		Doctor dirty = new Doctor("  Ola  ", "  Biała  ", "92010111111", " Pediatra ", " Wrocław ");
+		Doctor dirty = new Doctor("  Ola  ", "  Biała  ", "92010111111", Specialization.PEDIATRA, " Wrocław ");
 		Doctor saved = doctorService.addDoctor(dirty);
 
 		// pobranie świeżych danych
@@ -133,14 +134,14 @@ class ClinicApplicationTests {
 
 		assertEquals("Ola", found.getName().trim());
 		assertEquals("Biała", found.getSurname().trim());
-		assertEquals("Pediatra", found.getSpecialization().trim());
+		assertEquals(Specialization.PEDIATRA, found.getSpecialization());
 		assertEquals("Wrocław", found.getAddress().trim());
 	}
 
 	@Test
 	@DirtiesContext
 	void deleteDoctorTwiceShouldReturnTrueThenFalse() {
-		Doctor doctor = doctorRepository.save(new Doctor("Alan", "Test", "97010122222", "Okulista", "Łódź"));
+		Doctor doctor = doctorRepository.save(new Doctor("Alan", "Test", "97010122222", Specialization.OKULISTA, "Łódź"));
 
 		assertTrue(doctorService.deleteDoctorById(doctor.getId()));
 		assertFalse(doctorService.deleteDoctorById(doctor.getId())); // już usunięty
@@ -155,7 +156,7 @@ class ClinicApplicationTests {
 				longString,
 				longString,
 				"70010155555",
-				longString,
+				Specialization.KARDIOLOG,
 				longString
 		);
 
@@ -165,7 +166,7 @@ class ClinicApplicationTests {
 	@Test
 	@DirtiesContext
 	void searchingForDoctorAfterDatabaseResetShouldReturnEmpty() {
-		Doctor d = doctorRepository.save(new Doctor("Adam", "AAA", "70010111111", "Oko", "Poznań"));
+		Doctor d = doctorRepository.save(new Doctor("Adam", "AAA", "70010111111", Specialization.OKULISTA, "Poznań"));
 		assertTrue(doctorRepository.existsById(d.getId()));
 
 		doctorRepository.deleteAll();
@@ -178,8 +179,8 @@ class ClinicApplicationTests {
 	@Test
 	@DirtiesContext
 	void savingDoctorShouldGenerateUniqueIds() {
-		Doctor d1 = doctorRepository.save(new Doctor("A", "B", "71010111111", "Spec", "Miasto"));
-		Doctor d2 = doctorRepository.save(new Doctor("C", "D", "72010111111", "Spec", "Miasto"));
+		Doctor d1 = doctorRepository.save(new Doctor("A", "B", "71010111111", Specialization.KARDIOLOG, "Miasto"));
+		Doctor d2 = doctorRepository.save(new Doctor("C", "D", "72010111111", Specialization.KARDIOLOG, "Miasto"));
 
 		assertNotEquals(d1.getId(), d2.getId());
 	}
@@ -187,7 +188,7 @@ class ClinicApplicationTests {
 	@Test
 	@DirtiesContext
 	void findDoctorsDoesNotMutateOriginalDatabase() {
-		doctorRepository.save(new Doctor("Jan", "Zero", "70010188888", "Kardiolog", "Gdańsk"));
+		doctorRepository.save(new Doctor("Jan", "Zero", "70010188888", Specialization.KARDIOLOG, "Gdańsk"));
 
 		var before = doctorService.getDoctors();
 		var after = doctorService.getDoctors();
@@ -199,11 +200,11 @@ class ClinicApplicationTests {
 	@Test
 	@DirtiesContext
 	void updateDoctorMultipleTimesShouldPersistLatestVersion() {
-		Doctor d = doctorRepository.save(new Doctor("A", "B", "71010111111", "Spec", "Miasto"));
+		Doctor d = doctorRepository.save(new Doctor("A", "B", "71010111111", Specialization.KARDIOLOG, "Miasto"));
 
 		d.setName("X");
 		d.setSurname("Y");
-		d.setSpecialization("Z");
+		d.setSpecialization(Specialization.NEUROLOG);
 		d.setAddress("W");
 
 		Doctor updated = doctorRepository.save(d);
@@ -211,19 +212,19 @@ class ClinicApplicationTests {
 		var found = doctorRepository.findById(updated.getId()).orElseThrow();
 		assertEquals("X", found.getName());
 		assertEquals("Y", found.getSurname());
-		assertEquals("Z", found.getSpecialization());
+		assertEquals(Specialization.NEUROLOG, found.getSpecialization());
 		assertEquals("W", found.getAddress());
 	}
 
 	@Test
 	@DirtiesContext
 	void removingDoctorThenReaddingShouldCreateNewId() {
-		Doctor d1 = doctorRepository.save(new Doctor("A", "B", "71010155555", "Spec", "Miasto"));
+		Doctor d1 = doctorRepository.save(new Doctor("A", "B", "71010155555", Specialization.KARDIOLOG, "Miasto"));
 		Long oldId = d1.getId();
 		doctorRepository.deleteById(oldId);
 		doctorRepository.flush();
 
-		Doctor d2 = doctorRepository.save(new Doctor("A", "B", "72010155555", "Spec", "Miasto"));
+		Doctor d2 = doctorRepository.save(new Doctor("A", "B", "72010155555", Specialization.KARDIOLOG, "Miasto"));
 		Long newId = d2.getId();
 
 		assertNotEquals(oldId, newId);
@@ -236,7 +237,7 @@ class ClinicApplicationTests {
 				"Łukasz",
 				"Brzęczyszczykiewicz",
 				"81010177777",
-				"Okulista",
+				Specialization.OKULISTA,
 				"Żółć nad Łęgiem"
 		));
 

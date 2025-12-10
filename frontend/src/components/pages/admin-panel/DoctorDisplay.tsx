@@ -26,6 +26,19 @@ const TableStyled = styled(Table)`
   height: 100%;
 `;
 
+const formatSpecialization = (specialization: string): string => {
+  const mapping: Record<string, string> = {
+    KARDIOLOG: "Kardiolog",
+    DERMATOLOG: "Dermatolog",
+    NEUROLOG: "Neurolog",
+    OKULISTA: "Okulista",
+    ORTOPEDA: "Ortopeda",
+    CHIRURG: "Chirurg",
+    PEDIATRA: "Pediatra",
+  };
+  return mapping[specialization] || specialization;
+};
+
 const DoctorDisplay = ({ dataArray, setDataArray }: DoctorDisplayProps) => {
   const navigate = useNavigate();
   const deleteDoctor = (id: number) => {
@@ -78,7 +91,7 @@ const DoctorDisplay = ({ dataArray, setDataArray }: DoctorDisplayProps) => {
           <TableRow key={index}>
             <TableCell>{name}</TableCell>
             <TableCell>{surname}</TableCell>
-            <TableCell className="text-right">{specialization}</TableCell>
+            <TableCell className="text-right">{formatSpecialization(specialization)}</TableCell>
             <TableCell className="text-right">
               <Button
                 variant="outline"
