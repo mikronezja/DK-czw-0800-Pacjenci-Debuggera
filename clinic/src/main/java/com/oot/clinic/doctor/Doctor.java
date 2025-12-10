@@ -27,7 +27,7 @@ public class Doctor {
     public Doctor() {
     }
 
-//    // GETTERS AND SETTERS
+    // GETTERS AND SETTERS
 
     public Long getId() {
         return id;
