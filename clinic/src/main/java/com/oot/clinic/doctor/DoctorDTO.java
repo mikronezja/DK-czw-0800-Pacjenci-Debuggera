@@ -6,7 +6,7 @@ public class DoctorDTO {
     private final String name;
     private final String surname;
     private final Specialization specialization;
-    private Long id;
+    private final Long id;
 
     DoctorDTO(Doctor doctor) {
         this.name = doctor.getName();
