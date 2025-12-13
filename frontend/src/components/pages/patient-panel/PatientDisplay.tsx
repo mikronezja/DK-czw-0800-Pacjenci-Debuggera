@@ -48,6 +48,7 @@ const PatientDisplay = ({ dataArray, setDataArray }: PacientDisplayProps) => {
           <TableHead className="w-[100px]">Nazwisko</TableHead>
           <TableHead className="text-right"></TableHead>
           <TableHead className="text-right"></TableHead>
+          <TableHead className="text-right"></TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
@@ -63,6 +64,11 @@ const PatientDisplay = ({ dataArray, setDataArray }: PacientDisplayProps) => {
                 onClick={() => getDetailsPage(id)}
               >
                 <Eye />
+              </Button>
+            </TableCell>
+            <TableCell className="text-right">
+              <Button variant="outline" size="sm">
+                Umów
               </Button>
             </TableCell>
             <TableCell className="text-right">
