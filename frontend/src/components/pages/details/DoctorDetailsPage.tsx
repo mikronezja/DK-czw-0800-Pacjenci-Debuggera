@@ -38,7 +38,7 @@ const formatSpecialization = (specialization: string): string => {
   return mapping[specialization] || specialization;
 };
 
-const DetailsPage = () => {
+const DoctorDetailsPage = () => {
   const { idValue } = useParams();
   const [doctor, setDoctor] = useState<Doctor>({
     id: 0,
@@ -86,4 +86,4 @@ const DetailsPage = () => {
   );
 };
 
-export default DetailsPage;
+export default DoctorDetailsPage;

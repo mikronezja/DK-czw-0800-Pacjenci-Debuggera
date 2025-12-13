@@ -15,6 +15,7 @@ import {
 import styled from "styled-components";
 import { Button } from "@/components/ui/button";
 import { Eye, X } from "lucide-react";
+import { DOCTOR_DETAILS_ROUTE } from "@/text/navbar";
 
 interface DoctorDisplayProps {
   dataArray: Array<Doctor>;
@@ -54,7 +55,7 @@ const DoctorDisplay = ({ dataArray, setDataArray }: DoctorDisplayProps) => {
   };
 
   const getDetailsPage = (id: number) => {
-    navigate(`/details/${id}`);
+    navigate(`${DOCTOR_DETAILS_ROUTE}/${id}`);
   };
 
   const fetchData = () => {
@@ -91,7 +92,9 @@ const DoctorDisplay = ({ dataArray, setDataArray }: DoctorDisplayProps) => {
           <TableRow key={index}>
             <TableCell>{name}</TableCell>
             <TableCell>{surname}</TableCell>
-            <TableCell className="text-right">{formatSpecialization(specialization)}</TableCell>
+            <TableCell className="text-right">
+              {formatSpecialization(specialization)}
+            </TableCell>
             <TableCell className="text-right">
               <Button
                 variant="outline"
