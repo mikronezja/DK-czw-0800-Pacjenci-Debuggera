@@ -1,5 +1,6 @@
-package com.oot.clinic.doctor;
+package com.oot.clinic.entities;
 
+import com.oot.clinic.entities.enumeration.Specialization;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.EnumType;
@@ -9,15 +10,15 @@ import jakarta.persistence.Id;
 @Entity
 public class Doctor {
 
+    @Id
+    @GeneratedValue
+    private Long id;
     private String name;
     private String surname;
     private String pesel;
     @Enumerated(EnumType.STRING)
     private Specialization specialization;
     private String address;
-    @Id
-    @GeneratedValue
-    private Long id;
 
     public Doctor(String name, String surname, String pesel, Specialization specialization, String address) {
         this.name = name;
@@ -27,8 +28,7 @@ public class Doctor {
         this.address = address;
     }
 
-    public Doctor() {
-    }
+    public Doctor() {}
 
     // GETTERS AND SETTERS
 

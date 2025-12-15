@@ -1,9 +1,9 @@
 package com.oot.clinic;
 
-import com.oot.clinic.doctor.Doctor;
-import com.oot.clinic.doctor.DoctorRepository;
-import com.oot.clinic.doctor.DoctorService;
-import com.oot.clinic.doctor.Specialization;
+import com.oot.clinic.entities.Doctor;
+import com.oot.clinic.repositories.DoctorRepository;
+import com.oot.clinic.services.DoctorService;
+import com.oot.clinic.entities.enumeration.Specialization;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
