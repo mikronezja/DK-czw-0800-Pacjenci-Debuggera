@@ -29,7 +29,7 @@ public class PatientService {
      * Returns a list of patients mapped as PatientDTO objects
      * (to not give out personal information like PESEL or address)
      */
-    public List<PatientDTO> getDoctors() {
+    public List<PatientDTO> getPatients() {
         return patientRepository.findAll().stream()
                 .map(PatientDTO::new)
                 .toList();
