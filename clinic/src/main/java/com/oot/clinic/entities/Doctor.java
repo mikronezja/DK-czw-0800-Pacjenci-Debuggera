@@ -1,11 +1,10 @@
 package com.oot.clinic.entities;
 
 import com.oot.clinic.entities.enumeration.Specialization;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 public class Doctor {
@@ -19,6 +18,8 @@ public class Doctor {
     @Enumerated(EnumType.STRING)
     private Specialization specialization;
     private String address;
+    @OneToMany(mappedBy = "doctor")
+    private List<Shift> shifts = new ArrayList<>();
 
     public Doctor(String name, String surname, String pesel, Specialization specialization, String address) {
         this.name = name;
@@ -38,6 +39,10 @@ public class Doctor {
 
     public String getPesel() {
         return pesel;
+    }
+
+    public List<Shift> getShifts() {
+        return shifts;
     }
 
     public String getName() {

@@ -3,6 +3,10 @@ package com.oot.clinic.entities;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 public class Office {
@@ -11,6 +15,9 @@ public class Office {
     @GeneratedValue
     private Long id;
     private int roomNumber;
+    @OneToMany(mappedBy = "office")
+    private List<Shift> shifts = new ArrayList<>();
+
 
     // GETTERS
 
@@ -20,5 +27,9 @@ public class Office {
 
     public int getRoomNumber() {
         return roomNumber;
+    }
+
+    public List<Shift>  getShifts() {
+        return shifts;
     }
 }
