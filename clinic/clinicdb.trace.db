@@ -1,0 +1,4 @@
+2025-12-11 08:33:37.125475+01:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLDataException: Wartość za długa dla kolumny "ADDRESS CHARACTER VARYING(255)": "'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx... (500)"
+Value too long for column "ADDRESS CHARACTER VARYING(255)": "'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx... (500)"; SQL statement:
+insert into doctor (address,name,pesel,specialization,surname,id) values (?,?,?,?,?,?) [22001-240]
