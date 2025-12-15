@@ -45,11 +45,10 @@ public class DoctorService {
      * @param id id of a doctor that's to be deleted
      * @return boolean if he was successfully deleted or not
      */
-    public boolean deleteDoctorById(Long id) {
+    public void deleteDoctorById(Long id) throws Exception {
         if (!doctorRepository.existsById(id)) {
-            return false;
+            throw new Exception("Doctor does not exist.");
         }
         doctorRepository.deleteById(id);
-        return true;
     }
 }

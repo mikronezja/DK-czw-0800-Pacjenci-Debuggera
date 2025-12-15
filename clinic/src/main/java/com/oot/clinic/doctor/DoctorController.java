@@ -77,10 +77,12 @@ public class DoctorController {
     })
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteDoctor(@PathVariable Long id) {
-        if(doctorService.deleteDoctorById(id)){
+        try {
+            doctorService.deleteDoctorById(id);
             return ResponseEntity.noContent().build();
+        } catch (Exception e) {
+            return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.notFound().build();
     }
 }
 
