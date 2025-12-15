@@ -7,6 +7,7 @@ import com.oot.clinic.doctor.Specialization;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Profile;
 import org.springframework.test.annotation.DirtiesContext;
 
 import java.util.Optional;
@@ -14,6 +15,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
+@Profile("test")
 class ClinicApplicationTests {
 
 	@Autowired
@@ -72,9 +74,8 @@ class ClinicApplicationTests {
 		Doctor doctor = new Doctor("Marek", "Zielony", "90010112345", Specialization.ORTOPEDA, "Poznań");
 		Doctor saved = doctorRepository.save(doctor);
 
-		boolean deleted = doctorService.deleteDoctorById(saved.getId());
-
-		assertTrue(deleted);
+		assertDoesNotThrow(() ->
+                doctorService.deleteDoctorById(saved.getId()));
 		assertFalse(doctorRepository.existsById(saved.getId()));
 	}
 
@@ -88,8 +89,8 @@ class ClinicApplicationTests {
 	@Test
 	@DirtiesContext
 	void deleteDoctorByIdShouldReturnFalseIfDoctorDoesNotExist() {
-		boolean deleted = doctorService.deleteDoctorById(123L);
-		assertFalse(deleted);
+		assertThrows(Exception.class, () ->
+                doctorService.deleteDoctorById(123L));
 	}
 
 	@Test
@@ -143,9 +144,12 @@ class ClinicApplicationTests {
 	void deleteDoctorTwiceShouldReturnTrueThenFalse() {
 		Doctor doctor = doctorRepository.save(new Doctor("Alan", "Test", "97010122222", Specialization.OKULISTA, "Łódź"));
 
-		assertTrue(doctorService.deleteDoctorById(doctor.getId()));
-		assertFalse(doctorService.deleteDoctorById(doctor.getId())); // już usunięty
-	}
+        assertDoesNotThrow(() ->
+                doctorService.deleteDoctorById(doctor.getId()));
+
+        assertThrows(Exception.class, () ->
+                doctorService.deleteDoctorById(doctor.getId()));
+    }
 
 	@Test
 	@DirtiesContext
