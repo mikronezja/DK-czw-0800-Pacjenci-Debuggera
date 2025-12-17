@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import ActionButton from "./ActionButton";
 import axios from "axios";
 import type { Doctor } from "@/types/doctor";
 import { Button } from "@/components/ui/button";
