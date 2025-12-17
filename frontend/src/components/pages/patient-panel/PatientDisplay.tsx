@@ -16,6 +16,7 @@ import {
 import styled from "styled-components";
 import { Button } from "@/components/ui/button";
 import { Eye, X } from "lucide-react";
+import { PATIENT_DETAILS_ROUTE } from "@/text/routes";
 // import { PATIENT_DETAILS_ROUTE } from "@/text/navbar";
 
 interface PacientDisplayProps {
@@ -36,9 +37,9 @@ const PatientDisplay = ({ dataArray, setDataArray }: PacientDisplayProps) => {
       dataArray.filter((doctor: { id: number }) => doctor.id !== id)
     );
   };
-  // const getDetailsPage = (id: number) => {
-  //   navigate(`${PATIENT_DETAILS_ROUTE}/${id}`);
-  // };
+  const getDetailsPage = (id: number) => {
+    navigate(`${PATIENT_DETAILS_ROUTE}/${id}`);
+  };
 
   return (
     <TableStyled>
@@ -47,7 +48,6 @@ const PatientDisplay = ({ dataArray, setDataArray }: PacientDisplayProps) => {
         <TableRow>
           <TableHead>Imię</TableHead>
           <TableHead className="w-[100px]">Nazwisko</TableHead>
-          <TableHead className="text-right"></TableHead>
           <TableHead className="text-right"></TableHead>
           <TableHead className="text-right"></TableHead>
         </TableRow>
@@ -62,14 +62,9 @@ const PatientDisplay = ({ dataArray, setDataArray }: PacientDisplayProps) => {
                 variant="outline"
                 size="sm"
                 className="rounded-full w-8 h-8"
-                // onClick={() => getDetailsPage(id)}
+                onClick={() => getDetailsPage(id)}
               >
                 <Eye />
-              </Button>
-            </TableCell>
-            <TableCell className="text-right">
-              <Button variant="outline" size="sm">
-                Umów
               </Button>
             </TableCell>
             <TableCell className="text-right">

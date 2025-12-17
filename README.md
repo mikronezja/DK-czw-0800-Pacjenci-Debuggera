@@ -51,9 +51,9 @@ Aby zmienić stronę klikamy w Selecta i zmieniamy na Panel Admina
 
 Teraz mamy wyświetloną listę wszystkich dostępnych lekarzy
 
-![Doctors](assets/doctors.png)
+### Funkcjonalności w panelu lekarza
 
-### Funkcjonalności
+![Doctors](assets/doctors.png)
 
 * Aby wyświetlić szczegóły klikamy w oko
 
@@ -64,3 +64,13 @@ Teraz mamy wyświetloną listę wszystkich dostępnych lekarzy
 ![add-doctor](assets/add-doctor.png)
 
 * Aby usunąć lekarza klikamy w x
+
+### Dodane panele
+
+Panele gabinetów - można dodawać gabinety (+) lub je usuwać (x)
+
+![offices](assets/offices.png)
+
+Panel pacjentów
+
+![pacients](assets/pacients.png)
