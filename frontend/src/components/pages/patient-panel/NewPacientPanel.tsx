@@ -38,11 +38,9 @@ const NewPacientPanel = ({
     axios
       .post("http://localhost:8080/pacients/add", formData)
       .then((res) => {
-        console.log("Pacient saved:", res.data);
         setDataArray([...dataArray, { ...formData, id: res.data.id }]);
       })
       .catch((err) => {
-        console.log(formData);
         console.error("Error saving pacient:", err);
       });
     setAddPacientOpen(false);

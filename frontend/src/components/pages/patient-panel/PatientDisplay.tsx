@@ -33,13 +33,27 @@ const PatientDisplay = ({ dataArray, setDataArray }: PacientDisplayProps) => {
   const navigate = useNavigate();
 
   const deletePacient = (id: number) => {
-    setDataArray(
-      dataArray.filter((doctor: { id: number }) => doctor.id !== id)
-    );
+    axios
+      .delete(`http://localhost:8080/pacients/${id}`)
+      .then((res) => {
+        setDataArray(
+          dataArray.filter((pacient: { id: number }) => pacient.id !== id)
+        );
+      })
+      .catch((err) => console.error(err));
   };
   const getDetailsPage = (id: number) => {
     navigate(`${PATIENT_DETAILS_ROUTE}/${id}`);
   };
+
+  useEffect(() => {
+    axios
+      .get("http://localhost:8080/pacients")
+      .then((res) => {
+        setDataArray(res.data);
+      })
+      .catch((err) => console.error(err));
+  }, []);
 
   return (
     <TableStyled>
