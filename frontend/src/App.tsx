@@ -11,11 +11,15 @@ import {
   OFFICE_PANEL_ROUTE,
   PATIENT_DETAILS_ROUTE,
   PATIENT_PANEL_ROUTE,
-} from "./text/navbar";
+  OFFICE_DETAILS_ROUTE,
+  SHIFT_PANEL_ROUTE,
+} from "./text/routes";
 import PatientPanel from "./components/pages/patient-panel/PatientPanel";
 import DoctorDetailsPage from "./components/pages/details/DoctorDetailsPage";
 import PatientDetailsPage from "./components/pages/details/PatientDetailsPage";
 import OfficePanel from "./components/pages/office-panel/OfficePanel";
+import ShiftPanel from "./components/pages/shift-panel/ShiftPanel";
+import OfficeDetailsPage from "./components/pages/details/OfficeDetailsPage";
 
 function App() {
   const [checked, setChecked] = useState(false);
@@ -27,9 +31,14 @@ function App() {
         <Route path={DOCTOR_PANEL_ROUTE} element={<DoctorPanel />} />
         <Route path={PATIENT_PANEL_ROUTE} element={<PatientPanel />} />
         <Route path={OFFICE_PANEL_ROUTE} element={<OfficePanel />} />
+        <Route path={SHIFT_PANEL_ROUTE} element={<ShiftPanel />} />
         <Route
           path={`${DOCTOR_DETAILS_ROUTE}/:idValue`}
           element={<DoctorDetailsPage />}
+        />
+        <Route
+          path={`${OFFICE_DETAILS_ROUTE}/:idValue`}
+          element={<OfficeDetailsPage />}
         />
         <Route
           path={`${PATIENT_DETAILS_ROUTE}/:idValue`}

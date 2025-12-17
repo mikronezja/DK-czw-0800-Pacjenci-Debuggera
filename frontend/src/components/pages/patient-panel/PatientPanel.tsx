@@ -1,7 +1,10 @@
-import type { Pacient } from "@/types/doctor";
+import type { Pacient } from "@/types/pacient";
 import React, { useState } from "react";
 import PatientDisplay from "./PatientDisplay";
 import styled from "styled-components";
+import { Plus } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import NewPacientPanel from "./NewPacientPanel";
 
 const PatientPanelContainer = styled.div`
   display: inline-block;
@@ -21,22 +24,30 @@ const CenteredPatientPanelContainer = styled.div`
 `;
 
 const PatientPanel = () => {
-  const [dataArray, setDataArray] = useState<Pacient[]>([
-    {
-      name: "Jan",
-      surname: "Kowalski",
-      pesel: "12345678901",
-      address: "ul. Przykładowa 1, 00-001 Warszawa",
-      id: 1,
-    },
-  ]);
+  const [dataArray, setDataArray] = useState<Pacient[]>([]);
   const [addPatientOpen, setAddPatientOpen] = useState(false);
 
   return (
     <CenteredPatientPanelContainer>
       <PatientPanelContainer>
-        {addPatientOpen ? null : (
-          <PatientDisplay dataArray={dataArray} setDataArray={setDataArray} />
+        {addPatientOpen ? (
+          <NewPacientPanel
+            dataArray={dataArray}
+            setDataArray={setDataArray}
+            setAddPacientOpen={setAddPatientOpen}
+          />
+        ) : (
+          <div>
+            <Button
+              variant="outline"
+              size="icon"
+              aria-label="Add"
+              onClick={() => setAddPatientOpen(true)}
+            >
+              <Plus />
+            </Button>
+            <PatientDisplay dataArray={dataArray} setDataArray={setDataArray} />
+          </div>
         )}
       </PatientPanelContainer>
     </CenteredPatientPanelContainer>

@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { data, useNavigate } from "react-router-dom";
-import type { Doctor, Pacient } from "@/types/doctor";
+import type { Doctor } from "@/types/doctor";
+import type { Pacient } from "@/types/pacient";
 import {
   Table,
   TableBody,
@@ -15,7 +16,8 @@ import {
 import styled from "styled-components";
 import { Button } from "@/components/ui/button";
 import { Eye, X } from "lucide-react";
-import { PATIENT_DETAILS_ROUTE } from "@/text/navbar";
+import { PATIENT_DETAILS_ROUTE } from "@/text/routes";
+// import { PATIENT_DETAILS_ROUTE } from "@/text/navbar";
 
 interface PacientDisplayProps {
   dataArray: Array<Pacient>;
@@ -31,13 +33,27 @@ const PatientDisplay = ({ dataArray, setDataArray }: PacientDisplayProps) => {
   const navigate = useNavigate();
 
   const deletePacient = (id: number) => {
-    setDataArray(
-      dataArray.filter((doctor: { id: number }) => doctor.id !== id)
-    );
+    axios
+      .delete(`http://localhost:8080/pacients/${id}`)
+      .then((res) => {
+        setDataArray(
+          dataArray.filter((pacient: { id: number }) => pacient.id !== id)
+        );
+      })
+      .catch((err) => console.error(err));
   };
   const getDetailsPage = (id: number) => {
     navigate(`${PATIENT_DETAILS_ROUTE}/${id}`);
   };
+
+  useEffect(() => {
+    axios
+      .get("http://localhost:8080/pacients")
+      .then((res) => {
+        setDataArray(res.data);
+      })
+      .catch((err) => console.error(err));
+  }, []);
 
   return (
     <TableStyled>
@@ -46,7 +62,6 @@ const PatientDisplay = ({ dataArray, setDataArray }: PacientDisplayProps) => {
         <TableRow>
           <TableHead>Imię</TableHead>
           <TableHead className="w-[100px]">Nazwisko</TableHead>
-          <TableHead className="text-right"></TableHead>
           <TableHead className="text-right"></TableHead>
           <TableHead className="text-right"></TableHead>
         </TableRow>
@@ -64,11 +79,6 @@ const PatientDisplay = ({ dataArray, setDataArray }: PacientDisplayProps) => {
                 onClick={() => getDetailsPage(id)}
               >
                 <Eye />
-              </Button>
-            </TableCell>
-            <TableCell className="text-right">
-              <Button variant="outline" size="sm">
-                Umów
               </Button>
             </TableCell>
             <TableCell className="text-right">
