@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { data, useNavigate } from "react-router-dom";
-import type { Doctor, Pacient } from "@/types/doctor";
+import type { Doctor } from "@/types/doctor";
+import type { Pacient } from "@/types/pacient";
 import {
   Table,
   TableBody,
@@ -15,7 +16,7 @@ import {
 import styled from "styled-components";
 import { Button } from "@/components/ui/button";
 import { Eye, X } from "lucide-react";
-import { PATIENT_DETAILS_ROUTE } from "@/text/navbar";
+// import { PATIENT_DETAILS_ROUTE } from "@/text/navbar";
 
 interface PacientDisplayProps {
   dataArray: Array<Pacient>;
@@ -35,9 +36,9 @@ const PatientDisplay = ({ dataArray, setDataArray }: PacientDisplayProps) => {
       dataArray.filter((doctor: { id: number }) => doctor.id !== id)
     );
   };
-  const getDetailsPage = (id: number) => {
-    navigate(`${PATIENT_DETAILS_ROUTE}/${id}`);
-  };
+  // const getDetailsPage = (id: number) => {
+  //   navigate(`${PATIENT_DETAILS_ROUTE}/${id}`);
+  // };
 
   return (
     <TableStyled>
@@ -61,7 +62,7 @@ const PatientDisplay = ({ dataArray, setDataArray }: PacientDisplayProps) => {
                 variant="outline"
                 size="sm"
                 className="rounded-full w-8 h-8"
-                onClick={() => getDetailsPage(id)}
+                // onClick={() => getDetailsPage(id)}
               >
                 <Eye />
               </Button>
