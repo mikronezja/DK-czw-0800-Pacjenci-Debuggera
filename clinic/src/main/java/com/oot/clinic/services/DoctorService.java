@@ -1,5 +1,8 @@
-package com.oot.clinic.doctor;
+package com.oot.clinic.services;
 
+import com.oot.clinic.entities.Doctor;
+import com.oot.clinic.DTOs.DoctorDTO;
+import com.oot.clinic.repositories.DoctorRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -43,7 +46,6 @@ public class DoctorService {
     /**
      * Deletes the doctor from the database with specific id if he exists
      * @param id id of a doctor that's to be deleted
-     * @return boolean if he was successfully deleted or not
      */
     public void deleteDoctorById(Long id) throws Exception {
         if (!doctorRepository.existsById(id)) {

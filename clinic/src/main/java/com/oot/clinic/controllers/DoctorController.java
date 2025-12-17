@@ -1,5 +1,8 @@
-package com.oot.clinic.doctor;
+package com.oot.clinic.controllers;
 
+import com.oot.clinic.entities.Doctor;
+import com.oot.clinic.DTOs.DoctorDTO;
+import com.oot.clinic.services.DoctorService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -37,6 +40,7 @@ public class DoctorController {
         return doctorService.addDoctor(doctor);
     }
 
+
     @Operation(summary = "Get all doctors", description = "Shows all doctors basic information")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200",
@@ -51,7 +55,8 @@ public class DoctorController {
         return doctorService.getDoctors();
     }
 
-    @Operation(summary = "Get doctor details", description = "Access doctors details by his id")
+
+    @Operation(summary = "Get doctor details", description = "Access doctor's details by his id")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200",
                     description = "Doctor details accessed successfully",
@@ -61,11 +66,12 @@ public class DoctorController {
                     content = @Content(schema = @Schema()))
     })
     @GetMapping("/{id}")
-    public ResponseEntity<Doctor> getDoctorById(@PathVariable Long id) {
+    public ResponseEntity<Doctor> getDoctorById(@PathVariable Long id) { // Might create a DoctorResponse class
         return doctorService.getDoctorById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
+
 
     @Operation(summary = "Delete a doctor", description = "Delete a doctor from the system by id")
     @ApiResponses(value = {

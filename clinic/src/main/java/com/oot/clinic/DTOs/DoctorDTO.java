@@ -1,5 +1,7 @@
-package com.oot.clinic.doctor;
+package com.oot.clinic.DTOs;
 
+import com.oot.clinic.entities.Doctor;
+import com.oot.clinic.entities.enumeration.Specialization;
 
 public class DoctorDTO {
 
@@ -8,7 +10,7 @@ public class DoctorDTO {
     private final Specialization specialization;
     private final Long id;
 
-    DoctorDTO(Doctor doctor) {
+    public DoctorDTO(Doctor doctor) {
         this.name = doctor.getName();
         this.surname = doctor.getSurname();
         this.specialization = doctor.getSpecialization();

@@ -1,8 +1,8 @@
 package com.oot.clinic.config;
 
-import com.oot.clinic.doctor.Doctor;
-import com.oot.clinic.doctor.DoctorRepository;
-import com.oot.clinic.doctor.Specialization;
+import com.oot.clinic.entities.Doctor;
+import com.oot.clinic.repositories.DoctorRepository;
+import com.oot.clinic.entities.enumeration.Specialization;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
