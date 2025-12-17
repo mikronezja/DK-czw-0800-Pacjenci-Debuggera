@@ -1,6 +1,7 @@
 package com.oot.clinic.controllers;
 
-import com.oot.clinic.DTOs.ShiftRequest;
+import com.oot.clinic.DTOs.ShiftRequestDTO;
+import com.oot.clinic.DTOs.ShiftResponseDTO;
 import com.oot.clinic.entities.Shift;
 import com.oot.clinic.services.ShiftService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -32,7 +33,7 @@ public class ShiftController {
     })
     @PostMapping("/add")
     @ResponseStatus(HttpStatus.CREATED)
-    public Shift createShift(@RequestBody ShiftRequest shiftRequest){
+    public ShiftResponseDTO createShift(@RequestBody ShiftRequestDTO shiftRequest){
          return shiftService.createShift(
                 shiftRequest.getDoctorId(),
                 shiftRequest.getOfficeId(),
@@ -58,5 +59,26 @@ public class ShiftController {
         } catch (Exception e) {
             return ResponseEntity.notFound().build();
         }
+    }
+
+
+    @Operation(summary = "Edit existing shift", description = "Allows to make any changes to an existing shift")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200",
+                    description = "Shift edited successfully"),
+            @ApiResponse(responseCode = "404",
+                    description = "Shift not found",
+                    content = @Content(schema = @Schema()))
+    })
+    @PutMapping("/{id}")
+    public ResponseEntity<ShiftResponseDTO> updateShift(@PathVariable Long id, @RequestBody ShiftRequestDTO shiftRequest) throws Exception {
+        Shift updated = shiftService.editShift(id,
+                shiftRequest.getDoctorId(),
+                shiftRequest.getOfficeId(),
+                shiftRequest.getDayOfWeek(),
+                shiftRequest.getStartTime(),
+                shiftRequest.getEndTime());
+
+        return ResponseEntity.ok(new ShiftResponseDTO(updated));
     }
 }

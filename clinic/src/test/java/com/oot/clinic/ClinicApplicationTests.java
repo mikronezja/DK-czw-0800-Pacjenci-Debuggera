@@ -62,10 +62,9 @@ class ClinicApplicationTests {
 		);
 
 		Doctor saved = doctorRepository.save(doctor);
-		Optional<Doctor> result = doctorService.getDoctorById(saved.getId());
+		Doctor result = doctorService.getDoctorById(saved.getId());
 
-		assertTrue(result.isPresent());
-		assertEquals("Anna", result.get().getName());
+		assertEquals("Anna", result.getName());
 	}
 
 	@Test
@@ -82,8 +81,7 @@ class ClinicApplicationTests {
 	@Test
 	@DirtiesContext
 	void getDoctorByIdShouldReturnEmptyOptionalWhenDoctorDoesNotExist() {
-		var result = doctorService.getDoctorById(999L);
-		assertTrue(result.isEmpty());
+		assertThrows(Exception.class, () -> doctorService.getDoctorById(999L));
 	}
 
 	@Test

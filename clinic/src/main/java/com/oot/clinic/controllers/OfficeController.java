@@ -1,5 +1,8 @@
 package com.oot.clinic.controllers;
 
+import com.oot.clinic.DTOs.OfficeDTO;
+import com.oot.clinic.DTOs.ShiftDoctorResponseDTO;
+import com.oot.clinic.DTOs.ShiftOfficeResponseDTO;
 import com.oot.clinic.entities.Office;
 import com.oot.clinic.services.OfficeService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -49,7 +52,7 @@ public class OfficeController {
                     content = @Content(schema = @Schema()))
     })
     @GetMapping
-    public List<Office> getOffices() {
+    public List<OfficeDTO> getOffices() {
         return officeService.getOffices();
     }
 
@@ -70,5 +73,19 @@ public class OfficeController {
         } catch (Exception e) {
             return ResponseEntity.notFound().build();
         }
+    }
+
+
+    @Operation(summary = "Get office shifts", description = "Returns a list of all shifts assigned to the office")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200",
+                    description = "Shifts list accessed successfully"),
+            @ApiResponse(responseCode = "404",
+                    description = "Office not found",
+                    content = @Content(schema = @Schema()))
+    })
+    @GetMapping("/{id}/shifts")
+    public List<ShiftOfficeResponseDTO> getOfficeShifts(@PathVariable Long id) {
+        return officeService.getShifts(id);
     }
 }

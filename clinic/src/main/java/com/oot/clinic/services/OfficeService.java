@@ -1,5 +1,7 @@
 package com.oot.clinic.services;
 
+import com.oot.clinic.DTOs.OfficeDTO;
+import com.oot.clinic.DTOs.ShiftOfficeResponseDTO;
 import com.oot.clinic.entities.Office;
 import com.oot.clinic.repositories.OfficeRepository;
 import org.springframework.stereotype.Service;
@@ -24,8 +26,11 @@ public class OfficeService {
     /**
      * Returns a list of existing offices
      */
-    public List<Office> getOffices() {
-        return officeRepository.findAll();
+    public List<OfficeDTO> getOffices() {
+        return officeRepository.findAll()
+                .stream()
+                .map(OfficeDTO::new)
+                .toList();
     }
 
     /**
@@ -37,5 +42,16 @@ public class OfficeService {
             throw new Exception("Office does not exist.");
         }
         officeRepository.deleteById(id);
+    }
+
+    /**
+     * @param id of the office
+     * @return a List of shifts assigned to this office
+     */
+    public List<ShiftOfficeResponseDTO> getShifts(Long id){
+        return officeRepository.findById(id).orElseThrow().getShifts()
+                .stream()
+                .map(ShiftOfficeResponseDTO::new)
+                .toList();
     }
 }

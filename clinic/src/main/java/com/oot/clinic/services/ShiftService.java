@@ -1,5 +1,6 @@
 package com.oot.clinic.services;
 
+import com.oot.clinic.DTOs.ShiftResponseDTO;
 import com.oot.clinic.entities.Doctor;
 import com.oot.clinic.entities.Office;
 import com.oot.clinic.entities.Shift;
@@ -34,10 +35,11 @@ public class ShiftService {
      * @return A successfully saved shift
      * @throws RuntimeException if there is no Doctor or no Office by their id
      */
-    public Shift createShift(Long doctorId, Long officeId, DayOfWeek dayOfWeek, LocalTime startTime, LocalTime endTime) {
+    public ShiftResponseDTO createShift(Long doctorId, Long officeId, DayOfWeek dayOfWeek, LocalTime startTime, LocalTime endTime) {
         Doctor doctor =  doctorRepository.findById(doctorId).orElseThrow(() ->  new RuntimeException("Doctor does not exist."));
         Office office = officeRepository.findById(officeId).orElseThrow(() -> new RuntimeException("Office does not exist."));
-        return shiftRepository.save(new Shift(doctor, office, dayOfWeek, startTime, endTime));
+        Shift shift = shiftRepository.save(new Shift(doctor, office, dayOfWeek, startTime, endTime));
+        return new ShiftResponseDTO(shift);
     }
 
     /**
@@ -49,6 +51,31 @@ public class ShiftService {
             throw new Exception("Doctor does not exist.");
         }
         shiftRepository.deleteById(id);
+    }
+
+    /**
+     *
+     * @param id
+     * @param doctorId
+     * @param officeId
+     * @param dayOfWeek
+     * @param startTime
+     * @param endTime
+     * @return an edited shift
+     * @throws Exception if Doctor/Shift/Office doesn't exist
+     */
+    public Shift editShift(Long id, Long doctorId, Long officeId, DayOfWeek dayOfWeek, LocalTime startTime, LocalTime endTime) throws Exception {
+        Shift shift = shiftRepository.findById(id).orElseThrow(() ->  new RuntimeException("Shift does not exist."));
+        Doctor doctor =  doctorRepository.findById(doctorId).orElseThrow(() ->  new RuntimeException("Doctor does not exist."));
+        Office office = officeRepository.findById(officeId).orElseThrow(() -> new RuntimeException("Office does not exist."));
+
+        shift.setDoctor(doctor);
+        shift.setOffice(office);
+        shift.setDayOfWeek(dayOfWeek);
+        shift.setStartTime(startTime);
+        shift.setEndTime(endTime);
+
+        return shiftRepository.save(shift);
     }
 
 
