@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import type { Office } from "@/types/office";
 import styled from "styled-components";
@@ -12,7 +11,8 @@ import {
   ItemTitle,
 } from "@/components/ui/item";
 import NewOfficePanel from "./NewOfficePanel";
-import { OFFICE_DETAILS_ROUTE } from "@/text/routes";
+import { OFFICE_DETAILS_ROUTE } from "@/constants/routes";
+import { callDeleteOffice, callGetOffices } from "@/api/office_calls";
 
 const OfficePanelStyled = styled.div`
   display: flex;
@@ -41,23 +41,34 @@ const OfficePanel = () => {
     navigate(`${OFFICE_DETAILS_ROUTE}/${id}`);
   };
 
-  const deleteOffice = (id: number) => {
-    axios
-      .delete(`http://localhost:8080/offices/${id}`)
-      .then((res) => {
-        setDataArray(
+  const fetchOffices = async () => {
+    try 
+    {
+      const response = await callGetOffices()
+      setDataArray(response.data);
+
+    } catch (err)
+    {
+      console.log(err)
+    }
+  }
+
+  const deleteOffice = async (id: number) => {
+    try {
+      await callDeleteOffice(id)
+    
+      setDataArray(
           dataArray.filter((office: { id: number }) => office.id !== id)
         );
-        console.log("office deleted!", res.data);
-      })
-      .catch((err) => console.error(err));
+    }
+      catch (err)
+    {
+      console.log(err);
+    }
   };
 
   useEffect(() => {
-    axios.get("http://localhost:8080/offices").then((response) => {
-      console.log("offices fetched:", response.data);
-      setDataArray(response.data);
-    });
+    fetchOffices();
   }, []);
 
   return (

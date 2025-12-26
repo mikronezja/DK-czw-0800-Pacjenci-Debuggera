@@ -13,7 +13,7 @@ import {
   PATIENT_PANEL_ROUTE,
   OFFICE_DETAILS_ROUTE,
   SHIFT_PANEL_ROUTE,
-} from "./text/routes";
+} from "./constants/routes";
 import PatientPanel from "./components/pages/patient-panel/PatientPanel";
 import DoctorDetailsPage from "./components/pages/details/DoctorDetailsPage";
 import PatientDetailsPage from "./components/pages/details/PatientDetailsPage";

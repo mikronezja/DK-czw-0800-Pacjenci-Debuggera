@@ -1,9 +1,9 @@
 import type { Office } from "@/types/office";
 import React, { useState } from "react";
-import axios from "axios";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import styled from "styled-components";
+import { callAddOffice } from "@/api/office_calls";
 
 interface OfficeDisplayProps {
   dataArray: Array<Office>;
@@ -46,19 +46,18 @@ const NewOfficePanel = ({
     shifts: [],
   });
 
-  const saveOffice = (e: React.SyntheticEvent) => {
+  const addOffice = async (e: React.SyntheticEvent) => {
     e.preventDefault();
 
-    axios
-      .post("http://localhost:8080/offices/add", formData)
-      .then((res) => {
-        console.log("Office saved:", res.data);
-        setDataArray([...dataArray, { ...formData, id: res.data.id }]);
-      })
-      .catch((err) => {
-        console.log(formData);
-        console.error("Error saving office:", err);
-      });
+    try {
+      const response = await callAddOffice()
+    
+      setDataArray([...dataArray, { ...formData, id: response.data.id }]);
+    }
+      catch (err)
+    {
+      console.log(err);
+    }
     setAddOfficeOpen(false);
   };
   const deleteOffice = () => {
@@ -77,7 +76,7 @@ const NewOfficePanel = ({
           setFormData({ ...formData, roomNumber: Number(e.target.value) });
         }}
       />
-      <Button variant="outline" size="sm" onClick={saveOffice}>
+      <Button variant="outline" size="sm" onClick={addOffice}>
         Zapisz
       </Button>
       <Button variant="outline" size="sm" onClick={deleteOffice}>

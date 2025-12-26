@@ -1,14 +1,11 @@
-import React, { useEffect, useState } from "react";
-import axios from "axios";
-import { data, useNavigate } from "react-router-dom";
-import type { Doctor } from "@/types/doctor";
+import React, { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import type { Pacient } from "@/types/pacient";
 import {
   Table,
   TableBody,
   TableCaption,
   TableCell,
-  TableFooter,
   TableHead,
   TableHeader,
   TableRow,
@@ -16,7 +13,8 @@ import {
 import styled from "styled-components";
 import { Button } from "@/components/ui/button";
 import { Eye, X } from "lucide-react";
-import { PATIENT_DETAILS_ROUTE } from "@/text/routes";
+import { PATIENT_DETAILS_ROUTE } from "@/constants/routes";
+import { callDeletePatient, callGetPatients } from "@/api/patient_calls";
 // import { PATIENT_DETAILS_ROUTE } from "@/text/navbar";
 
 interface PacientDisplayProps {
@@ -32,27 +30,33 @@ const TableStyled = styled(Table)`
 const PatientDisplay = ({ dataArray, setDataArray }: PacientDisplayProps) => {
   const navigate = useNavigate();
 
-  const deletePacient = (id: number) => {
-    axios
-      .delete(`http://localhost:8080/pacients/${id}`)
-      .then((res) => {
-        setDataArray(
-          dataArray.filter((pacient: { id: number }) => pacient.id !== id)
-        );
-      })
-      .catch((err) => console.error(err));
+  const fetchPatients = async () => {
+    try {
+      const response = await callGetPatients();
+
+      setDataArray(response.data);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const deletePacient = async (id: number) => {
+    try {
+      await callDeletePatient(id);
+
+      setDataArray(
+        dataArray.filter((pacient: { id: number }) => pacient.id !== id)
+      );
+    } catch (err) {
+      console.log(err);
+    }
   };
   const getDetailsPage = (id: number) => {
     navigate(`${PATIENT_DETAILS_ROUTE}/${id}`);
   };
 
   useEffect(() => {
-    axios
-      .get("http://localhost:8080/pacients")
-      .then((res) => {
-        setDataArray(res.data);
-      })
-      .catch((err) => console.error(err));
+    fetchPatients();
   }, []);
 
   return (

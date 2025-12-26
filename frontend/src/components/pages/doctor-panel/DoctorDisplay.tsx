@@ -1,5 +1,4 @@
 import React, { useEffect } from "react";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import type { Doctor } from "@/types/doctor";
 import {
@@ -14,7 +13,8 @@ import {
 import styled from "styled-components";
 import { Button } from "@/components/ui/button";
 import { Eye, X } from "lucide-react";
-import { DOCTOR_DETAILS_ROUTE } from "@/text/routes";
+import { DOCTOR_DETAILS_ROUTE } from "@/constants/routes";
+import { callDeleteDoctor, callGetDoctors } from "@/api/doctor_calls";
 
 interface DoctorDisplayProps {
   dataArray: Array<Doctor>;
@@ -41,13 +41,8 @@ const formatSpecialization = (specialization: string): string => {
 
 const DoctorDisplay = ({ dataArray, setDataArray }: DoctorDisplayProps) => {
   const navigate = useNavigate();
-  const deleteDoctor = (id: number) => {
-    axios
-      .delete(`http://localhost:8080/doctors/${id}`)
-      .then((res) => {
-        console.log("worked!", res.data);
-      })
-      .catch((err) => console.error(err));
+  const deleteDoctor = async (id: number) => {
+    await callDeleteDoctor(id)
     setDataArray(
       dataArray.filter((doctor: { id: number }) => doctor.id !== id)
     );
@@ -57,17 +52,19 @@ const DoctorDisplay = ({ dataArray, setDataArray }: DoctorDisplayProps) => {
     navigate(`${DOCTOR_DETAILS_ROUTE}/${id}`);
   };
 
-  const fetchData = () => {
-    axios
-      .get("http://localhost:8080/doctors")
-      .then((res) => {
-        setDataArray(res.data);
-      })
-      .catch((err) => console.error(err));
+  const fetchDoctors = async () => {
+    try {
+      const response = await callGetDoctors();
+      
+      setDataArray(response.data); 
+    } catch (err) {
+      console.error("Error fetching doctors:", err);
+    }
+
   };
 
   useEffect(() => {
-    fetchData();
+    fetchDoctors();
   }, []);
 
   // map -> doctors for each doctor i can display

@@ -1,18 +1,16 @@
-import React, { use, useEffect, useState } from "react";
-import axios from "axios";
+import { useEffect, useState } from "react";
 import type { Doctor } from "@/types/doctor";
 import { useParams } from "react-router-dom";
 import {
   Table,
   TableBody,
-  TableCaption,
   TableCell,
-  TableFooter,
   TableHead,
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
 import styled from "styled-components";
+import { callGetDoctorById } from "@/api/doctor_calls";
 
 const TableStyled = styled(Table)`
   justify-content: center;
@@ -49,14 +47,17 @@ const DoctorDetailsPage = () => {
     address: "",
   });
 
-  const getDetails = () => {
-    axios
-      .get(`http://localhost:8080/doctors/${idValue}`)
-      .then((res) => {
-        console.log("worked!", res.data);
-        setDoctor(res.data);
-      })
-      .catch((err) => console.error(err));
+  const getDetails = async () => {
+    try 
+    {
+      const response = await callGetDoctorById(Number(idValue));
+
+      setDoctor(response.data);
+    }
+    catch (err) 
+    {
+        console.error("Error fetching doctors:", err);
+    }
   };
   useEffect(() => {
     getDetails();

@@ -1,17 +1,15 @@
-import axios from "axios";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import styled from "styled-components";
 import {
   Table,
   TableBody,
-  TableCaption,
   TableCell,
-  TableFooter,
   TableHead,
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { callGetPatientById } from "@/api/patient_calls";
 
 const TableStyled = styled(Table)`
   justify-content: center;
@@ -34,14 +32,20 @@ const PatientDetailsPage = () => {
     id: 0,
   });
 
+  const fetchPatients = async () => {
+    try 
+    {
+      const response = await callGetPatientById(Number(idValue))
+
+       setPacient(response.data)
+    } catch (err)
+    {
+      console.log(err)
+    }
+  }
+
   useEffect(() => {
-    axios
-      .get(`http://localhost:8080/patients/${idValue}`)
-      .then((res) => {
-        console.log("worked!", res.data);
-        setPacient(res.data);
-      })
-      .catch((err) => console.error(err));
+    fetchPatients();
   }, []);
   return (
     <TableStyled>
