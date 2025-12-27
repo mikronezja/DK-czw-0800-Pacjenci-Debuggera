@@ -2,27 +2,15 @@ import { useEffect, useState } from "react";
 import type { Doctor } from "@/types/doctor";
 import { useParams } from "react-router-dom";
 import {
-  Table,
   TableBody,
   TableCell,
   TableHead,
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import styled from "styled-components";
 import { callGetDoctorById } from "@/api/doctor_calls";
 import { SPECIALIZATIONS } from "@/constants/specializations";
-
-const TableStyled = styled(Table)`
-  justify-content: center;
-  align-items: center;
-  display: flex;
-  flex-direction: column;
-  padding: 30px;
-  margin: 30px auto;
-  min-width: 400px;
-  width: auto;
-`;
+import { TableDetailsStyled } from "@/styles/styledcomponent";
 
 const formatSpecialization = (specialization: string): string => {
   return SPECIALIZATIONS[specialization] || specialization;
@@ -53,7 +41,7 @@ const DoctorDetailsPage = () => {
   }, []);
 
   return (
-    <TableStyled>
+    <TableDetailsStyled>
       <div>
         <TableHeader>
           <TableRow>
@@ -72,7 +60,7 @@ const DoctorDetailsPage = () => {
           </TableRow>
         </TableBody>
       </div>
-    </TableStyled>
+    </TableDetailsStyled>
   );
 };
 

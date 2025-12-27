@@ -27,8 +27,6 @@ const NewPacientPanel = ({
   const [formData, setFormData] = useState({
     name: "",
     surname: "",
-    pesel: "",
-    address: "",
   });
 
   const addPacient = async (e: React.SyntheticEvent) => {
@@ -48,8 +46,6 @@ const NewPacientPanel = ({
     setFormData({
       name: "",
       surname: "",
-      pesel: "",
-      address: "",
     });
     setAddPacientOpen(false);
   };
@@ -75,28 +71,6 @@ const NewPacientPanel = ({
           }}
         />
       </Label>
-      <Label style={{ display: "flex", flexDirection: "column" }}>
-        <div>PESEL:</div>
-        <Textarea
-          value={formData.pesel}
-          onChange={(e) => {
-            setFormData({ ...formData, pesel: e.target.value });
-          }}
-        />
-      </Label>
-      <Label
-        className="text-left"
-        style={{ display: "flex", flexDirection: "column" }}
-      >
-        Adres:
-        <Textarea
-          value={formData.address}
-          onChange={(e) => {
-            setFormData({ ...formData, address: e.target.value });
-          }}
-        />
-      </Label>
-
       <Button variant="outline" size="sm" onClick={addPacient}>
         Zapisz
       </Button>

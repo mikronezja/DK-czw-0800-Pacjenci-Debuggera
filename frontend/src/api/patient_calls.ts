@@ -4,8 +4,6 @@ import { PATIENT_ENDPOINT } from "./endpoints";
 interface dataType {
   name: string;
   surname: string;
-  pesel: string;
-  address: string;
 }
 
 export const callGetPatients = async () => {

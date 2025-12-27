@@ -11,7 +11,10 @@ import {
   ItemTitle,
 } from "@/components/ui/item";
 import NewOfficePanel from "./NewOfficePanel";
-import { OFFICE_DETAILS_ROUTE } from "@/constants/routes";
+import {
+  OFFICE_DETAILS_ROUTE,
+  OFFICE_SHIFT_PANEL_ROUTE,
+} from "@/constants/routes";
 import { callDeleteOffice, callGetOffices } from "@/api/office_calls";
 
 const OfficePanelStyled = styled.div`
@@ -37,32 +40,31 @@ const OfficePanel = () => {
   const [addOfficeOpen, setAddOfficeOpen] = useState(false);
   const [dataArray, setDataArray] = useState<Office[]>([]);
 
-  const getDetailsPage = (id: number) => {
+  const goToDetails = (id: number) => {
     navigate(`${OFFICE_DETAILS_ROUTE}/${id}`);
   };
 
-  const fetchOffices = async () => {
-    try 
-    {
-      const response = await callGetOffices()
-      setDataArray(response.data);
+  const goToShifts = (id: number) => {
+    navigate(`${OFFICE_SHIFT_PANEL_ROUTE}/${id}`);
+  };
 
-    } catch (err)
-    {
-      console.log(err)
+  const fetchOffices = async () => {
+    try {
+      const response = await callGetOffices();
+      setDataArray(response.data);
+    } catch (err) {
+      console.log(err);
     }
-  }
+  };
 
   const deleteOffice = async (id: number) => {
     try {
-      await callDeleteOffice(id)
-    
+      await callDeleteOffice(id);
+
       setDataArray(
-          dataArray.filter((office: { id: number }) => office.id !== id)
-        );
-    }
-      catch (err)
-    {
+        dataArray.filter((office: { id: number }) => office.id !== id)
+      );
+    } catch (err) {
       console.log(err);
     }
   };
@@ -99,9 +101,16 @@ const OfficePanel = () => {
                   variant="outline"
                   size="sm"
                   className="rounded-full w-8 h-8"
-                  onClick={() => getDetailsPage(id)}
+                  onClick={() => goToDetails(id)}
                 >
                   <Eye />
+                </Button>
+                <Button
+                  variant="outline"
+                  className="rounded-full"
+                  onClick={() => goToShifts(id)}
+                >
+                  Dodaj zmianę
                 </Button>
                 <Button
                   variant="outline"

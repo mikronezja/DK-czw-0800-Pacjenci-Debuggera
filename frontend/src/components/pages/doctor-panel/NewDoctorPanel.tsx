@@ -12,20 +12,14 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { callAddDoctor } from "@/api/doctor_calls";
+import { SPECIALIZATIONS } from "@/constants/specializations";
+import { FormStyled } from "@/styles/styledcomponent";
 
 interface DoctorDisplayProps {
   dataArray: Array<Doctor>;
   setDataArray: React.Dispatch<React.SetStateAction<Array<Doctor>>>;
   setAddDoctorOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
-
-const FormStyled = styled.form`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  gap: 10px;
-`;
 
 const NewDoctorPanel = ({
   dataArray,
@@ -106,13 +100,11 @@ const NewDoctorPanel = ({
             <SelectValue placeholder="Wybierz specjalizację" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="KARDIOLOG">Kardiolog</SelectItem>
-            <SelectItem value="DERMATOLOG">Dermatolog</SelectItem>
-            <SelectItem value="NEUROLOG">Neurolog</SelectItem>
-            <SelectItem value="OKULISTA">Okulista</SelectItem>
-            <SelectItem value="ORTOPEDA">Ortopeda</SelectItem>
-            <SelectItem value="CHIRURG">Chirurg</SelectItem>
-            <SelectItem value="PEDIATRA">Pediatra</SelectItem>
+            {Object.entries(SPECIALIZATIONS).map(([key, val], id) => (
+              <SelectItem value={key} key={id}>
+                {val}
+              </SelectItem>
+            ))}
           </SelectContent>
         </Select>
       </Label>

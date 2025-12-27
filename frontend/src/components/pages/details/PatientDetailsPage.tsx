@@ -10,17 +10,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { callGetPatientById } from "@/api/patient_calls";
-
-const TableStyled = styled(Table)`
-  justify-content: center;
-  align-items: center;
-  display: flex;
-  flex-direction: column;
-  padding: 30px;
-  margin: 30px auto;
-  min-width: 400px;
-  width: auto;
-`;
+import { TableDetailsStyled } from "@/styles/styledcomponent";
 
 const PatientDetailsPage = () => {
   const { idValue } = useParams();
@@ -33,22 +23,20 @@ const PatientDetailsPage = () => {
   });
 
   const fetchPatients = async () => {
-    try 
-    {
-      const response = await callGetPatientById(Number(idValue))
+    try {
+      const response = await callGetPatientById(Number(idValue));
 
-       setPacient(response.data)
-    } catch (err)
-    {
-      console.log(err)
+      setPacient(response.data);
+    } catch (err) {
+      console.log(err);
     }
-  }
+  };
 
   useEffect(() => {
     fetchPatients();
   }, []);
   return (
-    <TableStyled>
+    <TableDetailsStyled>
       <div>
         <TableHeader>
           <TableRow>
@@ -65,7 +53,7 @@ const PatientDetailsPage = () => {
           </TableRow>
         </TableBody>
       </div>
-    </TableStyled>
+    </TableDetailsStyled>
   );
 };
 

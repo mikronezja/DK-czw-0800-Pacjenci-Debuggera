@@ -22,6 +22,7 @@ import OfficePanel from "./components/pages/office-panel/OfficePanel";
 import ShiftPanel from "./components/pages/shift-panel/ShiftDoctorPanel";
 import OfficeDetailsPage from "./components/pages/details/OfficeDetailsPage";
 import ShiftDoctorPanel from "./components/pages/shift-panel/ShiftDoctorPanel";
+import ShiftOfficePanel from "./components/pages/shift-panel/ShiftOfficePanel";
 
 function App() {
   const [checked, setChecked] = useState(false);
@@ -40,7 +41,7 @@ function App() {
 
         <Route
           path={`${OFFICE_SHIFT_PANEL_ROUTE}/:idValue`}
-          element={<ShiftDoctorPanel />}
+          element={<ShiftOfficePanel />}
         />
 
         {/* ///////// */}

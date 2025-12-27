@@ -10,22 +10,17 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import styled from "styled-components";
 import { Button } from "@/components/ui/button";
 import { Eye, X } from "lucide-react";
 import { PATIENT_DETAILS_ROUTE } from "@/constants/routes";
 import { callDeletePatient, callGetPatients } from "@/api/patient_calls";
+import { TableStyled } from "@/styles/styledcomponent";
 // import { PATIENT_DETAILS_ROUTE } from "@/text/navbar";
 
 interface PacientDisplayProps {
   dataArray: Array<Pacient>;
   setDataArray: React.Dispatch<React.SetStateAction<Array<Pacient>>>;
 }
-
-const TableStyled = styled(Table)`
-  overflow-y: auto;
-  height: 100%;
-`;
 
 const PatientDisplay = ({ dataArray, setDataArray }: PacientDisplayProps) => {
   const navigate = useNavigate();
