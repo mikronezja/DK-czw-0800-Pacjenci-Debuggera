@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import type { Doctor } from "@/types/doctor";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import styled from "styled-components";
 import { Label } from "@/components/ui/label";
 import {
   Select,

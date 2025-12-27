@@ -1,18 +1,11 @@
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import styled from "styled-components";
 import { Label } from "@/components/ui/label";
 import type { Pacient } from "@/types/pacient";
 import { callAddPatient } from "@/api/patient_calls";
+import { FormStyled } from "@/styles/styledcomponent";
 
-const FormStyled = styled.form`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  gap: 10px;
-`;
 interface PacientDisplayProps {
   dataArray: Array<Pacient>;
   setDataArray: React.Dispatch<React.SetStateAction<Array<Pacient>>>;
