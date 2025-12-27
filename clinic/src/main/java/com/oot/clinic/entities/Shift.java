@@ -1,6 +1,5 @@
 package com.oot.clinic.entities;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.time.DayOfWeek;
@@ -10,9 +9,9 @@ import java.time.LocalTime;
 @Table(
         uniqueConstraints = {
                 @UniqueConstraint(
-                columnNames = {"office_id", "weekday", "startTime", "endTime"}),
+                columnNames = {"office_id", "day_of_week", "startTime", "endTime"}),
                 @UniqueConstraint(
-                columnNames = {"doctor_id", "weekday", "startTime", "endTime"})
+                columnNames = {"doctor_id", "day_of_week", "startTime", "endTime"})
         }
 )
 public class Shift {
@@ -42,7 +41,6 @@ public class Shift {
     public Shift() {
 
     }
-
 
     // GETTERS AND SETTERS
 
