@@ -40,4 +40,16 @@ public class Patient {
     public void setAddress(String address) {
         this.address = address;
     }
+
+    public void setSurname(String surname) {
+        this.surname = surname;
+    }
+
+    public void setPesel(String pesel) {
+        this.pesel = pesel;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 }
