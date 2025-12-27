@@ -1,13 +1,12 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import axios from "axios";
-import { data, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import type { Doctor } from "@/types/doctor";
 import {
   Table,
   TableBody,
   TableCaption,
   TableCell,
-  TableFooter,
   TableHead,
   TableHeader,
   TableRow,
@@ -15,6 +14,7 @@ import {
 import styled from "styled-components";
 import { Button } from "@/components/ui/button";
 import { Eye, X } from "lucide-react";
+import { DOCTOR_DETAILS_ROUTE } from "@/text/routes";
 
 interface DoctorDisplayProps {
   dataArray: Array<Doctor>;
@@ -54,16 +54,13 @@ const DoctorDisplay = ({ dataArray, setDataArray }: DoctorDisplayProps) => {
   };
 
   const getDetailsPage = (id: number) => {
-    navigate(`/details/${id}`);
+    navigate(`${DOCTOR_DETAILS_ROUTE}/${id}`);
   };
 
   const fetchData = () => {
     axios
       .get("http://localhost:8080/doctors")
       .then((res) => {
-        console.log("worked!", res.data);
-        console.log("Dane z backendu:", res.data);
-        console.log("Pierwsze id:", res.data[0]?.id); // Sprawdź pierwsze id
         setDataArray(res.data);
       })
       .catch((err) => console.error(err));
@@ -91,7 +88,9 @@ const DoctorDisplay = ({ dataArray, setDataArray }: DoctorDisplayProps) => {
           <TableRow key={index}>
             <TableCell>{name}</TableCell>
             <TableCell>{surname}</TableCell>
-            <TableCell className="text-right">{formatSpecialization(specialization)}</TableCell>
+            <TableCell className="text-right">
+              {formatSpecialization(specialization)}
+            </TableCell>
             <TableCell className="text-right">
               <Button
                 variant="outline"

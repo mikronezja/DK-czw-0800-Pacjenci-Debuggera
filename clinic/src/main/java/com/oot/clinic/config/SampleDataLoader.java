@@ -1,38 +1,144 @@
 package com.oot.clinic.config;
 
-import com.oot.clinic.doctor.Doctor;
-import com.oot.clinic.doctor.DoctorRepository;
-import com.oot.clinic.doctor.Specialization;
+import com.oot.clinic.entities.Doctor;
+import com.oot.clinic.entities.Office;
+import com.oot.clinic.entities.Patient;
+import com.oot.clinic.entities.Shift;
+import com.oot.clinic.entities.enumeration.Specialization;
+import com.oot.clinic.repositories.DoctorRepository;
+import com.oot.clinic.repositories.OfficeRepository;
+import com.oot.clinic.repositories.PatientRepository;
+import com.oot.clinic.repositories.ShiftRepository;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.stereotype.Component;
 
-@Configuration
-public class SampleDataLoader {
+import java.time.DayOfWeek;
+import java.time.LocalTime;
+import java.util.List;
 
-    @Bean
-    @ConditionalOnProperty(name = "app.load-sample-data", havingValue = "true")
-    CommandLineRunner loadSampleData(DoctorRepository repo) {
-        return args -> {
+@Component
+public class SampleDataLoader implements CommandLineRunner {
 
-            if (repo.count() > 0) {
-                System.out.println("Sample data NOT loaded – DB already contains doctors.");
-                return;
-            }
+    private final PatientRepository patientRepository;
+    private final OfficeRepository officeRepository;
+    private final ShiftRepository shiftRepository;
+    private final DoctorRepository doctorRepository;
 
-            repo.save(new Doctor("Jan", "Kowalski", "80010112345", Specialization.KARDIOLOG, "Poznań, ul. Słoneczna 10"));
-            repo.save(new Doctor("Anna", "Nowak", "82030554321", Specialization.KARDIOLOG, "Poznań, ul. Lipowa 5"));
-            repo.save(new Doctor("Piotr", "Wiśniewski", "75071298765", Specialization.KARDIOLOG, "Poznań, ul. Norwida 2"));
+    public SampleDataLoader(
+            PatientRepository patientRepository,
+            OfficeRepository officeRepository,
+            ShiftRepository shiftRepository,
+            DoctorRepository doctorRepository
+    ) {
+        this.patientRepository = patientRepository;
+        this.officeRepository = officeRepository;
+        this.shiftRepository = shiftRepository;
+        this.doctorRepository = doctorRepository;
+    }
 
-            repo.save(new Doctor("Maria", "Lewandowska", "90022311223", Specialization.DERMATOLOG, "Warszawa, ul. Długa 15"));
-            repo.save(new Doctor("Jakub", "Król", "85091833211", Specialization.DERMATOLOG, "Warszawa, ul. Krótka 3"));
+    @Override
+    public void run(String... args) {
 
-            repo.save(new Doctor("Ewa", "Zielińska", "78043099800", Specialization.NEUROLOG, "Kraków, ul. Wawelska 8"));
-            repo.save(new Doctor("Tomasz", "Sikora", "83061277654", Specialization.OKULISTA, "Gdańsk, ul. Morska 20"));
+        // zapobiega duplikowaniu danych przy każdym starcie
+        if (patientRepository.count() > 0) {
+            return;
+        }
 
+        // ---------- PACJENCI ----------
+        Patient p1 = new Patient();
+        p1.setName("Jan");
+        p1.setSurname("Kowalski");
+        p1.setPesel("80010112345");
+        p1.setAddress("Warszawa, ul. Kwiatowa 12");
 
-            System.out.println("Sample doctors loaded into H2 database.");
-        };
+        Patient p2 = new Patient();
+        p2.setName("Anna");
+        p2.setSurname("Nowak");
+        p2.setPesel("90070755555");
+        p2.setAddress("Kraków, ul. Długa 4");
+
+        Patient p3 = new Patient();
+        p3.setName("Piotr");
+        p3.setSurname("Zieliński");
+        p3.setPesel("75010199999");
+        p3.setAddress("Gdańsk, ul. Morska 21");
+
+        Patient p4 = new Patient();
+        p4.setName("Karolina");
+        p4.setSurname("Wiśniewska");
+        p4.setPesel("86031588888");
+        p4.setAddress("Poznań, ul. Zielona 8");
+
+        patientRepository.saveAll(List.of(p1, p2, p3, p4));
+
+        // ------------------ GABINETY ------------------
+        Office o1 = new Office();
+        Office o2 = new Office();
+        Office o3 = new Office();
+
+        o1.setRoomNumber(101);
+        o2.setRoomNumber(102);
+        o3.setRoomNumber(103);
+
+        officeRepository.saveAll(List.of(o1, o2, o3));
+
+        // ---------- LEKARZE ----------
+        Doctor d1 = new Doctor(
+                "Marek",
+                "Lekarski",
+                "72010112345",
+                Specialization.KARDIOLOG,
+                "Warszawa, ul. Szpitalna 10"
+        );
+
+        Doctor d2 = new Doctor(
+                "Katarzyna",
+                "Medyczna",
+                "83021298765",
+                Specialization.DERMATOLOG,
+                "Kraków, ul. Zdrowa 5"
+        );
+
+        Doctor d3 = new Doctor(
+                "Andrzej",
+                "Nowicki",
+                "90050544444",
+                Specialization.NEUROLOG,
+                "Gdańsk, ul. Kliniczna 3"
+        );
+
+        Doctor d4 = new Doctor(
+                "Anna",
+                "Lis",
+                "95010166666",
+                Specialization.PEDIATRA,
+                "Poznań, ul. Maluchów 12"
+        );
+
+        doctorRepository.saveAll(List.of(d1, d2, d3, d4));
+
+        // ------------------ DYŻURY ------------------
+        Shift s1 = new Shift();
+        s1.setDoctor(d1);
+        s1.setOffice(o1);
+        s1.setDayOfWeek(DayOfWeek.MONDAY);
+        s1.setStartTime(LocalTime.of(8, 0));
+        s1.setEndTime(LocalTime.of(14, 0));
+
+        Shift s2 = new Shift();
+        s2.setDoctor(d1);
+        s2.setOffice(o2);
+        s2.setDayOfWeek(DayOfWeek.TUESDAY);
+        s2.setStartTime(LocalTime.of(10, 0));
+        s2.setEndTime(LocalTime.of(18, 0));
+
+        Shift s3 = new Shift();
+        s3.setDoctor(d2);
+        s3.setOffice(o3);
+        s3.setDayOfWeek(DayOfWeek.WEDNESDAY);
+        s3.setStartTime(LocalTime.of(7, 30));
+        s3.setEndTime(LocalTime.of(15, 30));
+
+        shiftRepository.saveAll(List.of(s1, s2, s3));
     }
 }

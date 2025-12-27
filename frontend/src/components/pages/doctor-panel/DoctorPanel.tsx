@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import NewDoctorPanel from "./NewDoctorPanel";
 import DoctorDisplay from "./DoctorDisplay";
 import type { Doctor } from "@/types/doctor";

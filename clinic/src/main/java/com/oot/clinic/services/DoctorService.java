@@ -1,5 +1,10 @@
-package com.oot.clinic.doctor;
+package com.oot.clinic.services;
 
+import com.oot.clinic.DTOs.ShiftDoctorResponseDTO;
+import com.oot.clinic.entities.Doctor;
+import com.oot.clinic.DTOs.DoctorDTO;
+import com.oot.clinic.entities.Shift;
+import com.oot.clinic.repositories.DoctorRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -36,19 +41,29 @@ public class DoctorService {
      * Returns an optional Doctor object based on the given id
      * @param id id of the doctor
      */
-    public Optional<Doctor> getDoctorById(Long id) {
-        return doctorRepository.findById(id);
+    public Doctor getDoctorById(Long id) {
+        return doctorRepository.findById(id).orElseThrow();
     }
 
     /**
      * Deletes the doctor from the database with specific id if he exists
      * @param id id of a doctor that's to be deleted
-     * @return boolean if he was successfully deleted or not
      */
     public void deleteDoctorById(Long id) throws Exception {
         if (!doctorRepository.existsById(id)) {
             throw new Exception("Doctor does not exist.");
         }
         doctorRepository.deleteById(id);
+    }
+
+    /**
+     * @param id id of the doctor
+     * @return List of shifts assigned to a doctor
+     */
+    public List<ShiftDoctorResponseDTO> getShifts(Long id) {
+        return getDoctorById(id).getShifts()
+                .stream()
+                .map(ShiftDoctorResponseDTO::new)
+                .toList();
     }
 }

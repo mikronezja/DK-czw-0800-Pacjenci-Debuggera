@@ -1,24 +1,11 @@
 import React, { useState } from "react";
-import ActionButton from "./ActionButton";
 import axios from "axios";
 import type { Doctor } from "@/types/doctor";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import styled from "styled-components";
 import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-
-interface DoctorDisplayProps {
-  dataArray: Array<Doctor>;
-  setDataArray: React.Dispatch<React.SetStateAction<Array<Doctor>>>;
-  setAddDoctorOpen: React.Dispatch<React.SetStateAction<boolean>>;
-}
+import type { Pacient } from "@/types/pacient";
 
 const FormStyled = styled.form`
   display: flex;
@@ -27,44 +14,45 @@ const FormStyled = styled.form`
   flex-direction: column;
   gap: 10px;
 `;
+interface PacientDisplayProps {
+  dataArray: Array<Pacient>;
+  setDataArray: React.Dispatch<React.SetStateAction<Array<Pacient>>>;
+  setAddPacientOpen: React.Dispatch<React.SetStateAction<boolean>>;
+}
 
-const NewDoctorPanel = ({
+const NewPacientPanel = ({
   dataArray,
   setDataArray,
-  setAddDoctorOpen,
-}: DoctorDisplayProps) => {
+  setAddPacientOpen,
+}: PacientDisplayProps) => {
   const [formData, setFormData] = useState({
     name: "",
     surname: "",
     pesel: "",
-    specialization: "",
     address: "",
   });
 
-  const saveDoctor = (e: React.SyntheticEvent) => {
+  const savePacient = (e: React.SyntheticEvent) => {
     e.preventDefault();
 
     axios
-      .post("http://localhost:8080/doctors/add", formData)
+      .post("http://localhost:8080/pacients/add", formData)
       .then((res) => {
-        console.log("Doctor saved:", res.data);
         setDataArray([...dataArray, { ...formData, id: res.data.id }]);
       })
       .catch((err) => {
-        console.log(formData);
-        console.error("Error saving doctor:", err);
+        console.error("Error saving pacient:", err);
       });
-    setAddDoctorOpen(false);
+    setAddPacientOpen(false);
   };
-  const deleteDoctor = () => {
+  const deletePacient = () => {
     setFormData({
       name: "",
       surname: "",
       pesel: "",
-      specialization: "",
       address: "",
     });
-    setAddDoctorOpen(false);
+    setAddPacientOpen(false);
   };
 
   return (
@@ -97,28 +85,6 @@ const NewDoctorPanel = ({
           }}
         />
       </Label>
-      <Label style={{ display: "flex", flexDirection: "column" }}>
-        Specjalizacja:
-        <Select
-          value={formData.specialization}
-          onValueChange={(value) => {
-            setFormData({ ...formData, specialization: value });
-          }}
-        >
-          <SelectTrigger>
-            <SelectValue placeholder="Wybierz specjalizację" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="KARDIOLOG">Kardiolog</SelectItem>
-            <SelectItem value="DERMATOLOG">Dermatolog</SelectItem>
-            <SelectItem value="NEUROLOG">Neurolog</SelectItem>
-            <SelectItem value="OKULISTA">Okulista</SelectItem>
-            <SelectItem value="ORTOPEDA">Ortopeda</SelectItem>
-            <SelectItem value="CHIRURG">Chirurg</SelectItem>
-            <SelectItem value="PEDIATRA">Pediatra</SelectItem>
-          </SelectContent>
-        </Select>
-      </Label>
       <Label
         className="text-left"
         style={{ display: "flex", flexDirection: "column" }}
@@ -132,14 +98,14 @@ const NewDoctorPanel = ({
         />
       </Label>
 
-      <Button variant="outline" size="sm" onClick={saveDoctor}>
+      <Button variant="outline" size="sm" onClick={savePacient}>
         Zapisz
       </Button>
-      <Button variant="outline" size="sm" onClick={deleteDoctor}>
+      <Button variant="outline" size="sm" onClick={deletePacient}>
         Anuluj
       </Button>
     </FormStyled>
   );
 };
 
-export default NewDoctorPanel;
+export default NewPacientPanel;

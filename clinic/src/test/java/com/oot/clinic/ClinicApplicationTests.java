@@ -1,22 +1,30 @@
 package com.oot.clinic;
 
-import com.oot.clinic.doctor.Doctor;
-import com.oot.clinic.doctor.DoctorRepository;
-import com.oot.clinic.doctor.DoctorService;
-import com.oot.clinic.doctor.Specialization;
+import com.oot.clinic.entities.Doctor;
+import com.oot.clinic.entities.Office;
+import com.oot.clinic.entities.Patient;
+import com.oot.clinic.entities.Shift;
+import com.oot.clinic.repositories.DoctorRepository;
+import com.oot.clinic.repositories.OfficeRepository;
+import com.oot.clinic.repositories.PatientRepository;
+import com.oot.clinic.repositories.ShiftRepository;
+import com.oot.clinic.services.DoctorService;
+import com.oot.clinic.entities.enumeration.Specialization;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Profile;
 import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.ActiveProfiles;
 
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
-@Profile("test")
+@ActiveProfiles("test")
 class ClinicApplicationTests {
+
+	// DOCTOR
 
 	@Autowired
 	private DoctorService doctorService;
@@ -62,10 +70,9 @@ class ClinicApplicationTests {
 		);
 
 		Doctor saved = doctorRepository.save(doctor);
-		Optional<Doctor> result = doctorService.getDoctorById(saved.getId());
+		Doctor result = doctorService.getDoctorById(saved.getId());
 
-		assertTrue(result.isPresent());
-		assertEquals("Anna", result.get().getName());
+		assertEquals("Anna", result.getName());
 	}
 
 	@Test
@@ -82,8 +89,7 @@ class ClinicApplicationTests {
 	@Test
 	@DirtiesContext
 	void getDoctorByIdShouldReturnEmptyOptionalWhenDoctorDoesNotExist() {
-		var result = doctorService.getDoctorById(999L);
-		assertTrue(result.isEmpty());
+		assertThrows(Exception.class, () -> doctorService.getDoctorById(999L));
 	}
 
 	@Test
@@ -249,4 +255,187 @@ class ClinicApplicationTests {
 		assertEquals("Łukasz", found.getName());
 		assertTrue(found.getSurname().contains("cz"));
 	}
+
+	// OFFICE
+
+	@Autowired
+	private OfficeRepository officeRepository;
+
+	@Test
+	void addingOfficeShouldPersistIt() {
+
+		var office = new Office();
+
+		var saved = officeRepository.save(office);
+
+		var found = officeRepository.findById(saved.getId()).orElseThrow();
+
+		assertNotNull(found.getId());
+		assertEquals(0, found.getRoomNumber());
+	}
+
+	@Test
+	void shouldSaveMultipleOffices() {
+		var o1 = officeRepository.save(new Office());
+		var o2 = officeRepository.save(new Office());
+
+		var all = officeRepository.findAll();
+
+		assertTrue(all.size() >= 2);
+		assertNotEquals(o1.getId(), o2.getId());
+	}
+
+	@Test
+	void deletingOfficeShouldRemoveItFromDatabase() {
+		var office = officeRepository.save(new Office());
+
+		officeRepository.delete(office);
+
+		var result = officeRepository.findById(office.getId());
+
+		assertTrue(result.isEmpty());
+	}
+
+	@Test
+	void savedOfficeShouldBeRetrievableById() {
+		var saved = officeRepository.save(new Office());
+
+		var fromDb = officeRepository.findById(saved.getId()).orElseThrow();
+
+		assertEquals(saved.getId(), fromDb.getId());
+	}
+
+	@Test
+	@DirtiesContext
+	void officeShouldPersistAcrossContextReload() {
+		var office = officeRepository.save(new Office());
+
+		var found = officeRepository.findById(office.getId()).orElseThrow();
+
+		assertNotNull(found);
+	}
+
+	// SHIFT
+
+	@Autowired
+	private ShiftRepository shiftRepository;
+
+	@Test
+	void officeRepositoryShouldReturnEmptyListAtStart() {
+		var all = officeRepository.findAll();
+		assertNotNull(all);
+	}
+
+	@Test
+	void addingShiftWithDoctorAndOfficeShouldPersist() {
+
+		var office = officeRepository.save(new Office());
+		var doctor = doctorRepository.save(new Doctor());
+
+		var shift = new Shift();
+		shift.setOffice(office);
+		shift.setDoctor(doctor);
+
+		var saved = shiftRepository.save(shift);
+
+		var found = shiftRepository.findById(saved.getId()).orElseThrow();
+
+		assertNotNull(found.getId());
+		assertNotNull(found.getOffice());
+		assertNotNull(found.getDoctor());
+	}
+
+	@Test
+	void savingOfficeShouldIncreaseOfficeCount() {
+		long before = officeRepository.count();
+
+		officeRepository.save(new Office());
+
+		long after = officeRepository.count();
+
+		assertTrue(after >= before + 1);
+	}
+
+	@Test
+	void findByIdForNonExistingOfficeShouldReturnEmptyOptional() {
+		var result = officeRepository.findById(-123L);
+		assertTrue(result.isEmpty());
+	}
+
+	@Test
+	void deleteAllShouldRemoveAllOffices() {
+		officeRepository.save(new Office());
+		officeRepository.save(new Office());
+
+		officeRepository.deleteAll();
+
+		assertEquals(0, officeRepository.count());
+	}
+
+	@Test
+	void savedOfficeShouldHaveDefaultRoomNumber() {
+		var office = officeRepository.save(new Office());
+
+		var fromDb = officeRepository.findById(office.getId()).orElseThrow();
+
+		assertEquals(0, fromDb.getRoomNumber());
+	}
+
+	@Test
+	void officeShiftsListShouldNotBeNull() {
+		var office = officeRepository.save(new Office());
+
+		var fromDb = officeRepository.findById(office.getId()).orElseThrow();
+
+		assertNotNull(fromDb.getShifts());
+	}
+
+	// PATIENT
+
+	@Autowired
+	private PatientRepository patientRepository;
+
+	@Test
+	void patientRepositoryShouldReturnList() {
+		var all = patientRepository.findAll();
+		assertNotNull(all);
+	}
+
+	@Test
+	void savingPatientShouldIncreaseCount() {
+		long before = patientRepository.count();
+
+		patientRepository.save(new Patient());
+
+		long after = patientRepository.count();
+
+		assertTrue(after >= before + 1);
+	}
+
+	@Test
+	void findByIdForNonExistingPatientShouldReturnEmptyOptional() {
+		var result = patientRepository.findById(-99L);
+		assertTrue(result.isEmpty());
+	}
+
+	@Test
+	void savedPatientShouldBeRetrievableById() {
+		var saved = patientRepository.save(new Patient());
+
+		var found = patientRepository.findById(saved.getId()).orElseThrow();
+
+		assertEquals(saved.getId(), found.getId());
+	}
+
+	@Test
+	void deletingPatientShouldRemoveItFromDatabase() {
+		var patient = patientRepository.save(new Patient());
+
+		patientRepository.delete(patient);
+
+		var result = patientRepository.findById(patient.getId());
+
+		assertTrue(result.isEmpty());
+	}
+
 }
