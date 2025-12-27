@@ -18,7 +18,7 @@ const FormBorder = styled(FormStyled)`
   padding: 40px 30px;
   border-radius: 5px;
   border: 1px solid #e0e0e0;
-  min-width: 200px;
+  min-width: 250px;
   overflow-y: auto;
   gap: 25px;
   max-height: 400px;
@@ -108,7 +108,7 @@ const ShiftDoctorPanel = () => {
           </Select>
         </Field>
         <Field>
-          <FieldLabel>Zakończenie zmiany</FieldLabel>
+          <FieldLabel>Dzień tygodnia</FieldLabel>
           <Select
             value={weekDay}
             onValueChange={(value) => {
