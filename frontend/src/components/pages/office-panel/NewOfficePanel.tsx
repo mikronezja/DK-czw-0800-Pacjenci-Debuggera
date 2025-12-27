@@ -50,12 +50,10 @@ const NewOfficePanel = ({
     e.preventDefault();
 
     try {
-      const response = await callAddOffice()
-    
+      const response = await callAddOffice(formData);
+
       setDataArray([...dataArray, { ...formData, id: response.data.id }]);
-    }
-      catch (err)
-    {
+    } catch (err) {
       console.log(err);
     }
     setAddOfficeOpen(false);

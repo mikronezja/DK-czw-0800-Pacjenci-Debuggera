@@ -12,14 +12,16 @@ import {
   PATIENT_DETAILS_ROUTE,
   PATIENT_PANEL_ROUTE,
   OFFICE_DETAILS_ROUTE,
-  SHIFT_PANEL_ROUTE,
+  DOCTOR_SHIFT_PANEL_ROUTE,
+  OFFICE_SHIFT_PANEL_ROUTE,
 } from "./constants/routes";
 import PatientPanel from "./components/pages/patient-panel/PatientPanel";
 import DoctorDetailsPage from "./components/pages/details/DoctorDetailsPage";
 import PatientDetailsPage from "./components/pages/details/PatientDetailsPage";
 import OfficePanel from "./components/pages/office-panel/OfficePanel";
-import ShiftPanel from "./components/pages/shift-panel/ShiftPanel";
+import ShiftPanel from "./components/pages/shift-panel/ShiftDoctorPanel";
 import OfficeDetailsPage from "./components/pages/details/OfficeDetailsPage";
+import ShiftDoctorPanel from "./components/pages/shift-panel/ShiftDoctorPanel";
 
 function App() {
   const [checked, setChecked] = useState(false);
@@ -31,7 +33,17 @@ function App() {
         <Route path={DOCTOR_PANEL_ROUTE} element={<DoctorPanel />} />
         <Route path={PATIENT_PANEL_ROUTE} element={<PatientPanel />} />
         <Route path={OFFICE_PANEL_ROUTE} element={<OfficePanel />} />
-        <Route path={SHIFT_PANEL_ROUTE} element={<ShiftPanel />} />
+        <Route
+          path={`${DOCTOR_SHIFT_PANEL_ROUTE}/:idValue`}
+          element={<ShiftDoctorPanel />}
+        />
+
+        <Route
+          path={`${OFFICE_SHIFT_PANEL_ROUTE}/:idValue`}
+          element={<ShiftDoctorPanel />}
+        />
+
+        {/* ///////// */}
         <Route
           path={`${DOCTOR_DETAILS_ROUTE}/:idValue`}
           element={<DoctorDetailsPage />}

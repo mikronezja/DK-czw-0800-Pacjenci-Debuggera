@@ -15,6 +15,7 @@ import { Button } from "@/components/ui/button";
 import { Eye, X } from "lucide-react";
 import { DOCTOR_DETAILS_ROUTE } from "@/constants/routes";
 import { callDeleteDoctor, callGetDoctors } from "@/api/doctor_calls";
+import { SPECIALIZATIONS } from "@/constants/specializations";
 
 interface DoctorDisplayProps {
   dataArray: Array<Doctor>;
@@ -27,22 +28,13 @@ const TableStyled = styled(Table)`
 `;
 
 const formatSpecialization = (specialization: string): string => {
-  const mapping: Record<string, string> = {
-    KARDIOLOG: "Kardiolog",
-    DERMATOLOG: "Dermatolog",
-    NEUROLOG: "Neurolog",
-    OKULISTA: "Okulista",
-    ORTOPEDA: "Ortopeda",
-    CHIRURG: "Chirurg",
-    PEDIATRA: "Pediatra",
-  };
-  return mapping[specialization] || specialization;
+  return SPECIALIZATIONS[specialization] || specialization;
 };
 
 const DoctorDisplay = ({ dataArray, setDataArray }: DoctorDisplayProps) => {
   const navigate = useNavigate();
   const deleteDoctor = async (id: number) => {
-    await callDeleteDoctor(id)
+    await callDeleteDoctor(id);
     setDataArray(
       dataArray.filter((doctor: { id: number }) => doctor.id !== id)
     );
@@ -55,12 +47,11 @@ const DoctorDisplay = ({ dataArray, setDataArray }: DoctorDisplayProps) => {
   const fetchDoctors = async () => {
     try {
       const response = await callGetDoctors();
-      
-      setDataArray(response.data); 
+
+      setDataArray(response.data);
     } catch (err) {
       console.error("Error fetching doctors:", err);
     }
-
   };
 
   useEffect(() => {

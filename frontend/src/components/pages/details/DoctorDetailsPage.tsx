@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/table";
 import styled from "styled-components";
 import { callGetDoctorById } from "@/api/doctor_calls";
+import { SPECIALIZATIONS } from "@/constants/specializations";
 
 const TableStyled = styled(Table)`
   justify-content: center;
@@ -24,16 +25,7 @@ const TableStyled = styled(Table)`
 `;
 
 const formatSpecialization = (specialization: string): string => {
-  const mapping: Record<string, string> = {
-    KARDIOLOG: "Kardiolog",
-    DERMATOLOG: "Dermatolog",
-    NEUROLOG: "Neurolog",
-    OKULISTA: "Okulista",
-    ORTOPEDA: "Ortopeda",
-    CHIRURG: "Chirurg",
-    PEDIATRA: "Pediatra",
-  };
-  return mapping[specialization] || specialization;
+  return SPECIALIZATIONS[specialization] || specialization;
 };
 
 const DoctorDetailsPage = () => {
@@ -48,15 +40,12 @@ const DoctorDetailsPage = () => {
   });
 
   const getDetails = async () => {
-    try 
-    {
+    try {
       const response = await callGetDoctorById(Number(idValue));
 
       setDoctor(response.data);
-    }
-    catch (err) 
-    {
-        console.error("Error fetching doctors:", err);
+    } catch (err) {
+      console.error("Error fetching doctors:", err);
     }
   };
   useEffect(() => {

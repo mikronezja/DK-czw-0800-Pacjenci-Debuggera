@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import axios from "axios";
 import type { Doctor } from "@/types/doctor";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -12,6 +11,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { callAddDoctor } from "@/api/doctor_calls";
 
 interface DoctorDisplayProps {
   dataArray: Array<Doctor>;
@@ -40,19 +40,17 @@ const NewDoctorPanel = ({
     address: "",
   });
 
-  const saveDoctor = (e: React.SyntheticEvent) => {
+  const addDoctor = async (e: React.SyntheticEvent) => {
     e.preventDefault();
 
-    axios
-      .post("http://localhost:8080/doctors/add", formData)
-      .then((res) => {
-        console.log("Doctor saved:", res.data);
-        setDataArray([...dataArray, { ...formData, id: res.data.id }]);
-      })
-      .catch((err) => {
-        console.log(formData);
-        console.error("Error saving doctor:", err);
-      });
+    try {
+      const response = await callAddDoctor(formData);
+
+      setDataArray([...dataArray, { ...formData, id: response.data.id }]);
+    } catch (err) {
+      console.log(err);
+    }
+
     setAddDoctorOpen(false);
   };
   const deleteDoctor = () => {
@@ -131,7 +129,7 @@ const NewDoctorPanel = ({
         />
       </Label>
 
-      <Button variant="outline" size="sm" onClick={saveDoctor}>
+      <Button variant="outline" size="sm" onClick={addDoctor}>
         Zapisz
       </Button>
       <Button variant="outline" size="sm" onClick={deleteDoctor}>

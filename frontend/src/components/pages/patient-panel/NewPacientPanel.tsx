@@ -35,12 +35,10 @@ const NewPacientPanel = ({
     e.preventDefault();
 
     try {
-      const response = await callAddPatient()
+      const response = await callAddPatient(formData);
 
       setDataArray([...dataArray, { ...formData, id: response.data.id }]);
-    }
-    catch (err)
-    {
+    } catch (err) {
       console.log(err);
     }
 

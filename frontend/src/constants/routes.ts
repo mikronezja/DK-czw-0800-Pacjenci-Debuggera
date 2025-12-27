@@ -2,8 +2,9 @@ export const HOME_ROUTE = "/";
 
 export const DOCTOR_PANEL_ROUTE = "/doctor-panel";
 export const OFFICE_PANEL_ROUTE = "/office-panel";
-export const SHIFT_PANEL_ROUTE = "/shift-panel";
 export const PATIENT_PANEL_ROUTE = "/patient-panel";
+export const DOCTOR_SHIFT_PANEL_ROUTE = DOCTOR_PANEL_ROUTE + "/shift";
+export const OFFICE_SHIFT_PANEL_ROUTE = OFFICE_PANEL_ROUTE + "/shift";
 
 export const DOCTOR_DETAILS_ROUTE = "/details/doctor";
 export const PATIENT_DETAILS_ROUTE = "/details/patient";
@@ -15,5 +16,4 @@ export const ROUTES = {
   "Panel lekarza": DOCTOR_PANEL_ROUTE,
   "Panel pacjenta": PATIENT_PANEL_ROUTE,
   "Panel gabinetów": OFFICE_PANEL_ROUTE,
-  "Panel dyżurów": SHIFT_PANEL_ROUTE,
 };
