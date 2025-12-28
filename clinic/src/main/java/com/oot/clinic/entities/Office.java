@@ -19,7 +19,7 @@ public class Office {
     private List<Shift> shifts = new ArrayList<>();
 
 
-    // GETTERS
+    // GETTERS AND SETTERS
 
     public Long getId() {
         return id;
@@ -31,5 +31,12 @@ public class Office {
 
     public List<Shift>  getShifts() {
         return shifts;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+    public void setRoomNumber(int roomNumber) {
+        this.roomNumber = roomNumber;
     }
 }
