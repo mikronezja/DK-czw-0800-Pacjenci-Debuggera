@@ -40,6 +40,7 @@ const PatientDetailsPage = () => {
           <TableRow>
             <TableHead>Imię</TableHead>
             <TableHead className="w-[100px]">Nazwisko</TableHead>
+            <TableHead>PESEL</TableHead>
             <TableHead>Adres</TableHead>
           </TableRow>
         </TableHeader>
@@ -47,6 +48,7 @@ const PatientDetailsPage = () => {
           <TableRow>
             <TableCell>{pacient.name}</TableCell>
             <TableCell>{pacient.surname}</TableCell>
+            <TableCell>{pacient.pesel}</TableCell>
             <TableCell>{pacient.address}</TableCell>
           </TableRow>
         </TableBody>

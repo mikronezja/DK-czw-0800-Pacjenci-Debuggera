@@ -20,6 +20,8 @@ const NewPacientPanel = ({
   const [formData, setFormData] = useState({
     name: "",
     surname: "",
+    pesel: "",
+    address: "",
   });
 
   const addPacient = async (e: React.SyntheticEvent) => {
@@ -39,6 +41,8 @@ const NewPacientPanel = ({
     setFormData({
       name: "",
       surname: "",
+      pesel: "",
+      address: "",
     });
     setAddPacientOpen(false);
   };
@@ -61,6 +65,24 @@ const NewPacientPanel = ({
           value={formData.surname}
           onChange={(e) => {
             setFormData({ ...formData, surname: e.target.value });
+          }}
+        />
+      </Label>
+      <Label style={{ display: "flex", flexDirection: "column" }}>
+        PESEL:
+        <Textarea
+          value={formData.pesel}
+          onChange={(e) => {
+            setFormData({ ...formData, pesel: e.target.value });
+          }}
+        />
+      </Label>
+      <Label style={{ display: "flex", flexDirection: "column" }}>
+        Adres:
+        <Textarea
+          value={formData.address}
+          onChange={(e) => {
+            setFormData({ ...formData, address: e.target.value });
           }}
         />
       </Label>
