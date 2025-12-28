@@ -1,19 +1,11 @@
 import React, { useState } from "react";
-import axios from "axios";
-import type { Doctor } from "@/types/doctor";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import styled from "styled-components";
 import { Label } from "@/components/ui/label";
 import type { Pacient } from "@/types/pacient";
+import { callAddPatient } from "@/api/patient_calls";
+import { FormStyled } from "@/styles/styledcomponent";
 
-const FormStyled = styled.form`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  gap: 10px;
-`;
 interface PacientDisplayProps {
   dataArray: Array<Pacient>;
   setDataArray: React.Dispatch<React.SetStateAction<Array<Pacient>>>;
@@ -32,17 +24,17 @@ const NewPacientPanel = ({
     address: "",
   });
 
-  const savePacient = (e: React.SyntheticEvent) => {
+  const addPacient = async (e: React.SyntheticEvent) => {
     e.preventDefault();
 
-    axios
-      .post("http://localhost:8080/pacients/add", formData)
-      .then((res) => {
-        setDataArray([...dataArray, { ...formData, id: res.data.id }]);
-      })
-      .catch((err) => {
-        console.error("Error saving pacient:", err);
-      });
+    try {
+      const response = await callAddPatient(formData);
+
+      setDataArray([...dataArray, { ...formData, id: response.data.id }]);
+    } catch (err) {
+      console.log(err);
+    }
+
     setAddPacientOpen(false);
   };
   const deletePacient = () => {
@@ -77,7 +69,7 @@ const NewPacientPanel = ({
         />
       </Label>
       <Label style={{ display: "flex", flexDirection: "column" }}>
-        <div>PESEL:</div>
+        PESEL:
         <Textarea
           value={formData.pesel}
           onChange={(e) => {
@@ -85,10 +77,7 @@ const NewPacientPanel = ({
           }}
         />
       </Label>
-      <Label
-        className="text-left"
-        style={{ display: "flex", flexDirection: "column" }}
-      >
+      <Label style={{ display: "flex", flexDirection: "column" }}>
         Adres:
         <Textarea
           value={formData.address}
@@ -97,8 +86,7 @@ const NewPacientPanel = ({
           }}
         />
       </Label>
-
-      <Button variant="outline" size="sm" onClick={savePacient}>
+      <Button variant="outline" size="sm" onClick={addPacient}>
         Zapisz
       </Button>
       <Button variant="outline" size="sm" onClick={deletePacient}>

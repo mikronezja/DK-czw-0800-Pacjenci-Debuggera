@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { ROUTES } from "@/text/routes";
+import { ROUTES } from "@/constants/routes";
 import { DarkModeSwitch } from "./DarkModeSwitch";
 import {
   Select,

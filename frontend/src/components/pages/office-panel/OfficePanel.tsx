@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import type { Office } from "@/types/office";
 import styled from "styled-components";
@@ -12,7 +11,11 @@ import {
   ItemTitle,
 } from "@/components/ui/item";
 import NewOfficePanel from "./NewOfficePanel";
-import { OFFICE_DETAILS_ROUTE } from "@/text/routes";
+import {
+  OFFICE_DETAILS_ROUTE,
+  OFFICE_SHIFT_PANEL_ROUTE,
+} from "@/constants/routes";
+import { callDeleteOffice, callGetOffices } from "@/api/office_calls";
 
 const OfficePanelStyled = styled.div`
   display: flex;
@@ -37,27 +40,37 @@ const OfficePanel = () => {
   const [addOfficeOpen, setAddOfficeOpen] = useState(false);
   const [dataArray, setDataArray] = useState<Office[]>([]);
 
-  const getDetailsPage = (id: number) => {
+  const goToDetails = (id: number) => {
     navigate(`${OFFICE_DETAILS_ROUTE}/${id}`);
   };
 
-  const deleteOffice = (id: number) => {
-    axios
-      .delete(`http://localhost:8080/offices/${id}`)
-      .then((res) => {
-        setDataArray(
-          dataArray.filter((office: { id: number }) => office.id !== id)
-        );
-        console.log("office deleted!", res.data);
-      })
-      .catch((err) => console.error(err));
+  const goToShifts = (id: number) => {
+    navigate(`${OFFICE_SHIFT_PANEL_ROUTE}/${id}`);
+  };
+
+  const fetchOffices = async () => {
+    try {
+      const response = await callGetOffices();
+      setDataArray(response.data);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const deleteOffice = async (id: number) => {
+    try {
+      await callDeleteOffice(id);
+
+      setDataArray(
+        dataArray.filter((office: { id: number }) => office.id !== id)
+      );
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   useEffect(() => {
-    axios.get("http://localhost:8080/offices").then((response) => {
-      console.log("offices fetched:", response.data);
-      setDataArray(response.data);
-    });
+    fetchOffices();
   }, []);
 
   return (
@@ -88,9 +101,16 @@ const OfficePanel = () => {
                   variant="outline"
                   size="sm"
                   className="rounded-full w-8 h-8"
-                  onClick={() => getDetailsPage(id)}
+                  onClick={() => goToDetails(id)}
                 >
                   <Eye />
+                </Button>
+                <Button
+                  variant="outline"
+                  className="rounded-full"
+                  onClick={() => goToShifts(id)}
+                >
+                  Dodaj zmianę
                 </Button>
                 <Button
                   variant="outline"

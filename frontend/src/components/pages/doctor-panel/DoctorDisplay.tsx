@@ -1,5 +1,4 @@
 import React, { useEffect } from "react";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import type { Doctor } from "@/types/doctor";
 import {
@@ -14,7 +13,12 @@ import {
 import styled from "styled-components";
 import { Button } from "@/components/ui/button";
 import { Eye, X } from "lucide-react";
-import { DOCTOR_DETAILS_ROUTE } from "@/text/routes";
+import {
+  DOCTOR_DETAILS_ROUTE,
+  DOCTOR_SHIFT_PANEL_ROUTE,
+} from "@/constants/routes";
+import { callDeleteDoctor, callGetDoctors } from "@/api/doctor_calls";
+import { SPECIALIZATIONS } from "@/constants/specializations";
 
 interface DoctorDisplayProps {
   dataArray: Array<Doctor>;
@@ -27,47 +31,38 @@ const TableStyled = styled(Table)`
 `;
 
 const formatSpecialization = (specialization: string): string => {
-  const mapping: Record<string, string> = {
-    KARDIOLOG: "Kardiolog",
-    DERMATOLOG: "Dermatolog",
-    NEUROLOG: "Neurolog",
-    OKULISTA: "Okulista",
-    ORTOPEDA: "Ortopeda",
-    CHIRURG: "Chirurg",
-    PEDIATRA: "Pediatra",
-  };
-  return mapping[specialization] || specialization;
+  return SPECIALIZATIONS[specialization] || specialization;
 };
 
 const DoctorDisplay = ({ dataArray, setDataArray }: DoctorDisplayProps) => {
   const navigate = useNavigate();
-  const deleteDoctor = (id: number) => {
-    axios
-      .delete(`http://localhost:8080/doctors/${id}`)
-      .then((res) => {
-        console.log("worked!", res.data);
-      })
-      .catch((err) => console.error(err));
+  const deleteDoctor = async (id: number) => {
+    await callDeleteDoctor(id);
     setDataArray(
       dataArray.filter((doctor: { id: number }) => doctor.id !== id)
     );
   };
 
-  const getDetailsPage = (id: number) => {
+  const goToDetails = (id: number) => {
     navigate(`${DOCTOR_DETAILS_ROUTE}/${id}`);
   };
 
-  const fetchData = () => {
-    axios
-      .get("http://localhost:8080/doctors")
-      .then((res) => {
-        setDataArray(res.data);
-      })
-      .catch((err) => console.error(err));
+  const goToShifts = (id: number) => {
+    navigate(`${DOCTOR_SHIFT_PANEL_ROUTE}/${id}`);
+  };
+
+  const fetchDoctors = async () => {
+    try {
+      const response = await callGetDoctors();
+
+      setDataArray(response.data);
+    } catch (err) {
+      console.error("Error fetching doctors:", err);
+    }
   };
 
   useEffect(() => {
-    fetchData();
+    fetchDoctors();
   }, []);
 
   // map -> doctors for each doctor i can display
@@ -79,6 +74,7 @@ const DoctorDisplay = ({ dataArray, setDataArray }: DoctorDisplayProps) => {
           <TableHead>Imię</TableHead>
           <TableHead className="w-[100px]">Nazwisko</TableHead>
           <TableHead className="text-right">Specjalizacja</TableHead>
+          <TableHead className="text-right"></TableHead>
           <TableHead className="text-right"></TableHead>
           <TableHead className="text-right"></TableHead>
         </TableRow>
@@ -96,9 +92,18 @@ const DoctorDisplay = ({ dataArray, setDataArray }: DoctorDisplayProps) => {
                 variant="outline"
                 size="sm"
                 className="rounded-full w-8 h-8"
-                onClick={() => getDetailsPage(id)}
+                onClick={() => goToDetails(id)}
               >
                 <Eye />
+              </Button>
+            </TableCell>
+            <TableCell className="text-right">
+              <Button
+                variant="outline"
+                className="rounded-full"
+                onClick={() => goToShifts(id)}
+              >
+                Dodaj zmianę
               </Button>
             </TableCell>
             <TableCell className="text-right">

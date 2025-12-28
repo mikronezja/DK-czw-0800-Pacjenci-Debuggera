@@ -1,41 +1,19 @@
-import React, { useEffect, useState } from "react";
-import axios from "axios";
+import { useEffect, useState } from "react";
 import type { Doctor } from "@/types/doctor";
 import { useParams } from "react-router-dom";
 import {
-  Table,
   TableBody,
-  TableCaption,
   TableCell,
-  TableFooter,
   TableHead,
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import styled from "styled-components";
-
-const TableStyled = styled(Table)`
-  justify-content: center;
-  align-items: center;
-  display: flex;
-  flex-direction: column;
-  padding: 30px;
-  margin: 30px auto;
-  min-width: 400px;
-  width: auto;
-`;
+import { callGetDoctorById } from "@/api/doctor_calls";
+import { SPECIALIZATIONS } from "@/constants/specializations";
+import { TableDetailsStyled } from "@/styles/styledcomponent";
 
 const formatSpecialization = (specialization: string): string => {
-  const mapping: Record<string, string> = {
-    KARDIOLOG: "Kardiolog",
-    DERMATOLOG: "Dermatolog",
-    NEUROLOG: "Neurolog",
-    OKULISTA: "Okulista",
-    ORTOPEDA: "Ortopeda",
-    CHIRURG: "Chirurg",
-    PEDIATRA: "Pediatra",
-  };
-  return mapping[specialization] || specialization;
+  return SPECIALIZATIONS[specialization] || specialization;
 };
 
 const DoctorDetailsPage = () => {
@@ -49,48 +27,21 @@ const DoctorDetailsPage = () => {
     address: "",
   });
 
-  const getDetails = () => {
-    if (!idValue) {
-      alert("Brak ID lekarza!");
-      return;
-    }
-    
-    const id = Number(idValue);
-    if (isNaN(id) || id <= 0) {
-      alert("Nieprawidłowe ID lekarza!");
-      return;
-    }
+  const getDetails = async () => {
+    try {
+      const response = await callGetDoctorById(Number(idValue));
 
-    axios
-      .get(`http://localhost:8080/doctors/${id}`, { timeout: 10000 })
-      .then((res: any) => {
-        if (res.data) {
-          setDoctor(res.data);
-        } else {
-          alert("Lekarz nie został znaleziony!");
-        }
-      })
-      .catch((err: any) => {
-        console.error(err);
-        if (err.response?.status === 404) {
-          alert("Lekarz nie został znaleziony!");
-        } else if (err.code === 'ECONNABORTED' || err.message?.includes('timeout')) {
-          alert("Timeout - serwer nie odpowiada!");
-        } else if (err.code === 'ERR_NETWORK' || err.message?.includes('Network Error')) {
-          alert("Błąd połączenia z serwerem!");
-        } else {
-          alert("Błąd podczas pobierania danych lekarza!");
-        }
-      });
+      setDoctor(response.data);
+    } catch (err) {
+      console.error("Error fetching doctors:", err);
+    }
   };
-  
   useEffect(() => {
     getDetails();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [idValue]);
+  }, []);
 
   return (
-    <TableStyled>
+    <TableDetailsStyled>
       <div>
         <TableHeader>
           <TableRow>
@@ -109,7 +60,7 @@ const DoctorDetailsPage = () => {
           </TableRow>
         </TableBody>
       </div>
-    </TableStyled>
+    </TableDetailsStyled>
   );
 };
 
