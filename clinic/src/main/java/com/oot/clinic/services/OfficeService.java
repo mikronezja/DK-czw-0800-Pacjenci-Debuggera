@@ -19,9 +19,14 @@ public class OfficeService {
     /**
      * Adds a new office to the database
      * @param office the Office object that's being added
-     * @throws RuntimeException if room number already exists
+     * @throws RuntimeException if room number already exists or is invalid
      */
     public Office addOffice(Office office) {
+        // Validate room number
+        if (office.getRoomNumber() <= 0) {
+            throw new RuntimeException("Room number must be greater than 0");
+        }
+        
         // Check for duplicate room number
         Optional<Office> existing = officeRepository.findByRoomNumber(office.getRoomNumber());
         if (existing.isPresent() && !existing.get().getId().equals(office.getId())) {

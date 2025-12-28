@@ -23,24 +23,37 @@ public class PatientService {
      * @throws RuntimeException if PESEL already exists or fields are too long
      */
     public Patient addPatient(Patient patient) {
+        // Validate required fields
+        if (patient.getName() == null || patient.getName().trim().isEmpty()) {
+            throw new RuntimeException("Name is required");
+        }
+        if (patient.getSurname() == null || patient.getSurname().trim().isEmpty()) {
+            throw new RuntimeException("Surname is required");
+        }
+        
         // Trim whitespace
-        if (patient.getName() != null) patient.setName(patient.getName().trim());
-        if (patient.getSurname() != null) patient.setSurname(patient.getSurname().trim());
+        patient.setName(patient.getName().trim());
+        patient.setSurname(patient.getSurname().trim());
         if (patient.getAddress() != null) patient.setAddress(patient.getAddress().trim());
         if (patient.getPesel() != null) patient.setPesel(patient.getPesel().trim());
         
         // Validate field lengths
-        if (patient.getName() != null && patient.getName().length() > 100) {
+        if (patient.getName().length() > 100) {
             throw new RuntimeException("Name is too long (max 100 characters)");
         }
-        if (patient.getSurname() != null && patient.getSurname().length() > 100) {
+        if (patient.getSurname().length() > 100) {
             throw new RuntimeException("Surname is too long (max 100 characters)");
         }
         if (patient.getAddress() != null && patient.getAddress().length() > 200) {
             throw new RuntimeException("Address is too long (max 200 characters)");
         }
-        if (patient.getPesel() != null && patient.getPesel().length() > 11) {
-            throw new RuntimeException("PESEL is too long (max 11 characters)");
+        if (patient.getPesel() != null && !patient.getPesel().isEmpty()) {
+            if (patient.getPesel().length() != 11) {
+                throw new RuntimeException("PESEL must be exactly 11 characters");
+            }
+            if (!patient.getPesel().matches("\\d+")) {
+                throw new RuntimeException("PESEL must contain only digits");
+            }
         }
         
         // Check for duplicate PESEL

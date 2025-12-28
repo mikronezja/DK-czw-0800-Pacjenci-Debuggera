@@ -33,21 +33,61 @@ const NewPacientPanel = ({
     address: "",
   });
 
+  const validatePESEL = (pesel: string): boolean => {
+    if (!pesel || pesel.trim().length === 0) {
+      return true; // PESEL is optional
+    }
+    const trimmed = pesel.trim();
+    if (trimmed.length !== 11) {
+      return false;
+    }
+    if (!/^\d+$/.test(trimmed)) {
+      return false;
+    }
+    return true;
+  };
+
   const savePacient = (e: React.SyntheticEvent) => {
     e.preventDefault();
 
-    if (!formData.name.trim() || !formData.surname.trim()) {
+    const trimmedName = formData.name.trim();
+    const trimmedSurname = formData.surname.trim();
+    const trimmedPesel = formData.pesel.trim();
+    const trimmedAddress = formData.address.trim();
+
+    // Validate required fields
+    if (!trimmedName || !trimmedSurname) {
       alert("Imię i nazwisko są wymagane!");
+      return;
+    }
+
+    // Validate field lengths
+    if (trimmedName.length > 100) {
+      alert("Imię jest zbyt długie (maksymalnie 100 znaków)!");
+      return;
+    }
+    if (trimmedSurname.length > 100) {
+      alert("Nazwisko jest zbyt długie (maksymalnie 100 znaków)!");
+      return;
+    }
+    if (trimmedAddress.length > 200) {
+      alert("Adres jest zbyt długi (maksymalnie 200 znaków)!");
+      return;
+    }
+
+    // Validate PESEL format
+    if (!validatePESEL(trimmedPesel)) {
+      alert("PESEL musi składać się z dokładnie 11 cyfr!");
       return;
     }
 
     // Trim data before sending
     const trimmedData = {
       ...formData,
-      name: formData.name.trim(),
-      surname: formData.surname.trim(),
-      pesel: formData.pesel.trim(),
-      address: formData.address.trim(),
+      name: trimmedName,
+      surname: trimmedSurname,
+      pesel: trimmedPesel,
+      address: trimmedAddress,
     };
     
     axios

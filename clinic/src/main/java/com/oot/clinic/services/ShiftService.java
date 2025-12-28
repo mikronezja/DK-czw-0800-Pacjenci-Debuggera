@@ -46,6 +46,23 @@ public class ShiftService {
      * @throws RuntimeException if there is no Doctor or no Office by their id, or if startTime >= endTime
      */
     public ShiftResponseDTO createShift(Long doctorId, Long officeId, DayOfWeek dayOfWeek, LocalTime startTime, LocalTime endTime) {
+        // Validate required fields
+        if (doctorId == null) {
+            throw new RuntimeException("Doctor ID is required");
+        }
+        if (officeId == null) {
+            throw new RuntimeException("Office ID is required");
+        }
+        if (dayOfWeek == null) {
+            throw new RuntimeException("Day of week is required");
+        }
+        if (startTime == null) {
+            throw new RuntimeException("Start time is required");
+        }
+        if (endTime == null) {
+            throw new RuntimeException("End time is required");
+        }
+        
         if (startTime.isAfter(endTime) || startTime.equals(endTime)) {
             throw new RuntimeException("Start time must be before end time.");
         }
@@ -53,24 +70,29 @@ public class ShiftService {
         Doctor doctor =  doctorRepository.findById(doctorId).orElseThrow(() ->  new RuntimeException("Doctor does not exist."));
         Office office = officeRepository.findById(officeId).orElseThrow(() -> new RuntimeException("Office does not exist."));
         
-        // Check for overlapping shifts
+        // Check for overlapping shifts for the doctor
         List<Shift> existingDoctorShifts = shiftRepository.findAll().stream()
                 .filter(s -> s.getDoctor().getId().equals(doctorId) && s.getDayOfWeek().equals(dayOfWeek))
                 .toList();
         
         for (Shift existingShift : existingDoctorShifts) {
             if (isTimeOverlapping(startTime, endTime, existingShift.getStartTime(), existingShift.getEndTime())) {
-                throw new RuntimeException("Doctor already has a shift at this time on " + dayOfWeek);
+                throw new RuntimeException("Doctor already has a shift at this time on " + dayOfWeek + 
+                        " (existing: " + existingShift.getStartTime() + "-" + existingShift.getEndTime() + 
+                        ", new: " + startTime + "-" + endTime + ")");
             }
         }
         
+        // Check for overlapping shifts for the office
         List<Shift> existingOfficeShifts = shiftRepository.findAll().stream()
                 .filter(s -> s.getOffice().getId().equals(officeId) && s.getDayOfWeek().equals(dayOfWeek))
                 .toList();
         
         for (Shift existingShift : existingOfficeShifts) {
             if (isTimeOverlapping(startTime, endTime, existingShift.getStartTime(), existingShift.getEndTime())) {
-                throw new RuntimeException("Office already has a shift at this time on " + dayOfWeek);
+                throw new RuntimeException("Office already has a shift at this time on " + dayOfWeek + 
+                        " (existing: " + existingShift.getStartTime() + "-" + existingShift.getEndTime() + 
+                        ", new: " + startTime + "-" + endTime + ")");
             }
         }
         
@@ -78,7 +100,23 @@ public class ShiftService {
         return new ShiftResponseDTO(shift);
     }
     
+    /**
+     * Checks if two time intervals overlap.
+     * Two intervals overlap if they share any common time point.
+     * 
+     * @param start1 Start time of first interval
+     * @param end1 End time of first interval
+     * @param start2 Start time of second interval
+     * @param end2 End time of second interval
+     * @return true if intervals overlap, false otherwise
+     */
     private boolean isTimeOverlapping(LocalTime start1, LocalTime end1, LocalTime start2, LocalTime end2) {
+        // Two intervals overlap if: start1 < end2 AND start2 < end1
+        // This covers all cases:
+        // - Partial overlap: [8-12] and [10-14] -> overlap
+        // - One contains another: [8-16] and [10-14] -> overlap
+        // - Exact same time: [8-12] and [8-12] -> overlap
+        // - Adjacent (touching): [8-12] and [12-16] -> NO overlap (start2 == end1, so start2.isBefore(end1) is false)
         return start1.isBefore(end2) && start2.isBefore(end1);
     }
 
@@ -105,6 +143,26 @@ public class ShiftService {
      * @throws Exception if Doctor/Shift/Office doesn't exist, or if startTime >= endTime
      */
     public Shift editShift(Long id, Long doctorId, Long officeId, DayOfWeek dayOfWeek, LocalTime startTime, LocalTime endTime) throws Exception {
+        // Validate required fields
+        if (id == null) {
+            throw new RuntimeException("Shift ID is required");
+        }
+        if (doctorId == null) {
+            throw new RuntimeException("Doctor ID is required");
+        }
+        if (officeId == null) {
+            throw new RuntimeException("Office ID is required");
+        }
+        if (dayOfWeek == null) {
+            throw new RuntimeException("Day of week is required");
+        }
+        if (startTime == null) {
+            throw new RuntimeException("Start time is required");
+        }
+        if (endTime == null) {
+            throw new RuntimeException("End time is required");
+        }
+        
         if (startTime.isAfter(endTime) || startTime.equals(endTime)) {
             throw new RuntimeException("Start time must be before end time.");
         }
@@ -113,7 +171,7 @@ public class ShiftService {
         Doctor doctor =  doctorRepository.findById(doctorId).orElseThrow(() ->  new RuntimeException("Doctor does not exist."));
         Office office = officeRepository.findById(officeId).orElseThrow(() -> new RuntimeException("Office does not exist."));
 
-        // Check for overlapping shifts (excluding current shift)
+        // Check for overlapping shifts for the doctor (excluding current shift)
         List<Shift> existingDoctorShifts = shiftRepository.findAll().stream()
                 .filter(s -> s.getDoctor().getId().equals(doctorId) 
                         && s.getDayOfWeek().equals(dayOfWeek)
@@ -122,10 +180,13 @@ public class ShiftService {
         
         for (Shift existingShift : existingDoctorShifts) {
             if (isTimeOverlapping(startTime, endTime, existingShift.getStartTime(), existingShift.getEndTime())) {
-                throw new RuntimeException("Doctor already has a shift at this time on " + dayOfWeek);
+                throw new RuntimeException("Doctor already has a shift at this time on " + dayOfWeek + 
+                        " (existing: " + existingShift.getStartTime() + "-" + existingShift.getEndTime() + 
+                        ", new: " + startTime + "-" + endTime + ")");
             }
         }
         
+        // Check for overlapping shifts for the office (excluding current shift)
         List<Shift> existingOfficeShifts = shiftRepository.findAll().stream()
                 .filter(s -> s.getOffice().getId().equals(officeId) 
                         && s.getDayOfWeek().equals(dayOfWeek)
@@ -134,7 +195,9 @@ public class ShiftService {
         
         for (Shift existingShift : existingOfficeShifts) {
             if (isTimeOverlapping(startTime, endTime, existingShift.getStartTime(), existingShift.getEndTime())) {
-                throw new RuntimeException("Office already has a shift at this time on " + dayOfWeek);
+                throw new RuntimeException("Office already has a shift at this time on " + dayOfWeek + 
+                        " (existing: " + existingShift.getStartTime() + "-" + existingShift.getEndTime() + 
+                        ", new: " + startTime + "-" + endTime + ")");
             }
         }
 
