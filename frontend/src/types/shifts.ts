@@ -6,16 +6,6 @@ export interface Shift {
   doctorId: number | undefined;
   officeId: number | undefined;
   dayOfWeek: DayOfWeekType;
-  startTime: {
-    hour: number;
-    // minute: number;
-    // second: number;
-    // nano: number;
-  };
-  endTime: {
-    hour: number;
-    // minute: number;
-    // second: number;
-    // nano: number;
-  };
+  startTime: string;
+  endTime: string;
 }

@@ -1,8 +1,6 @@
 import { Route, Routes } from "react-router-dom";
 import Home from "./components/pages/Home";
 import Navbar from "./components/navbar/Navbar";
-import { Switch } from "./components/ui/switch";
-import { useState } from "react";
 import DoctorPanel from "./components/pages/doctor-panel/DoctorPanel";
 import {
   DOCTOR_DETAILS_ROUTE,
@@ -19,15 +17,15 @@ import PatientPanel from "./components/pages/patient-panel/PatientPanel";
 import DoctorDetailsPage from "./components/pages/details/DoctorDetailsPage";
 import PatientDetailsPage from "./components/pages/details/PatientDetailsPage";
 import OfficePanel from "./components/pages/office-panel/OfficePanel";
-import ShiftPanel from "./components/pages/shift-panel/ShiftDoctorPanel";
 import OfficeDetailsPage from "./components/pages/details/OfficeDetailsPage";
 import ShiftDoctorPanel from "./components/pages/shift-panel/ShiftDoctorPanel";
 import ShiftOfficePanel from "./components/pages/shift-panel/ShiftOfficePanel";
+import { Toaster } from "sonner";
 
 function App() {
-  const [checked, setChecked] = useState(false);
   return (
     <>
+      <Toaster />
       <Navbar />
       <Routes>
         <Route path={HOME_ROUTE} element={<Home />} />

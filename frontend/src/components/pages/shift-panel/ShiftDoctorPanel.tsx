@@ -1,8 +1,10 @@
 import { callGetDoctorById } from "@/api/doctor_calls";
 import { callGetOffices } from "@/api/office_calls";
 import { callAddShift } from "@/api/shift_calls";
+import { Button } from "@/components/ui/button";
 import { Field, FieldLabel } from "@/components/ui/field";
 import { Select, SelectContent, SelectItem } from "@/components/ui/select";
+import TimePicker from "@/components/utils/TimePicker";
 import { WEEK_DAYS } from "@/constants/weekdays";
 import { FormStyled, SelectTriggerStyled } from "@/styles/styledcomponent";
 import type { Office } from "@/types/office";
@@ -11,6 +13,7 @@ import { SelectValue } from "@radix-ui/react-select";
 import { ChevronDown } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import { toast } from "sonner";
 import styled from "styled-components";
 
 const FormBorder = styled(FormStyled)`
@@ -20,32 +23,42 @@ const FormBorder = styled(FormStyled)`
   border: 1px solid #e0e0e0;
   min-width: 250px;
   overflow-y: auto;
-  gap: 25px;
+  min-height: 0;
   max-height: 400px;
 `;
 
+const ShiftTime = styled.div`
+  display: flex;
+  gap: 15px;
+  align-items: center;
+`;
+
+const Layout = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  gap: 10px;
+`;
+
 const ShiftDoctorPanel = () => {
-  const { idValue } = useParams(); // doctor id
+  const { idValue } = useParams();
   const [doctor, setDoctor] = useState({
     name: "",
     surname: "",
   });
   const [offices, setOffices] = useState<Office[]>([]);
-  const [office, setOffice] = useState({
-    roomNumber: -1,
-  });
-  const [weekDay, setWeekDay] = useState<DayOfWeekType>("MONDAY");
+  const [startTime, setStartTime] = useState<number>(1);
+  const [endTime, setEndTime] = useState<number>(2);
   const [data, setData] = useState<Shift>({
     doctorId: Number(idValue),
     officeId: undefined,
     dayOfWeek: "MONDAY",
-    startTime: {
-      hour: 1,
-    },
-    endTime: {
-      hour: 2,
-    },
+    startTime: "01:00",
+    endTime: "02:00",
   });
+
+  const formatHour = (h: number) => h.toString().padStart(2, "0") + ":00";
 
   const fetchDoctor = async () => {
     try {
@@ -70,12 +83,24 @@ const ShiftDoctorPanel = () => {
   const addShift = async () => {
     try {
       await callAddShift(data);
+      console.log("udało sie dodać zmiane");
+      toast.success("Zmiana została dodana");
     } catch (err: any) {
       if (err.response.status == 400) {
-        // cannot add shift
+        toast.error("Nie można było dodać zmiany");
       }
       console.log(err);
     }
+  };
+
+  const deleteShift = async () => {
+    setData({
+      doctorId: Number(idValue),
+      officeId: undefined,
+      dayOfWeek: "MONDAY",
+      startTime: "01:00",
+      endTime: "02:00",
+    });
   };
 
   useEffect(() => {
@@ -84,36 +109,45 @@ const ShiftDoctorPanel = () => {
   }, []);
 
   return (
-    <FormStyled>
+    <Layout>
       <div style={{ marginTop: "10px" }}>
         {doctor.name} {doctor.surname}
       </div>
       <FormBorder>
         <Field>
-          <FieldLabel>Rozpoczęcie zmiany</FieldLabel>
-          <Select>
-            <SelectTriggerStyled className="w-[180px]">
-              <SelectValue placeholder="Godzina" />
-              <ChevronDown />
-            </SelectTriggerStyled>
-          </Select>
-        </Field>
-        <Field>
-          <FieldLabel>Zakończenie zmiany</FieldLabel>
-          <Select>
-            <SelectTriggerStyled className="w-[180px]">
-              <SelectValue placeholder="Godzina" />
-              <ChevronDown />
-            </SelectTriggerStyled>
-          </Select>
+          <FieldLabel>Czas zmiany</FieldLabel>
+          <ShiftTime>
+            <TimePicker
+              placeholder="Start"
+              time={startTime}
+              setTime={setStartTime}
+              onChange={() => {
+                setData((prev) => ({
+                  ...prev,
+                  startTime: formatHour(startTime) ?? prev.startTime,
+                }));
+              }}
+            />
+            -
+            <TimePicker
+              placeholder="Koniec"
+              time={endTime}
+              setTime={setEndTime}
+              onChange={() => {
+                setData((prev) => ({
+                  ...prev,
+                  endTime: formatHour(endTime) ?? prev.endTime,
+                }));
+              }}
+            />
+          </ShiftTime>
         </Field>
         <Field>
           <FieldLabel>Dzień tygodnia</FieldLabel>
           <Select
-            value={weekDay}
+            value={data.dayOfWeek}
             onValueChange={(value) => {
               const day = value as DayOfWeekType;
-              setWeekDay(day);
               setData({ ...data, dayOfWeek: day });
             }}
           >
@@ -133,9 +167,9 @@ const ShiftDoctorPanel = () => {
         <Field>
           <FieldLabel>Gabinet</FieldLabel>
           <Select
-            value={office.roomNumber.toString()}
+            value={data.officeId?.toString()}
             onValueChange={(val) => {
-              setOffice({ roomNumber: Number(val) });
+              setData({ ...data, officeId: Number(val) });
             }}
           >
             <SelectTriggerStyled className="w-[180px]">
@@ -143,16 +177,36 @@ const ShiftDoctorPanel = () => {
               <ChevronDown />
             </SelectTriggerStyled>
             <SelectContent>
-              {offices.map(({ roomNumber }, key) => (
-                <SelectItem value={roomNumber.toString()} key={key}>
+              {offices.map(({ roomNumber, id }, key) => (
+                <SelectItem value={id.toString()} key={key}>
                   {roomNumber.toString()}
                 </SelectItem>
               ))}
             </SelectContent>
           </Select>
         </Field>
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={(e) => {
+            e.preventDefault();
+            addShift();
+          }}
+        >
+          Zapisz
+        </Button>
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={(e) => {
+            e.preventDefault();
+            deleteShift();
+          }}
+        >
+          Anuluj
+        </Button>
       </FormBorder>
-    </FormStyled>
+    </Layout>
   );
 };
 
