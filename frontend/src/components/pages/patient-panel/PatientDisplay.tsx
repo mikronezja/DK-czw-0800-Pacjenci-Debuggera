@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import type { Doctor } from "@/types/doctor";
+import type { Pacient } from "@/types/pacient";
 import {
   Table,
   TableBody,
@@ -14,11 +14,12 @@ import {
 import styled from "styled-components";
 import { Button } from "@/components/ui/button";
 import { Eye, X } from "lucide-react";
-import { DOCTOR_DETAILS_ROUTE } from "@/text/routes";
+import { PATIENT_DETAILS_ROUTE } from "@/text/routes";
+// import { PATIENT_DETAILS_ROUTE } from "@/text/navbar";
 
-interface DoctorDisplayProps {
-  dataArray: Array<Doctor>;
-  setDataArray: React.Dispatch<React.SetStateAction<Array<Doctor>>>;
+interface PacientDisplayProps {
+  dataArray: Array<Pacient>;
+  setDataArray: React.Dispatch<React.SetStateAction<Array<Pacient>>>;
 }
 
 const TableStyled = styled(Table)`
@@ -26,48 +27,34 @@ const TableStyled = styled(Table)`
   height: 100%;
 `;
 
-const formatSpecialization = (specialization: string): string => {
-  const mapping: Record<string, string> = {
-    KARDIOLOG: "Kardiolog",
-    DERMATOLOG: "Dermatolog",
-    NEUROLOG: "Neurolog",
-    OKULISTA: "Okulista",
-    ORTOPEDA: "Ortopeda",
-    CHIRURG: "Chirurg",
-    PEDIATRA: "Pediatra",
-  };
-  return mapping[specialization] || specialization;
-};
-
-const DoctorDisplay = ({ dataArray, setDataArray }: DoctorDisplayProps) => {
+const PatientDisplay = ({ dataArray, setDataArray }: PacientDisplayProps) => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
-  
-  const deleteDoctor = (id: number) => {
-    if (!window.confirm("Czy na pewno chcesz usunąć tego lekarza?")) {
+
+  const deletePacient = (id: number) => {
+    if (!window.confirm("Czy na pewno chcesz usunąć tego pacjenta?")) {
       return;
     }
     
     axios
-      .delete(`http://localhost:8080/doctors/${id}`)
+      .delete(`http://localhost:8080/patients/${id}`)
       .then(() => {
         fetchData();
       })
-      .catch((err: any) => {
+      .catch((err) => {
         console.error(err);
-        const errorMessage = err.response?.data || err.message || "Błąd podczas usuwania lekarza!";
-        alert(typeof errorMessage === 'string' ? errorMessage : "Błąd podczas usuwania lekarza!");
+        const errorMessage = err.response?.data || err.message || "Błąd podczas usuwania pacjenta!";
+        alert(typeof errorMessage === 'string' ? errorMessage : "Błąd podczas usuwania pacjenta!");
       });
   };
-
   const getDetailsPage = (id: number) => {
-    navigate(`${DOCTOR_DETAILS_ROUTE}/${id}`);
+    navigate(`${PATIENT_DETAILS_ROUTE}/${id}`);
   };
 
   const fetchData = () => {
     setLoading(true);
     axios
-      .get("http://localhost:8080/doctors", { timeout: 10000 })
+      .get("http://localhost:8080/patients", { timeout: 10000 })
       .then((res: any) => {
         if (res.data && Array.isArray(res.data)) {
           setDataArray(res.data);
@@ -84,7 +71,7 @@ const DoctorDisplay = ({ dataArray, setDataArray }: DoctorDisplayProps) => {
         } else if (err.code === 'ERR_NETWORK' || err.message.includes('Network Error')) {
           alert("Błąd połączenia z serwerem!");
         } else {
-          alert("Błąd podczas pobierania listy lekarzy!");
+          alert("Błąd podczas pobierania listy pacjentów!");
         }
         setDataArray([]);
       });
@@ -95,15 +82,13 @@ const DoctorDisplay = ({ dataArray, setDataArray }: DoctorDisplayProps) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // map -> doctors for each doctor i can display
   return (
     <TableStyled>
-      <TableCaption>Lista lekarzy</TableCaption>
+      <TableCaption>Lista pacjentów</TableCaption>
       <TableHeader>
         <TableRow>
           <TableHead>Imię</TableHead>
           <TableHead className="w-[100px]">Nazwisko</TableHead>
-          <TableHead className="text-right">Specjalizacja</TableHead>
           <TableHead className="text-right"></TableHead>
           <TableHead className="text-right"></TableHead>
         </TableRow>
@@ -111,25 +96,22 @@ const DoctorDisplay = ({ dataArray, setDataArray }: DoctorDisplayProps) => {
       <TableBody>
         {loading && (
           <TableRow>
-            <TableCell colSpan={5} style={{ textAlign: "center" }}>
+            <TableCell colSpan={4} style={{ textAlign: "center" }}>
               Ładowanie...
             </TableCell>
           </TableRow>
         )}
         {!loading && dataArray.length === 0 && (
           <TableRow>
-            <TableCell colSpan={5} style={{ textAlign: "center" }}>
-              Brak lekarzy w bazie
+            <TableCell colSpan={4} style={{ textAlign: "center" }}>
+              Brak pacjentów w bazie
             </TableCell>
           </TableRow>
         )}
-        {!loading && dataArray.map(({ name, surname, specialization, id }) => (
+        {!loading && dataArray.map(({ name, surname, id }) => (
           <TableRow key={id}>
             <TableCell>{name}</TableCell>
             <TableCell>{surname}</TableCell>
-            <TableCell className="text-right">
-              {formatSpecialization(specialization)}
-            </TableCell>
             <TableCell className="text-right">
               <Button
                 variant="outline"
@@ -145,7 +127,7 @@ const DoctorDisplay = ({ dataArray, setDataArray }: DoctorDisplayProps) => {
                 variant="outline"
                 size="sm"
                 className="rounded-full w-8 h-8"
-                onClick={() => deleteDoctor(id)}
+                onClick={() => deletePacient(id)}
               >
                 <X />
               </Button>
@@ -156,6 +138,5 @@ const DoctorDisplay = ({ dataArray, setDataArray }: DoctorDisplayProps) => {
     </TableStyled>
   );
 };
-// /doctors/id=5 <- get
-// /doctors/id=5 <- delete
-export default DoctorDisplay;
+
+export default PatientDisplay;

@@ -1,5 +1,10 @@
-package com.oot.clinic.doctor;
+package com.oot.clinic.controllers;
 
+import com.oot.clinic.DTOs.ShiftDoctorResponseDTO;
+import com.oot.clinic.entities.Doctor;
+import com.oot.clinic.DTOs.DoctorDTO;
+import com.oot.clinic.entities.Shift;
+import com.oot.clinic.services.DoctorService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -9,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collections;
 import java.util.List;
 
 @RestController
@@ -32,10 +38,16 @@ public class DoctorController {
                     content = @Content(schema = @Schema()))
     })
     @PostMapping("/add")
-    @ResponseStatus(HttpStatus.CREATED)
-    public Doctor addDoctor(@RequestBody Doctor doctor) {
-        return doctorService.addDoctor(doctor);
+    public ResponseEntity<?> addDoctor(@RequestBody Doctor doctor) {
+        try {
+            return ResponseEntity.status(HttpStatus.CREATED).body(doctorService.addDoctor(doctor));
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error creating doctor");
+        }
     }
+
 
     @Operation(summary = "Get all doctors", description = "Shows all doctors basic information")
     @ApiResponses(value = {
@@ -51,7 +63,8 @@ public class DoctorController {
         return doctorService.getDoctors();
     }
 
-    @Operation(summary = "Get doctor details", description = "Access doctors details by his id")
+
+    @Operation(summary = "Get doctor details", description = "Access doctor's details by his id")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200",
                     description = "Doctor details accessed successfully",
@@ -61,11 +74,14 @@ public class DoctorController {
                     content = @Content(schema = @Schema()))
     })
     @GetMapping("/{id}")
-    public ResponseEntity<Doctor> getDoctorById(@PathVariable Long id) {
-        return doctorService.getDoctorById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    public ResponseEntity<DoctorDTO> getDoctorById(@PathVariable Long id) {
+        try {
+            return ResponseEntity.ok(new DoctorDTO(doctorService.getDoctorById(id)));
+        } catch (Exception e) {
+            return ResponseEntity.notFound().build();
+        }
     }
+
 
     @Operation(summary = "Delete a doctor", description = "Delete a doctor from the system by id")
     @ApiResponses(value = {
@@ -76,10 +92,31 @@ public class DoctorController {
                     content = @Content(schema = @Schema()))
     })
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteDoctor(@PathVariable Long id) {
+    public ResponseEntity<?> deleteDoctor(@PathVariable Long id) {
         try {
             doctorService.deleteDoctorById(id);
             return ResponseEntity.noContent().build();
+        } catch (Exception e) {
+            if (e.getMessage().contains("shifts")) {
+                return ResponseEntity.badRequest().body(e.getMessage());
+            }
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+
+    @Operation(summary = "Get doctor's shifts", description = "Returns a list of all shifts assigned to a doctor")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200",
+                    description = "Shifts list accessed successfully"),
+            @ApiResponse(responseCode = "404",
+                    description = "Doctor not found",
+                    content = @Content(schema = @Schema()))
+    })
+    @GetMapping("/{id}/shifts")
+    public ResponseEntity<List<ShiftDoctorResponseDTO>> getDoctorShifts(@PathVariable Long id) {
+        try {
+            return ResponseEntity.ok(doctorService.getShifts(id));
         } catch (Exception e) {
             return ResponseEntity.notFound().build();
         }

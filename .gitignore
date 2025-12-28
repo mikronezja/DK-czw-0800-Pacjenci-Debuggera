@@ -1,0 +1,4 @@
+.DS_Store
+clinic/*.mv.db
+clinic/*.trace.db
+node_modules/

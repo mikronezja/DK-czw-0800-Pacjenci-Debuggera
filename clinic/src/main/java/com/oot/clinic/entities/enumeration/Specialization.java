@@ -1,4 +1,4 @@
-package com.oot.clinic.doctor;
+package com.oot.clinic.entities.enumeration;
 
 public enum Specialization {
     KARDIOLOG,

@@ -1,24 +1,10 @@
 import React, { useState } from "react";
 import axios from "axios";
-import type { Doctor } from "@/types/doctor";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import styled from "styled-components";
 import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-
-interface DoctorDisplayProps {
-  dataArray: Array<Doctor>;
-  setDataArray: React.Dispatch<React.SetStateAction<Array<Doctor>>>;
-  setAddDoctorOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  onDoctorAdded?: () => void;
-}
+import type { Pacient } from "@/types/pacient";
 
 const FormStyled = styled.form`
   display: flex;
@@ -27,26 +13,31 @@ const FormStyled = styled.form`
   flex-direction: column;
   gap: 10px;
 `;
+interface PacientDisplayProps {
+  dataArray: Array<Pacient>;
+  setDataArray: React.Dispatch<React.SetStateAction<Array<Pacient>>>;
+  setAddPacientOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  onPatientAdded?: () => void;
+}
 
-const NewDoctorPanel = ({
+const NewPacientPanel = ({
   dataArray,
   setDataArray,
-  setAddDoctorOpen,
-  onDoctorAdded,
-}: DoctorDisplayProps) => {
+  setAddPacientOpen,
+  onPatientAdded,
+}: PacientDisplayProps) => {
   const [formData, setFormData] = useState({
     name: "",
     surname: "",
     pesel: "",
-    specialization: "",
     address: "",
   });
 
-  const saveDoctor = (e: React.SyntheticEvent) => {
+  const savePacient = (e: React.SyntheticEvent) => {
     e.preventDefault();
 
-    if (!formData.name.trim() || !formData.surname.trim() || !formData.specialization) {
-      alert("Imię, nazwisko i specjalizacja są wymagane!");
+    if (!formData.name.trim() || !formData.surname.trim()) {
+      alert("Imię i nazwisko są wymagane!");
       return;
     }
 
@@ -60,31 +51,30 @@ const NewDoctorPanel = ({
     };
     
     axios
-      .post("http://localhost:8080/doctors/add", trimmedData, { timeout: 10000 })
+      .post("http://localhost:8080/patients/add", trimmedData, { timeout: 10000 })
       .then((res: any) => {
         if (res.data && res.data.id) {
           setDataArray([...dataArray, { ...trimmedData, id: res.data.id }]);
-          setAddDoctorOpen(false);
-          if (onDoctorAdded) {
-            onDoctorAdded();
+          setAddPacientOpen(false);
+          if (onPatientAdded) {
+            onPatientAdded();
           }
         }
       })
       .catch((err: any) => {
-        console.error("Error saving doctor:", err);
-        const errorMessage = err.response?.data || err.message || "Błąd podczas zapisywania lekarza!";
-        alert(typeof errorMessage === 'string' ? errorMessage : "Błąd podczas zapisywania lekarza!");
+        console.error("Error saving pacient:", err);
+        const errorMessage = err.response?.data || err.message || "Błąd podczas zapisywania pacjenta!";
+        alert(typeof errorMessage === 'string' ? errorMessage : "Błąd podczas zapisywania pacjenta!");
       });
   };
-  const deleteDoctor = () => {
+  const deletePacient = () => {
     setFormData({
       name: "",
       surname: "",
       pesel: "",
-      specialization: "",
       address: "",
     });
-    setAddDoctorOpen(false);
+    setAddPacientOpen(false);
   };
 
   return (
@@ -117,28 +107,6 @@ const NewDoctorPanel = ({
           }}
         />
       </Label>
-      <Label style={{ display: "flex", flexDirection: "column" }}>
-        Specjalizacja:
-        <Select
-          value={formData.specialization}
-          onValueChange={(value) => {
-            setFormData({ ...formData, specialization: value });
-          }}
-        >
-          <SelectTrigger>
-            <SelectValue placeholder="Wybierz specjalizację" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="KARDIOLOG">Kardiolog</SelectItem>
-            <SelectItem value="DERMATOLOG">Dermatolog</SelectItem>
-            <SelectItem value="NEUROLOG">Neurolog</SelectItem>
-            <SelectItem value="OKULISTA">Okulista</SelectItem>
-            <SelectItem value="ORTOPEDA">Ortopeda</SelectItem>
-            <SelectItem value="CHIRURG">Chirurg</SelectItem>
-            <SelectItem value="PEDIATRA">Pediatra</SelectItem>
-          </SelectContent>
-        </Select>
-      </Label>
       <Label
         className="text-left"
         style={{ display: "flex", flexDirection: "column" }}
@@ -152,14 +120,14 @@ const NewDoctorPanel = ({
         />
       </Label>
 
-      <Button variant="outline" size="sm" onClick={saveDoctor}>
+      <Button variant="outline" size="sm" onClick={savePacient}>
         Zapisz
       </Button>
-      <Button variant="outline" size="sm" onClick={deleteDoctor}>
+      <Button variant="outline" size="sm" onClick={deletePacient}>
         Anuluj
       </Button>
     </FormStyled>
   );
 };
 
-export default NewDoctorPanel;
+export default NewPacientPanel;
