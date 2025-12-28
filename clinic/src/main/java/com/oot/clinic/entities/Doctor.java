@@ -41,6 +41,10 @@ public class Doctor {
         return pesel;
     }
 
+    public void setPesel(String pesel) {
+        this.pesel = pesel;
+    }
+
     public List<Shift> getShifts() {
         return shifts;
     }
