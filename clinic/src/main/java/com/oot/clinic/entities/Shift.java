@@ -9,8 +9,6 @@ import java.time.LocalTime;
 @Table(
         uniqueConstraints = {
                 @UniqueConstraint(
-                columnNames = {"office_id", "day_of_week", "startTime", "endTime"}),
-                @UniqueConstraint(
                 columnNames = {"doctor_id", "day_of_week", "startTime", "endTime"})
         }
 )

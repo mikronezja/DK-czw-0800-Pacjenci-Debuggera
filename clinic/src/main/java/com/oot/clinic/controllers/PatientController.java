@@ -32,9 +32,14 @@ public class PatientController {
                     content = @Content(schema = @Schema()))
     })
     @PostMapping("/add")
-    @ResponseStatus(HttpStatus.CREATED)
-    public Patient addPatient(@RequestBody Patient patient) {
-        return patientService.addPatient(patient);
+    public ResponseEntity<?> addPatient(@RequestBody Patient patient) {
+        try {
+            return ResponseEntity.status(HttpStatus.CREATED).body(patientService.addPatient(patient));
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error creating patient");
+        }
     }
 
 

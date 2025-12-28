@@ -38,9 +38,14 @@ public class DoctorController {
                     content = @Content(schema = @Schema()))
     })
     @PostMapping("/add")
-    @ResponseStatus(HttpStatus.CREATED)
-    public Doctor addDoctor(@RequestBody Doctor doctor) {
-        return doctorService.addDoctor(doctor);
+    public ResponseEntity<?> addDoctor(@RequestBody Doctor doctor) {
+        try {
+            return ResponseEntity.status(HttpStatus.CREATED).body(doctorService.addDoctor(doctor));
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error creating doctor");
+        }
     }
 
 
@@ -69,8 +74,12 @@ public class DoctorController {
                     content = @Content(schema = @Schema()))
     })
     @GetMapping("/{id}")
-    public ResponseEntity<DoctorDTO> getDoctorById(@PathVariable Long id) { // Moze zmien na jakiegos nowego dtosa? Nie wiem czy chcemy tutaj shifty tez czy bez
-        return ResponseEntity.ok(new DoctorDTO(doctorService.getDoctorById(id)));
+    public ResponseEntity<DoctorDTO> getDoctorById(@PathVariable Long id) {
+        try {
+            return ResponseEntity.ok(new DoctorDTO(doctorService.getDoctorById(id)));
+        } catch (Exception e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
 
@@ -83,11 +92,14 @@ public class DoctorController {
                     content = @Content(schema = @Schema()))
     })
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteDoctor(@PathVariable Long id) {
+    public ResponseEntity<?> deleteDoctor(@PathVariable Long id) {
         try {
             doctorService.deleteDoctorById(id);
             return ResponseEntity.noContent().build();
         } catch (Exception e) {
+            if (e.getMessage().contains("shifts")) {
+                return ResponseEntity.badRequest().body(e.getMessage());
+            }
             return ResponseEntity.notFound().build();
         }
     }
@@ -102,8 +114,12 @@ public class DoctorController {
                     content = @Content(schema = @Schema()))
     })
     @GetMapping("/{id}/shifts")
-    public List<ShiftDoctorResponseDTO> getDoctorShifts(@PathVariable Long id) {// do dorobienia globalny exception handler
-        return doctorService.getShifts(id);
+    public ResponseEntity<List<ShiftDoctorResponseDTO>> getDoctorShifts(@PathVariable Long id) {
+        try {
+            return ResponseEntity.ok(doctorService.getShifts(id));
+        } catch (Exception e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 }
 

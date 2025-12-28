@@ -7,6 +7,7 @@ import com.oot.clinic.repositories.OfficeRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class OfficeService {
@@ -18,8 +19,20 @@ public class OfficeService {
     /**
      * Adds a new office to the database
      * @param office the Office object that's being added
+     * @throws RuntimeException if room number already exists or is invalid
      */
     public Office addOffice(Office office) {
+        // Validate room number
+        if (office.getRoomNumber() <= 0) {
+            throw new RuntimeException("Room number must be greater than 0");
+        }
+
+        // Check for duplicate room number
+        Optional<Office> existing = officeRepository.findByRoomNumber(office.getRoomNumber());
+        if (existing.isPresent() && !existing.get().getId().equals(office.getId())) {
+            throw new RuntimeException("Office with this room number already exists");
+        }
+
         return officeRepository.save(office);
     }
 
@@ -36,10 +49,15 @@ public class OfficeService {
     /**
      * Deletes the office from the database with specific id if it exists
      * @param id id of the office that's to be deleted
+     * @throws Exception if office doesn't exist or has assigned shifts
      */
     public void deleteOfficeById(Long id) throws Exception {
         if (!officeRepository.existsById(id)) {
             throw new Exception("Office does not exist.");
+        }
+        Office office = officeRepository.findById(id).orElseThrow();
+        if (!office.getShifts().isEmpty()) {
+            throw new Exception("Cannot delete office with assigned shifts. Please delete shifts first.");
         }
         officeRepository.deleteById(id);
     }

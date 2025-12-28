@@ -26,6 +26,11 @@ const CenteredDoctorPanelContainer = styled.div`
 const DoctorPanel = () => {
   const [addDoctorOpen, setAddDoctorOpen] = useState(false);
   const [dataArray, setDataArray] = useState<Doctor[]>([]);
+  const [refreshKey, setRefreshKey] = useState(0);
+
+  const handleDoctorAdded = () => {
+    setRefreshKey(prev => prev + 1);
+  };
 
   return (
     <CenteredDoctorPanelContainer>
@@ -46,9 +51,10 @@ const DoctorPanel = () => {
               dataArray={dataArray}
               setDataArray={setDataArray}
               setAddDoctorOpen={setAddDoctorOpen}
+              onDoctorAdded={handleDoctorAdded}
             />
           ) : (
-            <DoctorDisplay dataArray={dataArray} setDataArray={setDataArray} />
+            <DoctorDisplay key={refreshKey} dataArray={dataArray} setDataArray={setDataArray} />
           )}
         </div>
       </DoctorPanelContainer>

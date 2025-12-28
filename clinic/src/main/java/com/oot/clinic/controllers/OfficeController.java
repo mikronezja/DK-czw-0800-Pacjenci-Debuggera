@@ -36,9 +36,14 @@ public class OfficeController {
                     content = @Content(schema = @Schema()))
     })
     @PostMapping("/add")
-    @ResponseStatus(HttpStatus.CREATED)
-    public Office addOffice(@RequestBody Office office) {
-        return officeService.addOffice(office);
+    public ResponseEntity<?> addOffice(@RequestBody Office office) {
+        try {
+            return ResponseEntity.status(HttpStatus.CREATED).body(officeService.addOffice(office));
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error creating office");
+        }
     }
 
 
@@ -66,11 +71,14 @@ public class OfficeController {
                     content = @Content(schema = @Schema()))
     })
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteOffice(@PathVariable Long id) {
+    public ResponseEntity<?> deleteOffice(@PathVariable Long id) {
         try {
             officeService.deleteOfficeById(id);
             return ResponseEntity.noContent().build();
         } catch (Exception e) {
+            if (e.getMessage().contains("shifts")) {
+                return ResponseEntity.badRequest().body(e.getMessage());
+            }
             return ResponseEntity.notFound().build();
         }
     }
@@ -85,7 +93,11 @@ public class OfficeController {
                     content = @Content(schema = @Schema()))
     })
     @GetMapping("/{id}/shifts")
-    public List<ShiftOfficeResponseDTO> getOfficeShifts(@PathVariable Long id) {
-        return officeService.getShifts(id);
+    public ResponseEntity<List<ShiftOfficeResponseDTO>> getOfficeShifts(@PathVariable Long id) {
+        try {
+            return ResponseEntity.ok(officeService.getShifts(id));
+        } catch (Exception e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 }

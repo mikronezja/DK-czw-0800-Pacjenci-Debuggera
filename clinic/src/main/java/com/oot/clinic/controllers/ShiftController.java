@@ -13,6 +13,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/shifts")
 public class ShiftController {
@@ -21,6 +23,17 @@ public class ShiftController {
 
     public ShiftController(ShiftService shiftService) {
         this.shiftService = shiftService;
+    }
+
+    @Operation(summary = "Get all shifts", description = "Returns a list of all shifts in the system")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200",
+                    description = "Shifts list accessed successfully",
+                    content = @Content(schema = @Schema(implementation = ShiftResponseDTO.class)))
+    })
+    @GetMapping
+    public List<ShiftResponseDTO> getAllShifts() {
+        return shiftService.getAllShifts();
     }
 
     @Operation(summary = "Create a shift", description = "Assign a shift to a specific doctor in an office")
@@ -32,15 +45,21 @@ public class ShiftController {
                     description = "Invalid request data")
     })
     @PostMapping("/add")
-    @ResponseStatus(HttpStatus.CREATED)
-    public ShiftResponseDTO createShift(@RequestBody ShiftRequestDTO shiftRequest){
-         return shiftService.createShift(
-                shiftRequest.getDoctorId(),
-                shiftRequest.getOfficeId(),
-                shiftRequest.getDayOfWeek(),
-                shiftRequest.getStartTime(),
-                shiftRequest.getEndTime()
-        );
+    public ResponseEntity<?> createShift(@RequestBody ShiftRequestDTO shiftRequest){
+        try {
+            ShiftResponseDTO shift = shiftService.createShift(
+                    shiftRequest.getDoctorId(),
+                    shiftRequest.getOfficeId(),
+                    shiftRequest.getDayOfWeek(),
+                    shiftRequest.getStartTime(),
+                    shiftRequest.getEndTime()
+            );
+            return ResponseEntity.status(HttpStatus.CREATED).body(shift);
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 
     @Operation(summary = "Delete a shift", description = "Delete a shift from the system by id")
@@ -71,14 +90,20 @@ public class ShiftController {
                     content = @Content(schema = @Schema()))
     })
     @PutMapping("/{id}")
-    public ResponseEntity<ShiftResponseDTO> updateShift(@PathVariable Long id, @RequestBody ShiftRequestDTO shiftRequest) throws Exception {
-        Shift updated = shiftService.editShift(id,
-                shiftRequest.getDoctorId(),
-                shiftRequest.getOfficeId(),
-                shiftRequest.getDayOfWeek(),
-                shiftRequest.getStartTime(),
-                shiftRequest.getEndTime());
+    public ResponseEntity<?> updateShift(@PathVariable Long id, @RequestBody ShiftRequestDTO shiftRequest) {
+        try {
+            Shift updated = shiftService.editShift(id,
+                    shiftRequest.getDoctorId(),
+                    shiftRequest.getOfficeId(),
+                    shiftRequest.getDayOfWeek(),
+                    shiftRequest.getStartTime(),
+                    shiftRequest.getEndTime());
 
-        return ResponseEntity.ok(new ShiftResponseDTO(updated));
+            return ResponseEntity.ok(new ShiftResponseDTO(updated));
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 }

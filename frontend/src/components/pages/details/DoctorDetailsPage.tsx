@@ -1,4 +1,4 @@
-import React, { use, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import type { Doctor } from "@/types/doctor";
 import { useParams } from "react-router-dom";
@@ -50,17 +50,44 @@ const DoctorDetailsPage = () => {
   });
 
   const getDetails = () => {
+    if (!idValue) {
+      alert("Brak ID lekarza!");
+      return;
+    }
+    
+    const id = Number(idValue);
+    if (isNaN(id) || id <= 0) {
+      alert("Nieprawidłowe ID lekarza!");
+      return;
+    }
+
     axios
-      .get(`http://localhost:8080/doctors/${idValue}`)
-      .then((res) => {
-        console.log("worked!", res.data);
-        setDoctor(res.data);
+      .get(`http://localhost:8080/doctors/${id}`, { timeout: 10000 })
+      .then((res: any) => {
+        if (res.data) {
+          setDoctor(res.data);
+        } else {
+          alert("Lekarz nie został znaleziony!");
+        }
       })
-      .catch((err) => console.error(err));
+      .catch((err: any) => {
+        console.error(err);
+        if (err.response?.status === 404) {
+          alert("Lekarz nie został znaleziony!");
+        } else if (err.code === 'ECONNABORTED' || err.message?.includes('timeout')) {
+          alert("Timeout - serwer nie odpowiada!");
+        } else if (err.code === 'ERR_NETWORK' || err.message?.includes('Network Error')) {
+          alert("Błąd połączenia z serwerem!");
+        } else {
+          alert("Błąd podczas pobierania danych lekarza!");
+        }
+      });
   };
+  
   useEffect(() => {
     getDetails();
-  }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [idValue]);
 
   return (
     <TableStyled>
