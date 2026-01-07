@@ -95,7 +95,7 @@ Teraz mamy wyświetloną listę wszystkich dostępnych lekarzy
 
 - Aby wyświetlić szczegóły klikamy w oko
 
-![add-doctor](assets/details.png)
+![add-doctor](assets/doctor-details.png)
 
 - Aby dodać lekarza klikamy w +
 
@@ -105,10 +105,18 @@ Teraz mamy wyświetloną listę wszystkich dostępnych lekarzy
 
 ### Dodane panele
 
-Panele gabinetów - można dodawać gabinety (+) lub je usuwać (x)
+#### Panele gabinetów - można dodawać gabinety (+) lub je usuwać (x)
 
 ![offices](assets/offices.png)
 
-Panel pacjentów
+Szczegóły gabinetów
+
+![office-details](assets/office-details.png)
+
+#### Panel pacjentów
 
 ![pacients](assets/pacients.png)
+
+Szczegóły pacjentów
+
+![office-details](assets/pacient-details.png)
