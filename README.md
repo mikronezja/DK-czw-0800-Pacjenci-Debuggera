@@ -119,4 +119,8 @@ Szczegóły gabinetów
 
 Szczegóły pacjentów
 
-![office-details](assets/pacient-details.png)
+![pacient-details](assets/pacient-details.png)
+
+Pacjentów też można dodać
+
+![add-pacient](assets/add-pacient.png)
