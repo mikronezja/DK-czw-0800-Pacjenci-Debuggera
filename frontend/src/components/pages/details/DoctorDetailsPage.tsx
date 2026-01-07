@@ -8,7 +8,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { callGetDoctorById } from "@/api/doctor_calls";
+import { callGetDoctorById, callGetDoctorShifts } from "@/api/doctor_calls";
 import { SPECIALIZATIONS } from "@/constants/specializations";
 import { TableDetailsStyled } from "@/styles/styledcomponent";
 
@@ -25,6 +25,7 @@ const DoctorDetailsPage = () => {
     specialization: "",
     pesel: "",
     address: "",
+    shifts: [],
   });
 
   const getDetails = async () => {
@@ -41,8 +42,8 @@ const DoctorDetailsPage = () => {
   }, []);
 
   return (
-    <TableDetailsStyled>
-      <div>
+    <div>
+      <TableDetailsStyled>
         <TableHeader>
           <TableRow>
             <TableHead>Imię</TableHead>
@@ -59,8 +60,43 @@ const DoctorDetailsPage = () => {
             <TableCell>{doctor.address}</TableCell>
           </TableRow>
         </TableBody>
-      </div>
-    </TableDetailsStyled>
+      </TableDetailsStyled>
+      <DisplayDoctorShifts doctorId={doctor.id} />
+    </div>
+  );
+};
+
+const getDoctorShifts = (doctorId: number) => {
+  const [shifts, setShifts] = useState<Array<any>>([]);
+
+  useEffect(() => {
+    if (doctorId === 0) return;
+
+    const getShifts = async () => {
+      try {
+        const response = await callGetDoctorShifts(Number(doctorId));
+        setShifts(response.data.shifts);
+        console.log(response.status);
+      } catch (err) {
+        console.error("Error getting shifts:", err);
+      }
+    };
+
+    getShifts();
+  }, [doctorId]);
+
+  return shifts;
+};
+
+const DisplayDoctorShifts = ({ doctorId }: { doctorId: number }) => {
+  const shifts = getDoctorShifts(doctorId);
+
+  console.log({ shifts });
+  return (
+    <div>
+      <h2>Shifts</h2>
+      <ul></ul>
+    </div>
   );
 };
 

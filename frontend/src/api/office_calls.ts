@@ -1,5 +1,5 @@
 import axios from "axios";
-import { OFFICE_ENDPOINT, SHIFT_ENDPOINT } from "./endpoints";
+import { OFFICE_ENDPOINT, SHIFT } from "./endpoints";
 import type { Shift } from "@/types/shifts";
 
 interface dataType {
@@ -12,7 +12,7 @@ export const callGetOffices = async () => {
 };
 
 export const callGetOfficeShifts = async (id: number) => {
-  return axios.get([OFFICE_ENDPOINT, id, SHIFT_ENDPOINT].join("/"));
+  return axios.get([OFFICE_ENDPOINT, id, SHIFT].join("/"));
 };
 
 export const callDeleteOffice = async (id: number) => {

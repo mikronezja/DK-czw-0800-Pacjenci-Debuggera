@@ -25,10 +25,6 @@ export const TableStyled = styled(Table)`
 `;
 
 export const TableDetailsStyled = styled(Table)`
-  justify-content: center;
-  align-items: center;
-  display: flex;
-  flex-direction: column;
   padding: 30px;
   margin: 30px auto;
   min-width: 400px;

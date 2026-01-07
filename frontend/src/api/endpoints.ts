@@ -1,5 +1,6 @@
-const DOMAIN = "http://localhost:8080"
-export const PATIENT_ENDPOINT = DOMAIN + "/patients"
-export const DOCTOR_ENDPOINT = DOMAIN + "/doctors"
-export const OFFICE_ENDPOINT = DOMAIN + "/offices"
-export const SHIFT_ENDPOINT = DOMAIN + "/shifts"
+const DOMAIN = "http://localhost:8080";
+export const PATIENT_ENDPOINT = DOMAIN + "/patients";
+export const DOCTOR_ENDPOINT = DOMAIN + "/doctors";
+export const OFFICE_ENDPOINT = DOMAIN + "/offices";
+export const SHIFT_ENDPOINT = DOMAIN + "/shifts";
+export const SHIFT = "shifts";

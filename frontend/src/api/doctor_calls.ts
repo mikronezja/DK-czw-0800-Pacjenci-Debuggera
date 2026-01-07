@@ -1,5 +1,5 @@
 import axios from "axios";
-import { DOCTOR_ENDPOINT, SHIFT_ENDPOINT } from "./endpoints";
+import { DOCTOR_ENDPOINT, SHIFT } from "./endpoints";
 
 interface dataType {
   name: string;
@@ -26,5 +26,6 @@ export const callAddDoctor = async (data: dataType) => {
 };
 
 export const callGetDoctorShifts = async (id: number) => {
-  return axios.get([DOCTOR_ENDPOINT, id, SHIFT_ENDPOINT].join("/"));
+  console.log([DOCTOR_ENDPOINT, id, SHIFT].join("/"));
+  return axios.get([DOCTOR_ENDPOINT, id, SHIFT].join("/"));
 };
