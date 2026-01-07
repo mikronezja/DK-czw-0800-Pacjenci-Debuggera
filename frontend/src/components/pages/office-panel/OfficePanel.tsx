@@ -11,10 +11,7 @@ import {
   ItemTitle,
 } from "@/components/ui/item";
 import NewOfficePanel from "./NewOfficePanel";
-import {
-  OFFICE_DETAILS_ROUTE,
-  OFFICE_SHIFT_PANEL_ROUTE,
-} from "@/constants/routes";
+import { OFFICE_DETAILS_ROUTE } from "@/constants/routes";
 import { callDeleteOffice, callGetOffices } from "@/api/office_calls";
 import { toast } from "sonner";
 
@@ -43,10 +40,6 @@ const OfficePanel = () => {
 
   const goToDetails = (id: number) => {
     navigate(`${OFFICE_DETAILS_ROUTE}/${id}`);
-  };
-
-  const goToShifts = (id: number) => {
-    navigate(`${OFFICE_SHIFT_PANEL_ROUTE}/${id}`);
   };
 
   const fetchOffices = async () => {
@@ -106,13 +99,6 @@ const OfficePanel = () => {
                   onClick={() => goToDetails(id)}
                 >
                   <Eye />
-                </Button>
-                <Button
-                  variant="outline"
-                  className="rounded-full"
-                  onClick={() => goToShifts(id)}
-                >
-                  Dodaj zmianę
                 </Button>
                 <Button
                   variant="outline"

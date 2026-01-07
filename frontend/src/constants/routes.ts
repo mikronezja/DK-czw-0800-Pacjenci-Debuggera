@@ -4,7 +4,6 @@ export const DOCTOR_PANEL_ROUTE = "/doctor-panel";
 export const OFFICE_PANEL_ROUTE = "/office-panel";
 export const PATIENT_PANEL_ROUTE = "/patient-panel";
 export const DOCTOR_SHIFT_PANEL_ROUTE = DOCTOR_PANEL_ROUTE + "/shift";
-export const OFFICE_SHIFT_PANEL_ROUTE = OFFICE_PANEL_ROUTE + "/shift";
 
 export const DOCTOR_DETAILS_ROUTE = "/details/doctor";
 export const PATIENT_DETAILS_ROUTE = "/details/patient";

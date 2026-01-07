@@ -65,10 +65,7 @@ const DoctorDetailsPage = () => {
         </TableHeader>
         <TableBody>
           <TableRow>
-            <TableCell>{doctor.name}</TableCell>
-            <TableCell>{doctor.surname}</TableCell>
-            <TableCell>{SPECIALIZATIONS[doctor.specialization]}</TableCell>
-            <TableCell>{doctor.address}</TableCell>
+            <DisplayDoctorInfo doctor={doctor} />
           </TableRow>
         </TableBody>
       </TableDetailsStyled>
@@ -97,6 +94,17 @@ const getDoctorShifts = (doctorId: number) => {
   }, [doctorId]);
 
   return shifts;
+};
+
+const DisplayDoctorInfo = ({ doctor }: { doctor: Doctor }) => {
+  return (
+    <>
+      <TableCell>{doctor.name}</TableCell>
+      <TableCell>{doctor.surname}</TableCell>
+      <TableCell>{SPECIALIZATIONS[doctor.specialization]}</TableCell>
+      <TableCell>{doctor.address}</TableCell>
+    </>
+  );
 };
 
 const DisplayDoctorShifts = ({ doctorId }: { doctorId: number }) => {

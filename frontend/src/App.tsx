@@ -11,7 +11,6 @@ import {
   PATIENT_PANEL_ROUTE,
   OFFICE_DETAILS_ROUTE,
   DOCTOR_SHIFT_PANEL_ROUTE,
-  OFFICE_SHIFT_PANEL_ROUTE,
 } from "./constants/routes";
 import PatientPanel from "./components/pages/patient-panel/PatientPanel";
 import DoctorDetailsPage from "./components/pages/details/DoctorDetailsPage";
@@ -19,7 +18,6 @@ import PatientDetailsPage from "./components/pages/details/PatientDetailsPage";
 import OfficePanel from "./components/pages/office-panel/OfficePanel";
 import OfficeDetailsPage from "./components/pages/details/OfficeDetailsPage";
 import ShiftDoctorPanel from "./components/pages/shift-panel/ShiftDoctorPanel";
-import ShiftOfficePanel from "./components/pages/shift-panel/ShiftOfficePanel";
 import { Toaster } from "sonner";
 
 function App() {
@@ -35,11 +33,6 @@ function App() {
         <Route
           path={`${DOCTOR_SHIFT_PANEL_ROUTE}/:idValue`}
           element={<ShiftDoctorPanel />}
-        />
-
-        <Route
-          path={`${OFFICE_SHIFT_PANEL_ROUTE}/:idValue`}
-          element={<ShiftOfficePanel />}
         />
 
         {/* ///////// */}

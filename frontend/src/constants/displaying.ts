@@ -10,3 +10,11 @@ export const SHIFT_DISPLAY_VALS = [
   "Koniec",
   "Numer gabinetu",
 ];
+
+export const OFFICE_DISPLAY_VALS = [
+  "Dzień tygodnia",
+  "Specjalizacja",
+  "Imię",
+  "Nazwisko",
+  "Czas trwania dyżuru",
+];

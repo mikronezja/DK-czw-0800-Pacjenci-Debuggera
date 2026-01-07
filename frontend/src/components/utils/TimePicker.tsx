@@ -1,14 +1,11 @@
-import React from "react";
 import { Field } from "../ui/field";
-import { ChevronDown, ChevronUp } from "lucide-react";
 import { Input } from "../ui/input";
 import styled from "styled-components";
 
 interface TimePickerProps {
+  time: string;
   placeholder: string;
-  time: number;
-  setTime: React.Dispatch<React.SetStateAction<number>>;
-  onChange: () => void;
+  onChange: (newTime: string) => void;
 }
 
 const TimePickerStyled = styled.div`
@@ -18,29 +15,16 @@ const TimePickerStyled = styled.div`
   align-items: center;
 `;
 
-const TimePicker = ({
-  placeholder,
-  time,
-  setTime,
-  onChange,
-}: TimePickerProps) => {
+const TimePicker = ({ placeholder, time, onChange }: TimePickerProps) => {
   return (
     <TimePickerStyled>
-      <ChevronUp
-        onClick={() => {
-          setTime(time! + 1 <= 23 ? time! + 1 : 0);
-          onChange();
-        }}
-      />
       <Field>
-        <Input placeholder={placeholder} disabled value={time} />
+        <Input
+          placeholder={placeholder}
+          value={time}
+          onChange={(e) => onChange(e.target.value)}
+        />
       </Field>
-      <ChevronDown
-        onClick={() => {
-          setTime(time! - 1 >= 0 ? time! - 1 : 23);
-          onChange();
-        }}
-      />
     </TimePickerStyled>
   );
 };

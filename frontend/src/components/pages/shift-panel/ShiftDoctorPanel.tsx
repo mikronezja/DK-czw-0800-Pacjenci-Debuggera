@@ -6,7 +6,11 @@ import { Field, FieldLabel } from "@/components/ui/field";
 import { Select, SelectContent, SelectItem } from "@/components/ui/select";
 import TimePicker from "@/components/utils/TimePicker";
 import { WEEKDAYS } from "@/constants/weekdays";
-import { FormStyled, SelectTriggerStyled } from "@/styles/styledcomponent";
+import {
+  FormStyled,
+  Layout,
+  SelectTriggerStyled,
+} from "@/styles/styledcomponent";
 import type { Office } from "@/types/office";
 import type { DayOfWeekType, Shift } from "@/types/shifts";
 import { SelectValue } from "@radix-ui/react-select";
@@ -33,14 +37,6 @@ const ShiftTime = styled.div`
   align-items: center;
 `;
 
-const Layout = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  gap: 10px;
-`;
-
 const ShiftDoctorPanel = () => {
   const navigate = useNavigate();
   const { idValue } = useParams();
@@ -49,8 +45,6 @@ const ShiftDoctorPanel = () => {
     surname: "",
   });
   const [offices, setOffices] = useState<Office[]>([]);
-  const [startTime, setStartTime] = useState<number>(1);
-  const [endTime, setEndTime] = useState<number>(2);
   const [data, setData] = useState<Shift>({
     doctorId: Number(idValue),
     officeId: undefined,
@@ -58,8 +52,6 @@ const ShiftDoctorPanel = () => {
     startTime: "01:00",
     endTime: "02:00",
   });
-
-  const formatHour = (h: number) => h.toString().padStart(2, "0") + ":00";
 
   const fetchDoctor = async () => {
     try {
@@ -86,11 +78,8 @@ const ShiftDoctorPanel = () => {
       await callAddShift(data);
       console.log("udało sie dodać zmiane");
       toast.success("Zmiana została dodana");
-    } catch (err: any) {
-      if (err.response.status == 400) {
-        toast.error("Nie można było dodać zmiany");
-      }
-      console.log(err);
+    } catch (err) {
+      toast.error("Nie można było dodać zmiany");
     }
   };
 
@@ -113,25 +102,23 @@ const ShiftDoctorPanel = () => {
           <FieldLabel>Czas zmiany</FieldLabel>
           <ShiftTime>
             <TimePicker
-              placeholder="Start"
-              time={startTime}
-              setTime={setStartTime}
-              onChange={() => {
+              placeholder="01:00"
+              time={data.startTime}
+              onChange={(newTime) => {
                 setData((prev) => ({
                   ...prev,
-                  startTime: formatHour(startTime) ?? prev.startTime,
+                  startTime: newTime,
                 }));
               }}
             />
             -
             <TimePicker
-              placeholder="Koniec"
-              time={endTime}
-              setTime={setEndTime}
-              onChange={() => {
+              placeholder="02:00"
+              time={data.endTime}
+              onChange={(newTime) => {
                 setData((prev) => ({
                   ...prev,
-                  endTime: formatHour(endTime) ?? prev.endTime,
+                  endTime: newTime,
                 }));
               }}
             />

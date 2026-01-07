@@ -40,3 +40,11 @@ export const SectionTitle = styled.div`
   justify-content: center;
   margin: 20px;
 `;
+
+export const Layout = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  gap: 10px;
+`;
