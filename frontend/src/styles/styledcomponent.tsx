@@ -30,3 +30,13 @@ export const TableDetailsStyled = styled(Table)`
   min-width: 400px;
   width: auto;
 `;
+
+export const Divider = styled.div`
+  border-bottom: 1px solid #e0e0e0;
+`;
+
+export const SectionTitle = styled.div`
+  display: flex;
+  justify-content: center;
+  margin: 20px;
+`;

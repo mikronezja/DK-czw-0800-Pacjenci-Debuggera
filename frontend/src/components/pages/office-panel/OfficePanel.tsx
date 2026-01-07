@@ -16,6 +16,7 @@ import {
   OFFICE_SHIFT_PANEL_ROUTE,
 } from "@/constants/routes";
 import { callDeleteOffice, callGetOffices } from "@/api/office_calls";
+import { toast } from "sonner";
 
 const OfficePanelStyled = styled.div`
   display: flex;
@@ -64,8 +65,9 @@ const OfficePanel = () => {
       setDataArray(
         dataArray.filter((office: { id: number }) => office.id !== id)
       );
+      toast.success("Gabinet został usunięty");
     } catch (err) {
-      console.log(err);
+      toast.success("Nie można było usunąć gabinetu");
     }
   };
 

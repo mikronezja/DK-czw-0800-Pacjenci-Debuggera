@@ -26,6 +26,5 @@ export const callAddDoctor = async (data: dataType) => {
 };
 
 export const callGetDoctorShifts = async (id: number) => {
-  console.log([DOCTOR_ENDPOINT, id, SHIFT].join("/"));
   return axios.get([DOCTOR_ENDPOINT, id, SHIFT].join("/"));
 };

@@ -1,4 +1,4 @@
-export const WEEK_DAYS = {
+export const WEEKDAYS: Record<string, string> = {
   MONDAY: "Poniedziałek",
   TUESDAY: "Wtorek",
   WEDNESDAY: "Środa",

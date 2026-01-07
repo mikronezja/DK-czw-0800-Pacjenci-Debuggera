@@ -13,6 +13,7 @@ import {
 import { callAddDoctor } from "@/api/doctor_calls";
 import { SPECIALIZATIONS } from "@/constants/specializations";
 import { FormStyled } from "@/styles/styledcomponent";
+import { toast } from "sonner";
 
 interface DoctorDisplayProps {
   dataArray: Array<Doctor>;
@@ -31,6 +32,7 @@ const NewDoctorPanel = ({
     pesel: "",
     specialization: "",
     address: "",
+    shifts: [],
   });
 
   const addDoctor = async (e: React.SyntheticEvent) => {
@@ -40,8 +42,10 @@ const NewDoctorPanel = ({
       const response = await callAddDoctor(formData);
 
       setDataArray([...dataArray, { ...formData, id: response.data.id }]);
+      toast.success("Nowy lekarz został dodany");
     } catch (err) {
       console.log(err);
+      toast.success("Lekarz nie mógł zostać dodany");
     }
 
     setAddDoctorOpen(false);
@@ -53,6 +57,7 @@ const NewDoctorPanel = ({
       pesel: "",
       specialization: "",
       address: "",
+      shifts: [],
     });
     setAddDoctorOpen(false);
   };

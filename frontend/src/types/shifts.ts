@@ -1,6 +1,6 @@
-import type { WEEK_DAYS } from "@/constants/weekdays";
+import type { WEEKDAYS } from "@/constants/weekdays";
 
-export type DayOfWeekType = keyof typeof WEEK_DAYS;
+export type DayOfWeekType = keyof typeof WEEKDAYS;
 
 export interface Shift {
   doctorId: number | undefined;

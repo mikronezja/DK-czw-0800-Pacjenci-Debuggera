@@ -6,4 +6,4 @@ export const SPECIALIZATIONS: Record<string, string> = {
   ORTOPEDA: "Ortopeda",
   CHIRURG: "Chirurg",
   PEDIATRA: "Pediatra",
-};
+} as const;

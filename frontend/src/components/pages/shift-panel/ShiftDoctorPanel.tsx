@@ -5,14 +5,14 @@ import { Button } from "@/components/ui/button";
 import { Field, FieldLabel } from "@/components/ui/field";
 import { Select, SelectContent, SelectItem } from "@/components/ui/select";
 import TimePicker from "@/components/utils/TimePicker";
-import { WEEK_DAYS } from "@/constants/weekdays";
+import { WEEKDAYS } from "@/constants/weekdays";
 import { FormStyled, SelectTriggerStyled } from "@/styles/styledcomponent";
 import type { Office } from "@/types/office";
 import type { DayOfWeekType, Shift } from "@/types/shifts";
 import { SelectValue } from "@radix-ui/react-select";
 import { ChevronDown } from "lucide-react";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
 import styled from "styled-components";
 
@@ -42,6 +42,7 @@ const Layout = styled.div`
 `;
 
 const ShiftDoctorPanel = () => {
+  const navigate = useNavigate();
   const { idValue } = useParams();
   const [doctor, setDoctor] = useState({
     name: "",
@@ -94,13 +95,7 @@ const ShiftDoctorPanel = () => {
   };
 
   const deleteShift = async () => {
-    setData({
-      doctorId: Number(idValue),
-      officeId: undefined,
-      dayOfWeek: "MONDAY",
-      startTime: "01:00",
-      endTime: "02:00",
-    });
+    navigate(-1);
   };
 
   useEffect(() => {
@@ -156,7 +151,7 @@ const ShiftDoctorPanel = () => {
               <ChevronDown />
             </SelectTriggerStyled>
             <SelectContent>
-              {Object.entries(WEEK_DAYS).map(([value, displayName], key) => (
+              {Object.entries(WEEKDAYS).map(([value, displayName], key) => (
                 <SelectItem key={key} value={value}>
                   {displayName}
                 </SelectItem>

@@ -19,6 +19,7 @@ import {
 } from "@/constants/routes";
 import { callDeleteDoctor, callGetDoctors } from "@/api/doctor_calls";
 import { SPECIALIZATIONS } from "@/constants/specializations";
+import { toast } from "sonner";
 
 interface DoctorDisplayProps {
   dataArray: Array<Doctor>;
@@ -37,10 +38,16 @@ const formatSpecialization = (specialization: string): string => {
 const DoctorDisplay = ({ dataArray, setDataArray }: DoctorDisplayProps) => {
   const navigate = useNavigate();
   const deleteDoctor = async (id: number) => {
-    await callDeleteDoctor(id);
-    setDataArray(
-      dataArray.filter((doctor: { id: number }) => doctor.id !== id)
-    );
+    try {
+      await callDeleteDoctor(id);
+      setDataArray(
+        dataArray.filter((doctor: { id: number }) => doctor.id !== id)
+      );
+      toast.success("Lekarz został usunięty");
+    } catch (error) {
+      console.error("Error deleting doctor:", error);
+      toast.success("Nie można było usunąć lekarza");
+    }
   };
 
   const goToDetails = (id: number) => {

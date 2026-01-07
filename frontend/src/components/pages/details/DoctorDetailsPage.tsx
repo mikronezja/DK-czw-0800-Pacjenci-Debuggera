@@ -10,10 +10,22 @@ import {
 } from "@/components/ui/table";
 import { callGetDoctorById, callGetDoctorShifts } from "@/api/doctor_calls";
 import { SPECIALIZATIONS } from "@/constants/specializations";
-import { TableDetailsStyled } from "@/styles/styledcomponent";
+import {
+  Divider,
+  SectionTitle,
+  TableDetailsStyled,
+} from "@/styles/styledcomponent";
+import { WEEKDAYS } from "@/constants/weekdays";
+import {
+  DOCTOR_DISPLAY_VALS,
+  SHIFT_DISPLAY_VALS,
+} from "@/constants/displaying";
 
-const formatSpecialization = (specialization: string): string => {
-  return SPECIALIZATIONS[specialization] || specialization;
+type ShiftType = {
+  office: { id: number; roomNumber: number };
+  dayOfWeek: string;
+  startTime: string;
+  endTime: string;
 };
 
 const DoctorDetailsPage = () => {
@@ -46,28 +58,28 @@ const DoctorDetailsPage = () => {
       <TableDetailsStyled>
         <TableHeader>
           <TableRow>
-            <TableHead>Imię</TableHead>
-            <TableHead className="w-[100px]">Nazwisko</TableHead>
-            <TableHead>Specjalizacja</TableHead>
-            <TableHead>Adres</TableHead>
+            {DOCTOR_DISPLAY_VALS.map((head) => (
+              <TableHead key={head}>{head}</TableHead>
+            ))}
           </TableRow>
         </TableHeader>
         <TableBody>
           <TableRow>
             <TableCell>{doctor.name}</TableCell>
             <TableCell>{doctor.surname}</TableCell>
-            <TableCell>{formatSpecialization(doctor.specialization)}</TableCell>
+            <TableCell>{SPECIALIZATIONS[doctor.specialization]}</TableCell>
             <TableCell>{doctor.address}</TableCell>
           </TableRow>
         </TableBody>
       </TableDetailsStyled>
+      <Divider />
       <DisplayDoctorShifts doctorId={doctor.id} />
     </div>
   );
 };
 
 const getDoctorShifts = (doctorId: number) => {
-  const [shifts, setShifts] = useState<Array<any>>([]);
+  const [shifts, setShifts] = useState<ShiftType[]>([]);
 
   useEffect(() => {
     if (doctorId === 0) return;
@@ -75,8 +87,7 @@ const getDoctorShifts = (doctorId: number) => {
     const getShifts = async () => {
       try {
         const response = await callGetDoctorShifts(Number(doctorId));
-        setShifts(response.data.shifts);
-        console.log(response.status);
+        setShifts(response.data);
       } catch (err) {
         console.error("Error getting shifts:", err);
       }
@@ -91,13 +102,37 @@ const getDoctorShifts = (doctorId: number) => {
 const DisplayDoctorShifts = ({ doctorId }: { doctorId: number }) => {
   const shifts = getDoctorShifts(doctorId);
 
-  console.log({ shifts });
   return (
-    <div>
-      <h2>Shifts</h2>
-      <ul></ul>
-    </div>
+    <>
+      {shifts.length === 0 ? (
+        <SectionTitle>Brak dyżurów</SectionTitle>
+      ) : (
+        <TableDetailsStyled>
+          <TableHeader>
+            <TableRow>
+              {SHIFT_DISPLAY_VALS.map((head) => (
+                <TableHead key={head}>{head}</TableHead>
+              ))}
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            <ShiftDisplay shifts={shifts} />
+          </TableBody>
+        </TableDetailsStyled>
+      )}
+    </>
   );
+};
+
+const ShiftDisplay = ({ shifts }: { shifts: ShiftType[] }) => {
+  return shifts.map((shift) => (
+    <TableRow key={`${shift.dayOfWeek}-${shift.startTime}`}>
+      <TableCell>{WEEKDAYS[shift.dayOfWeek]}</TableCell>
+      <TableCell>{shift.startTime}</TableCell>
+      <TableCell>{shift.endTime}</TableCell>
+      <TableCell>{shift.office.roomNumber}</TableCell>
+    </TableRow>
+  ));
 };
 
 export default DoctorDetailsPage;
