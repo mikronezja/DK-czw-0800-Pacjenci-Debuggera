@@ -1,56 +1,53 @@
-package com.oot.clinic.DTOs;
+package com.oot.clinic.DTOs.shift;
 
-import com.oot.clinic.entities.Doctor;
+import com.oot.clinic.DTOs.doctor.DoctorDTO;
+import com.oot.clinic.DTOs.office.OfficeResponseDTO;
 import com.oot.clinic.entities.Shift;
 
 import java.time.DayOfWeek;
 import java.time.LocalTime;
 
-public class ShiftOfficeResponseDTO {
+public class ShiftResponseDTO {
 
+    private long id;
     private DoctorDTO doctor;
+    private OfficeResponseDTO office;
     private DayOfWeek dayOfWeek;
     private LocalTime startTime;
     private LocalTime endTime;
 
-    public ShiftOfficeResponseDTO(Shift shift) {
+    public ShiftResponseDTO(Shift shift) {
+        this.id = shift.getId();
         this.doctor = new DoctorDTO(shift.getDoctor());
+        this.office = new OfficeResponseDTO(shift.getOffice());
         this.dayOfWeek = shift.getDayOfWeek();
         this.startTime = shift.getStartTime();
         this.endTime = shift.getEndTime();
     }
 
-    // GETTERS AND SETTERS
+    // GETTERS
+
+    public long getId() {
+        return id;
+    }
 
     public DoctorDTO getDoctor() {
         return doctor;
     }
 
-    public void setDoctor(DoctorDTO doctor) {
-        this.doctor = doctor;
+    public OfficeResponseDTO getOffice() {
+        return office;
     }
 
     public DayOfWeek getDayOfWeek() {
         return dayOfWeek;
     }
 
-    public void setDayOfWeek(DayOfWeek dayOfWeek) {
-        this.dayOfWeek = dayOfWeek;
-    }
-
     public LocalTime getStartTime() {
         return startTime;
     }
 
-    public void setStartTime(LocalTime startTime) {
-        this.startTime = startTime;
-    }
-
     public LocalTime getEndTime() {
         return endTime;
-    }
-
-    public void setEndTime(LocalTime endTime) {
-        this.endTime = endTime;
     }
 }

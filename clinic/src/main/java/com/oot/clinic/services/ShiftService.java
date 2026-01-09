@@ -1,6 +1,6 @@
 package com.oot.clinic.services;
 
-import com.oot.clinic.DTOs.ShiftResponseDTO;
+import com.oot.clinic.DTOs.shift.ShiftResponseDTO;
 import com.oot.clinic.entities.Doctor;
 import com.oot.clinic.entities.Office;
 import com.oot.clinic.entities.Shift;

@@ -15,6 +15,17 @@ public class Patient {
     private String address;
     private String pesel;
 
+    public Patient(String name, String surname, String address, String pesel) {
+        this.name = name;
+        this.surname = surname;
+        this.address = address;
+        this.pesel = pesel;
+    }
+
+    public Patient() {
+
+    }
+
     // GETTERS AND SETTERS
 
     public Long getId() {

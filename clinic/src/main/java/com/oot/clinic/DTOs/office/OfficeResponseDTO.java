@@ -1,13 +1,13 @@
-package com.oot.clinic.DTOs;
+package com.oot.clinic.DTOs.office;
 
 import com.oot.clinic.entities.Office;
 
-public class OfficeDTO {
+public class OfficeResponseDTO {
 
     private final Long id;
     private final int roomNumber;
 
-    public OfficeDTO(Office office){
+    public OfficeResponseDTO(Office office){
         this.id = office.getId();
         this.roomNumber = office.getRoomNumber();
     }

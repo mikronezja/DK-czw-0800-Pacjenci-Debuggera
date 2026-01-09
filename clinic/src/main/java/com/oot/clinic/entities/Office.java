@@ -18,6 +18,13 @@ public class Office {
     @OneToMany(mappedBy = "office")
     private List<Shift> shifts = new ArrayList<>();
 
+    public Office(int roomNumber){
+        this.roomNumber = roomNumber;
+    }
+
+    public Office() {
+
+    }
 
     // GETTERS AND SETTERS
 

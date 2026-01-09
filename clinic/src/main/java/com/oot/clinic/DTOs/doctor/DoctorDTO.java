@@ -1,4 +1,4 @@
-package com.oot.clinic.DTOs;
+package com.oot.clinic.DTOs.doctor;
 
 import com.oot.clinic.entities.Doctor;
 import com.oot.clinic.entities.enumeration.Specialization;

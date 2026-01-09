@@ -1,8 +1,7 @@
 package com.oot.clinic.controllers;
 
-import com.oot.clinic.DTOs.ShiftRequestDTO;
-import com.oot.clinic.DTOs.ShiftResponseDTO;
-import com.oot.clinic.entities.Shift;
+import com.oot.clinic.DTOs.shift.ShiftRequestDTO;
+import com.oot.clinic.DTOs.shift.ShiftResponseDTO;
 import com.oot.clinic.services.ShiftService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -40,7 +39,7 @@ public class ShiftController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201",
                     description = "Shift created successfully",
-                    content = @Content(schema = @Schema(implementation =  Shift.class))),
+                    content = @Content(schema = @Schema(implementation =  ShiftResponseDTO.class))),
             @ApiResponse(responseCode = "400",
                     description = "Invalid request data")
     })
@@ -92,14 +91,14 @@ public class ShiftController {
     @PutMapping("/{id}")
     public ResponseEntity<?> updateShift(@PathVariable Long id, @RequestBody ShiftRequestDTO shiftRequest) {
         try {
-            Shift updated = shiftService.editShift(id,
+            ShiftResponseDTO updated = new ShiftResponseDTO(shiftService.editShift(id,
                     shiftRequest.getDoctorId(),
                     shiftRequest.getOfficeId(),
                     shiftRequest.getDayOfWeek(),
                     shiftRequest.getStartTime(),
-                    shiftRequest.getEndTime());
+                    shiftRequest.getEndTime()));
 
-            return ResponseEntity.ok(new ShiftResponseDTO(updated));
+            return ResponseEntity.ok(updated);
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         } catch (Exception e) {

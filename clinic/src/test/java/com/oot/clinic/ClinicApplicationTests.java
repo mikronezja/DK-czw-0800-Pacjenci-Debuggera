@@ -1,5 +1,6 @@
 package com.oot.clinic;
 
+import com.oot.clinic.DTOs.doctor.DoctorResponseDTO;
 import com.oot.clinic.entities.Doctor;
 import com.oot.clinic.entities.Office;
 import com.oot.clinic.entities.Patient;
@@ -41,15 +42,11 @@ class ClinicApplicationTests {
 	@Test
 	@DirtiesContext
 	void addDoctorShouldPersistDoctorInDatabase() {
-		Doctor doctor = new Doctor(
-				"Jan",
-				"Kowalski",
-				"80010112345",
-				Specialization.KARDIOLOG,
-				"Warszawa"
-		);
-
-		Doctor saved = doctorService.addDoctor(doctor);
+		DoctorResponseDTO saved = doctorService.addDoctor("Jan",
+                "Kowalski",
+                "80010112345",
+                "Warszawa",
+                Specialization.KARDIOLOG);
 
 		assertNotNull(saved.getId());
 		Optional<Doctor> found = doctorRepository.findById(saved.getId());
@@ -133,8 +130,7 @@ class ClinicApplicationTests {
 	@Test
 	@DirtiesContext
 	void savingDoctorShouldTrimWhitespaces() {
-		Doctor dirty = new Doctor("  Ola  ", "  Biała  ", "92010111111", Specialization.PEDIATRA, " Wrocław ");
-		Doctor saved = doctorService.addDoctor(dirty);
+		DoctorResponseDTO saved = doctorService.addDoctor("  Ola  ", "  Biała  ", "92010111111",  " Wrocław ", Specialization.PEDIATRA);
 
 		// pobranie świeżych danych
 		var found = doctorRepository.findById(saved.getId()).orElseThrow();
@@ -162,15 +158,11 @@ class ClinicApplicationTests {
 	void addDoctorWithVeryLongFieldsShouldFail() {
 		String longString = "x".repeat(500); // znacznie ponad typowe ograniczenia
 
-		Doctor d = new Doctor(
-				longString,
-				longString,
-				"70010155555",
-				Specialization.KARDIOLOG,
-				longString
-		);
-
-		assertThrows(Exception.class, () -> doctorService.addDoctor(d));
+		assertThrows(Exception.class, () -> doctorService.addDoctor(longString,
+                longString,
+                "70010155555",
+                longString,
+                Specialization.KARDIOLOG));
 	}
 
 	@Test

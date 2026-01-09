@@ -1,7 +1,8 @@
 package com.oot.clinic.controllers;
 
-import com.oot.clinic.DTOs.PatientDTO;
-import com.oot.clinic.entities.Patient;
+import com.oot.clinic.DTOs.patient.PatientDTO;
+import com.oot.clinic.DTOs.patient.PatientRequestDTO;
+import com.oot.clinic.DTOs.patient.PatientResponseDTO;
 import com.oot.clinic.services.PatientService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -26,15 +27,21 @@ public class PatientController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201",
                     description = "Patient created successfully",
-                    content = @Content(schema = @Schema(implementation =  Patient.class))),
+                    content = @Content(schema = @Schema(implementation =  PatientResponseDTO.class))),
             @ApiResponse(responseCode = "400",
                     description = "Invalid request data",
                     content = @Content(schema = @Schema()))
     })
     @PostMapping("/add")
-    public ResponseEntity<?> addPatient(@RequestBody Patient patient) {
+    public ResponseEntity<?> addPatient(@RequestBody PatientRequestDTO patient) {
         try {
-            return ResponseEntity.status(HttpStatus.CREATED).body(patientService.addPatient(patient));
+            PatientResponseDTO addedPatient = patientService.addPatient(
+                    patient.getName(),
+                    patient.getSurname(),
+                    patient.getPesel(),
+                    patient.getAddress()
+            );
+            return ResponseEntity.status(HttpStatus.CREATED).body(addedPatient);
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         } catch (Exception e) {
@@ -62,16 +69,18 @@ public class PatientController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200",
                     description = "Patient details accessed successfully",
-                    content = @Content(schema = @Schema(implementation =  Patient.class))),
+                    content = @Content(schema = @Schema(implementation =  PatientResponseDTO.class))),
             @ApiResponse(responseCode = "404",
                     description = "Patient not found",
                     content = @Content(schema = @Schema()))
     })
     @GetMapping("/{id}")
-    public ResponseEntity<Patient> getPatientById(@PathVariable Long id) {
-        return patientService.getPatientById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    public ResponseEntity<PatientResponseDTO> getPatientById(@PathVariable Long id) {
+        try {
+            return ResponseEntity.ok(new PatientResponseDTO(patientService.getPatientById(id).get()));
+        } catch (Exception e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
 

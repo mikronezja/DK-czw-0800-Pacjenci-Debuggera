@@ -1,6 +1,7 @@
 package com.oot.clinic.services;
 
-import com.oot.clinic.DTOs.PatientDTO;
+import com.oot.clinic.DTOs.patient.PatientDTO;
+import com.oot.clinic.DTOs.patient.PatientResponseDTO;
 import com.oot.clinic.entities.Patient;
 import com.oot.clinic.repositories.PatientRepository;
 import org.springframework.stereotype.Service;
@@ -19,52 +20,58 @@ public class PatientService {
 
     /**
      * Adds a new patient to the database
-     * @param patient the Patient object that's being added
-     * @throws RuntimeException if PESEL already exists or fields are too long
+     * @param name
+     * @param surname
+     * @param pesel
+     * @param address
+     * @return PatientResponseDTO
+     * @throws RuntimeException if pesel already exists or fields are too long
      */
-    public Patient addPatient(Patient patient) {
+    public PatientResponseDTO addPatient(String name, String surname, String pesel, String address) {
         // Validate required fields
-        if (patient.getName() == null || patient.getName().trim().isEmpty()) {
+        if (name == null || name.trim().isEmpty()) {
             throw new RuntimeException("Name is required");
         }
-        if (patient.getSurname() == null || patient.getSurname().trim().isEmpty()) {
+        if (surname == null || surname.trim().isEmpty()) {
             throw new RuntimeException("Surname is required");
         }
 
         // Trim whitespace
-        patient.setName(patient.getName().trim());
-        patient.setSurname(patient.getSurname().trim());
-        if (patient.getAddress() != null) patient.setAddress(patient.getAddress().trim());
-        if (patient.getPesel() != null) patient.setPesel(patient.getPesel().trim());
+        name = name.trim();
+        surname = surname.trim();
+        if (address != null) address = address.trim();
+        if (pesel != null) pesel = pesel.trim();
 
         // Validate field lengths
-        if (patient.getName().length() > 100) {
+        if (name.length() > 100) {
             throw new RuntimeException("Name is too long (max 100 characters)");
         }
-        if (patient.getSurname().length() > 100) {
+        if (surname.length() > 100) {
             throw new RuntimeException("Surname is too long (max 100 characters)");
         }
-        if (patient.getAddress() != null && patient.getAddress().length() > 200) {
+        if (address != null && address.length() > 200) {
             throw new RuntimeException("Address is too long (max 200 characters)");
         }
-        if (patient.getPesel() != null && !patient.getPesel().isEmpty()) {
-            if (patient.getPesel().length() != 11) {
+        if (pesel != null && !pesel.isEmpty()) {
+            if (pesel.length() != 11) {
                 throw new RuntimeException("PESEL must be exactly 11 characters");
             }
-            if (!patient.getPesel().matches("\\d+")) {
+            if (!pesel.matches("\\d+")) {
                 throw new RuntimeException("PESEL must contain only digits");
             }
         }
 
         // Check for duplicate PESEL
-        if (patient.getPesel() != null && !patient.getPesel().isEmpty()) {
-            Optional<Patient> existing = patientRepository.findByPesel(patient.getPesel());
-            if (existing.isPresent() && !existing.get().getId().equals(patient.getId())) {
+        if (pesel != null && !pesel.isEmpty()) {
+            Optional<Patient> existing = patientRepository.findByPesel(pesel);
+            if (existing.isPresent()) { //  && !existing.get().getId().equals(patient.getId()) again i think its skippable
                 throw new RuntimeException("Patient with this PESEL already exists");
             }
         }
 
-        return patientRepository.save(patient);
+        Patient patient = new Patient(name, surname, address, pesel);
+        patientRepository.save(patient);
+        return new PatientResponseDTO(patient);
     }
 
     /**

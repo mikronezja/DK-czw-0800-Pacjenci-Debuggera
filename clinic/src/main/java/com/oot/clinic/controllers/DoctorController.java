@@ -1,9 +1,9 @@
 package com.oot.clinic.controllers;
 
-import com.oot.clinic.DTOs.ShiftDoctorResponseDTO;
-import com.oot.clinic.entities.Doctor;
-import com.oot.clinic.DTOs.DoctorDTO;
-import com.oot.clinic.entities.Shift;
+import com.oot.clinic.DTOs.doctor.DoctorRequestDTO;
+import com.oot.clinic.DTOs.doctor.DoctorResponseDTO;
+import com.oot.clinic.DTOs.shift.ShiftDoctorResponseDTO;
+import com.oot.clinic.DTOs.doctor.DoctorDTO;
 import com.oot.clinic.services.DoctorService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -14,7 +14,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Collections;
 import java.util.List;
 
 @RestController
@@ -32,15 +31,22 @@ public class DoctorController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201",
                     description = "Doctor created successfully",
-                    content = @Content(schema = @Schema(implementation =  Doctor.class))),
+                    content = @Content(schema = @Schema(implementation =  DoctorResponseDTO.class))),
             @ApiResponse(responseCode = "400",
                     description = "Invalid request data",
                     content = @Content(schema = @Schema()))
     })
     @PostMapping("/add")
-    public ResponseEntity<?> addDoctor(@RequestBody Doctor doctor) {
+    public ResponseEntity<?> addDoctor(@RequestBody DoctorRequestDTO doctor) {
         try {
-            return ResponseEntity.status(HttpStatus.CREATED).body(doctorService.addDoctor(doctor));
+            DoctorResponseDTO addedDoctor = doctorService.addDoctor(
+                    doctor.getName(),
+                    doctor.getSurname(),
+                    doctor.getPesel(),
+                    doctor.getAddress(),
+                    doctor.getSpecialization()
+            );
+            return ResponseEntity.status(HttpStatus.CREATED).body(addedDoctor);
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         } catch (Exception e) {
@@ -68,7 +74,7 @@ public class DoctorController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200",
                     description = "Doctor details accessed successfully",
-                    content = @Content(schema = @Schema(implementation =  Doctor.class))),
+                    content = @Content(schema = @Schema(implementation =  DoctorDTO.class))),
             @ApiResponse(responseCode = "404",
                     description = "Doctor not found",
                     content = @Content(schema = @Schema()))
@@ -108,7 +114,8 @@ public class DoctorController {
     @Operation(summary = "Get doctor's shifts", description = "Returns a list of all shifts assigned to a doctor")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200",
-                    description = "Shifts list accessed successfully"),
+                    description = "Shifts list accessed successfully",
+                    content = @Content(schema = @Schema(implementation =  ShiftDoctorResponseDTO.class))),
             @ApiResponse(responseCode = "404",
                     description = "Doctor not found",
                     content = @Content(schema = @Schema()))

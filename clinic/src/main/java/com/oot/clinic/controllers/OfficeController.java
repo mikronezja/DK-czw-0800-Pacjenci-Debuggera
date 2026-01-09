@@ -1,9 +1,8 @@
 package com.oot.clinic.controllers;
 
-import com.oot.clinic.DTOs.OfficeDTO;
-import com.oot.clinic.DTOs.ShiftDoctorResponseDTO;
-import com.oot.clinic.DTOs.ShiftOfficeResponseDTO;
-import com.oot.clinic.entities.Office;
+import com.oot.clinic.DTOs.office.OfficeRequestDTO;
+import com.oot.clinic.DTOs.office.OfficeResponseDTO;
+import com.oot.clinic.DTOs.shift.ShiftOfficeResponseDTO;
 import com.oot.clinic.services.OfficeService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -30,15 +29,16 @@ public class OfficeController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201",
                     description = "Office created successfully",
-                    content = @Content(schema = @Schema(implementation =  Office.class))),
+                    content = @Content(schema = @Schema(implementation =  OfficeResponseDTO.class))),
             @ApiResponse(responseCode = "400",
                     description = "Invalid request data",
                     content = @Content(schema = @Schema()))
     })
     @PostMapping("/add")
-    public ResponseEntity<?> addOffice(@RequestBody Office office) {
+    public ResponseEntity<?> addOffice(@RequestBody OfficeRequestDTO office) {
         try {
-            return ResponseEntity.status(HttpStatus.CREATED).body(officeService.addOffice(office));
+            OfficeResponseDTO addedOffice = officeService.addOffice(office.getRoomNumber());
+            return ResponseEntity.status(HttpStatus.CREATED).body(addedOffice);
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         } catch (Exception e) {
@@ -51,13 +51,13 @@ public class OfficeController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200",
                     description = "Office list accessed successfully",
-                    content = @Content(schema = @Schema(implementation =  Office.class))),
+                    content = @Content(schema = @Schema(implementation =  OfficeResponseDTO.class))),
             @ApiResponse(responseCode = "400",
                     description = "Invalid request data",
                     content = @Content(schema = @Schema()))
     })
     @GetMapping
-    public List<OfficeDTO> getOffices() {
+    public List<OfficeResponseDTO> getOffices() {
         return officeService.getOffices();
     }
 

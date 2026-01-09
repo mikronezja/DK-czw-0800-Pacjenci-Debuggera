@@ -1,4 +1,4 @@
-package com.oot.clinic.DTOs;
+package com.oot.clinic.DTOs.patient;
 
 import com.oot.clinic.entities.Patient;
 

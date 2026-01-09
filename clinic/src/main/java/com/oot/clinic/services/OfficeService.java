@@ -1,7 +1,7 @@
 package com.oot.clinic.services;
 
-import com.oot.clinic.DTOs.OfficeDTO;
-import com.oot.clinic.DTOs.ShiftOfficeResponseDTO;
+import com.oot.clinic.DTOs.office.OfficeResponseDTO;
+import com.oot.clinic.DTOs.shift.ShiftOfficeResponseDTO;
 import com.oot.clinic.entities.Office;
 import com.oot.clinic.repositories.OfficeRepository;
 import org.springframework.stereotype.Service;
@@ -18,31 +18,34 @@ public class OfficeService {
 
     /**
      * Adds a new office to the database
-     * @param office the Office object that's being added
-     * @throws RuntimeException if room number already exists or is invalid
+     * @param roomNumber
+     * @return OfficeResponseDTO
+     * @throws RuntimeException if office with number already exists or number is invalid
      */
-    public Office addOffice(Office office) {
+    public OfficeResponseDTO addOffice(int roomNumber) {
         // Validate room number
-        if (office.getRoomNumber() <= 0) {
+        if (roomNumber <= 0) {
             throw new RuntimeException("Room number must be greater than 0");
         }
 
         // Check for duplicate room number
-        Optional<Office> existing = officeRepository.findByRoomNumber(office.getRoomNumber());
-        if (existing.isPresent() && !existing.get().getId().equals(office.getId())) {
+        Optional<Office> existing = officeRepository.findByRoomNumber(roomNumber);
+        if (existing.isPresent()) { // && !existing.get().getId().equals(office.getId()) again
             throw new RuntimeException("Office with this room number already exists");
         }
 
-        return officeRepository.save(office);
+        Office office = new Office(roomNumber);
+        officeRepository.save(office);
+        return new OfficeResponseDTO(office);
     }
 
     /**
      * Returns a list of existing offices
      */
-    public List<OfficeDTO> getOffices() {
+    public List<OfficeResponseDTO> getOffices() {
         return officeRepository.findAll()
                 .stream()
-                .map(OfficeDTO::new)
+                .map(OfficeResponseDTO::new)
                 .toList();
     }
 
