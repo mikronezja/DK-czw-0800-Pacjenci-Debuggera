@@ -1,5 +1,5 @@
 import type { Pacient } from "@/types/pacient";
-import React, { useState } from "react";
+import { useState } from "react";
 import PatientDisplay from "./PatientDisplay";
 import styled from "styled-components";
 import { Plus } from "lucide-react";

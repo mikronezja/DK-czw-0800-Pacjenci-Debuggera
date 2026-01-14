@@ -14,6 +14,7 @@ import NewOfficePanel from "./NewOfficePanel";
 import { OFFICE_DETAILS_ROUTE } from "@/constants/routes";
 import { callDeleteOffice, callGetOffices } from "@/api/office_calls";
 import { toast } from "sonner";
+import type { ErrorType } from "@/types/error";
 
 const OfficePanelStyled = styled.div`
   display: flex;
@@ -59,8 +60,10 @@ const OfficePanel = () => {
         dataArray.filter((office: { id: number }) => office.id !== id)
       );
       toast.success("Gabinet został usunięty");
-    } catch (err) {
-      toast.success("Nie można było usunąć gabinetu");
+    } catch (err: unknown) {
+      toast.error(
+        (err as ErrorType).response?.data || "Nie można było usunąć gabinetu"
+      );
     }
   };
 

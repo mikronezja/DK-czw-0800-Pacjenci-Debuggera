@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import styled from "styled-components";
 import { callAddOffice } from "@/api/office_calls";
 import { toast } from "sonner";
+import type { ErrorType } from "@/types/error";
 
 interface OfficeDisplayProps {
   dataArray: Array<Office>;
@@ -55,8 +56,10 @@ const NewOfficePanel = ({
 
       setDataArray([...dataArray, { ...formData, id: response.data.id }]);
       toast.success("Nowy gabinet został dodany");
-    } catch (err) {
-      toast.success("Nie można było dodać gabinetu");
+    } catch (err: unknown) {
+      toast.error(
+        (err as ErrorType).response?.data || "Nie można było dodać gabinetu"
+      );
     }
     setAddOfficeOpen(false);
   };

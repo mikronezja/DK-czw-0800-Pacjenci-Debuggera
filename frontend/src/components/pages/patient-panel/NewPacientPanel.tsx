@@ -5,6 +5,8 @@ import { Label } from "@/components/ui/label";
 import type { Pacient } from "@/types/pacient";
 import { callAddPatient } from "@/api/patient_calls";
 import { FormStyled } from "@/styles/styledcomponent";
+import { toast } from "sonner";
+import type { ErrorType } from "@/types/error";
 
 interface PacientDisplayProps {
   dataArray: Array<Pacient>;
@@ -31,8 +33,11 @@ const NewPacientPanel = ({
       const response = await callAddPatient(formData);
 
       setDataArray([...dataArray, { ...formData, id: response.data.id }]);
+      toast.success("Nowy pacjent został dodany");
     } catch (err) {
-      console.log(err);
+      toast.error(
+        (err as ErrorType).response?.data || "Nie można było dodać pacjenta"
+      );
     }
 
     setAddPacientOpen(false);

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { ROUTES } from "@/constants/routes";
 import { DarkModeSwitch } from "./DarkModeSwitch";
 import {

@@ -11,6 +11,7 @@ import {
   Layout,
   SelectTriggerStyled,
 } from "@/styles/styledcomponent";
+import type { ErrorType } from "@/types/error";
 import type { Office } from "@/types/office";
 import type { DayOfWeekType, Shift } from "@/types/shifts";
 import { SelectValue } from "@radix-ui/react-select";
@@ -78,8 +79,10 @@ const ShiftDoctorPanel = () => {
       await callAddShift(data);
       console.log("udało sie dodać zmiane");
       toast.success("Zmiana została dodana");
-    } catch (err) {
-      toast.error("Nie można było dodać zmiany");
+    } catch (err: unknown) {
+      toast.error(
+        (err as ErrorType).response?.data || "Nie można było dodać zmiany"
+      );
     }
   };
 

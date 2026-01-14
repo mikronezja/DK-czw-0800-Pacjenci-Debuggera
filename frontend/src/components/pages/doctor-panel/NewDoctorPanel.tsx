@@ -14,6 +14,7 @@ import { callAddDoctor } from "@/api/doctor_calls";
 import { SPECIALIZATIONS } from "@/constants/specializations";
 import { FormStyled } from "@/styles/styledcomponent";
 import { toast } from "sonner";
+import type { ErrorType } from "@/types/error";
 
 interface DoctorDisplayProps {
   dataArray: Array<Doctor>;
@@ -43,9 +44,10 @@ const NewDoctorPanel = ({
 
       setDataArray([...dataArray, { ...formData, id: response.data.id }]);
       toast.success("Nowy lekarz został dodany");
-    } catch (err) {
-      console.log(err);
-      toast.success("Lekarz nie mógł zostać dodany");
+    } catch (err: unknown) {
+      toast.error(
+        (err as ErrorType).response?.data || "Lekarz nie mógł zostać dodany"
+      );
     }
 
     setAddDoctorOpen(false);

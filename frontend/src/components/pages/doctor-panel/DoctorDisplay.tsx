@@ -20,6 +20,7 @@ import {
 import { callDeleteDoctor, callGetDoctors } from "@/api/doctor_calls";
 import { SPECIALIZATIONS } from "@/constants/specializations";
 import { toast } from "sonner";
+import type { ErrorType } from "@/types/error";
 
 interface DoctorDisplayProps {
   dataArray: Array<Doctor>;
@@ -44,9 +45,8 @@ const DoctorDisplay = ({ dataArray, setDataArray }: DoctorDisplayProps) => {
         dataArray.filter((doctor: { id: number }) => doctor.id !== id)
       );
       toast.success("Lekarz został usunięty");
-    } catch (error) {
-      console.error("Error deleting doctor:", error);
-      toast.success("Nie można było usunąć lekarza");
+    } catch (error: unknown) {
+      toast.error((error as ErrorType).response.data);
     }
   };
 
@@ -129,6 +129,4 @@ const DoctorDisplay = ({ dataArray, setDataArray }: DoctorDisplayProps) => {
     </TableStyled>
   );
 };
-// /doctors/id=5 <- get
-// /doctors/id=5 <- delete
 export default DoctorDisplay;
