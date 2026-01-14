@@ -4,6 +4,9 @@ import com.oot.clinic.DTOs.shift.ShiftResponseDTO;
 import com.oot.clinic.entities.Doctor;
 import com.oot.clinic.entities.Office;
 import com.oot.clinic.entities.Shift;
+import com.oot.clinic.exceptions.ConflictException;
+import com.oot.clinic.exceptions.ValidationException;
+import com.oot.clinic.exceptions.ResourceNotFoundException;
 import com.oot.clinic.repositories.DoctorRepository;
 import com.oot.clinic.repositories.OfficeRepository;
 import com.oot.clinic.repositories.ShiftRepository;
@@ -20,158 +23,151 @@ public class ShiftService {
     private final DoctorRepository doctorRepository;
     private final OfficeRepository officeRepository;
 
-    public ShiftService(ShiftRepository shiftRepository, DoctorRepository doctorRepository, OfficeRepository officeRepository) {
+    public ShiftService(ShiftRepository shiftRepository,
+                        DoctorRepository doctorRepository,
+                        OfficeRepository officeRepository) {
         this.shiftRepository = shiftRepository;
         this.doctorRepository = doctorRepository;
         this.officeRepository = officeRepository;
     }
 
-    /**
-     * Returns a list of all shifts mapped as ShiftResponseDTO objects
-     */
     public List<ShiftResponseDTO> getAllShifts() {
         return shiftRepository.findAll().stream()
                 .map(ShiftResponseDTO::new)
                 .toList();
     }
 
-    /**
-     *
-     * @param doctorId
-     * @param officeId
-     * @param dayOfWeek
-     * @param startTime
-     * @param endTime
-     * @return A successfully saved shift
-     * @throws RuntimeException if there is no Doctor or no Office by their id, or if startTime >= endTime
-     */
-    public ShiftResponseDTO createShift(Long doctorId, Long officeId, DayOfWeek dayOfWeek, LocalTime startTime, LocalTime endTime) {
-        // Validate required fields
+    public ShiftResponseDTO createShift(
+            Long doctorId,
+            Long officeId,
+            DayOfWeek dayOfWeek,
+            LocalTime startTime,
+            LocalTime endTime
+    ) {
+
         if (doctorId == null) {
-            throw new RuntimeException("Doctor ID is required");
+            throw new ValidationException("Identyfikator lekarza jest wymagany");
         }
         if (officeId == null) {
-            throw new RuntimeException("Office ID is required");
+            throw new ValidationException("Identyfikator gabinetu jest wymagany");
         }
         if (dayOfWeek == null) {
-            throw new RuntimeException("Day of week is required");
+            throw new ValidationException("Dzień tygodnia jest wymagany");
         }
         if (startTime == null) {
-            throw new RuntimeException("Start time is required");
+            throw new ValidationException("Godzina rozpoczęcia jest wymagana");
         }
         if (endTime == null) {
-            throw new RuntimeException("End time is required");
+            throw new ValidationException("Godzina zakończenia jest wymagana");
         }
 
-        if (startTime.isAfter(endTime) || startTime.equals(endTime)) {
-            throw new RuntimeException("Start time must be before end time.");
+        if (!startTime.isBefore(endTime)) {
+            throw new ValidationException("Godzina rozpoczęcia musi być wcześniejsza niż godzina zakończenia");
         }
 
-        Doctor doctor =  doctorRepository.findById(doctorId).orElseThrow(() ->  new RuntimeException("Doctor does not exist."));
-        Office office = officeRepository.findById(officeId).orElseThrow(() -> new RuntimeException("Office does not exist."));
+        Doctor doctor = doctorRepository.findById(doctorId)
+                .orElseThrow(() -> new ResourceNotFoundException("Lekarz", doctorId));
 
-        // Check for overlapping shifts for the doctor
+        Office office = officeRepository.findById(officeId)
+                .orElseThrow(() -> new ResourceNotFoundException("Gabinet", officeId));
+
+        // Konflikt – lekarz zajęty
         List<Shift> existingDoctorShifts = shiftRepository.findAll().stream()
-                .filter(s -> s.getDoctor().getId().equals(doctorId) && s.getDayOfWeek().equals(dayOfWeek))
+                .filter(s -> s.getDoctor().getId().equals(doctorId)
+                        && s.getDayOfWeek().equals(dayOfWeek))
                 .toList();
 
         for (Shift existingShift : existingDoctorShifts) {
-            if (isTimeOverlapping(startTime, endTime, existingShift.getStartTime(), existingShift.getEndTime())) {
-                throw new RuntimeException("Doctor already has a shift at this time on " + dayOfWeek +
-                        " (existing: " + existingShift.getStartTime() + "-" + existingShift.getEndTime() +
-                        ", new: " + startTime + "-" + endTime + ")");
+            if (isTimeOverlapping(startTime, endTime,
+                    existingShift.getStartTime(), existingShift.getEndTime())) {
+
+                throw new ConflictException(
+                        "Lekarz ma już dyżur w tym czasie w " + dayOfWeek +
+                                " (istniejący: " + existingShift.getStartTime() + "-" + existingShift.getEndTime() +
+                                ", nowy: " + startTime + "-" + endTime + ")"
+                );
             }
         }
 
-        // Check for overlapping shifts for the office
+        // Konflikt – gabinet zajęty
         List<Shift> existingOfficeShifts = shiftRepository.findAll().stream()
-                .filter(s -> s.getOffice().getId().equals(officeId) && s.getDayOfWeek().equals(dayOfWeek))
+                .filter(s -> s.getOffice().getId().equals(officeId)
+                        && s.getDayOfWeek().equals(dayOfWeek))
                 .toList();
 
         for (Shift existingShift : existingOfficeShifts) {
-            if (isTimeOverlapping(startTime, endTime, existingShift.getStartTime(), existingShift.getEndTime())) {
-                throw new RuntimeException("Office already has a shift at this time on " + dayOfWeek +
-                        " (existing: " + existingShift.getStartTime() + "-" + existingShift.getEndTime() +
-                        ", new: " + startTime + "-" + endTime + ")");
+            if (isTimeOverlapping(startTime, endTime,
+                    existingShift.getStartTime(), existingShift.getEndTime())) {
+
+                throw new ConflictException(
+                        "Gabinet jest już zajęty w tym czasie w " + dayOfWeek +
+                                " (istniejący: " + existingShift.getStartTime() + "-" + existingShift.getEndTime() +
+                                ", nowy: " + startTime + "-" + endTime + ")"
+                );
             }
         }
 
-        Shift shift = shiftRepository.save(new Shift(doctor, office, dayOfWeek, startTime, endTime));
+        Shift shift = shiftRepository.save(
+                new Shift(doctor, office, dayOfWeek, startTime, endTime)
+        );
+
         return new ShiftResponseDTO(shift);
     }
 
-    /**
-     * Checks if two time intervals overlap.
-     * Two intervals overlap if they share any common time point.
-     *
-     * @param start1 Start time of first interval
-     * @param end1 End time of first interval
-     * @param start2 Start time of second interval
-     * @param end2 End time of second interval
-     * @return true if intervals overlap, false otherwise
-     */
-    private boolean isTimeOverlapping(LocalTime start1, LocalTime end1, LocalTime start2, LocalTime end2) {
-        // Two intervals overlap if: start1 < end2 AND start2 < end1
-        // This covers all cases:
-        // - Partial overlap: [8-12] and [10-14] -> overlap
-        // - One contains another: [8-16] and [10-14] -> overlap
-        // - Exact same time: [8-12] and [8-12] -> overlap
-        // - Adjacent (touching): [8-12] and [12-16] -> NO overlap (start2 == end1, so start2.isBefore(end1) is false)
+    private boolean isTimeOverlapping(LocalTime start1, LocalTime end1,
+                                      LocalTime start2, LocalTime end2) {
         return start1.isBefore(end2) && start2.isBefore(end1);
     }
 
-    /**
-     * Deletes a shift from the database with specific id if it exists
-     * @param id
-     */
-    public void deleteShiftById(Long id) throws Exception {
-        if (!shiftRepository.existsById(id)) {
-            throw new Exception("Shift does not exist.");
-        }
-        shiftRepository.deleteById(id);
+    public void deleteShiftById(Long id) {
+        Shift shift = shiftRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Dyżur", id));
+
+        shiftRepository.delete(shift);
     }
 
-    /**
-     *
-     * @param id
-     * @param doctorId
-     * @param officeId
-     * @param dayOfWeek
-     * @param startTime
-     * @param endTime
-     * @return an edited shift
-     * @throws Exception if Doctor/Shift/Office doesn't exist, or if startTime >= endTime
-     */
-    public Shift editShift(Long id, Long doctorId, Long officeId, DayOfWeek dayOfWeek, LocalTime startTime, LocalTime endTime) throws Exception {
-        // Validate required fields
+    public Shift editShift(
+            Long id,
+            Long doctorId,
+            Long officeId,
+            DayOfWeek dayOfWeek,
+            LocalTime startTime,
+            LocalTime endTime
+    ) {
+
         if (id == null) {
-            throw new RuntimeException("Shift ID is required");
+            throw new ValidationException("Identyfikator dyżuru jest wymagany");
         }
         if (doctorId == null) {
-            throw new RuntimeException("Doctor ID is required");
+            throw new ValidationException("Identyfikator lekarza jest wymagany");
         }
         if (officeId == null) {
-            throw new RuntimeException("Office ID is required");
+            throw new ValidationException("Identyfikator gabinetu jest wymagany");
         }
         if (dayOfWeek == null) {
-            throw new RuntimeException("Day of week is required");
+            throw new ValidationException("Dzień tygodnia jest wymagany");
         }
         if (startTime == null) {
-            throw new RuntimeException("Start time is required");
+            throw new ValidationException("Godzina rozpoczęcia jest wymagana");
         }
         if (endTime == null) {
-            throw new RuntimeException("End time is required");
+            throw new ValidationException("Godzina zakończenia jest wymagana");
         }
 
-        if (startTime.isAfter(endTime) || startTime.equals(endTime)) {
-            throw new RuntimeException("Start time must be before end time.");
+        if (!startTime.isBefore(endTime)) {
+            throw new ValidationException("Godzina rozpoczęcia musi być wcześniejsza niż godzina zakończenia");
         }
 
-        Shift shift = shiftRepository.findById(id).orElseThrow(() ->  new RuntimeException("Shift does not exist."));
-        Doctor doctor =  doctorRepository.findById(doctorId).orElseThrow(() ->  new RuntimeException("Doctor does not exist."));
-        Office office = officeRepository.findById(officeId).orElseThrow(() -> new RuntimeException("Office does not exist."));
+        Shift shift = shiftRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Dyżur", id));
 
-        // Check for overlapping shifts for the doctor (excluding current shift)
+        Doctor doctor = doctorRepository.findById(doctorId)
+                .orElseThrow(() -> new ResourceNotFoundException("Lekarz", doctorId));
+
+        Office office = officeRepository.findById(officeId)
+                .orElseThrow(() -> new ResourceNotFoundException("Gabinet", officeId));
+
+        // Konflikt – lekarz zajęty
         List<Shift> existingDoctorShifts = shiftRepository.findAll().stream()
                 .filter(s -> s.getDoctor().getId().equals(doctorId)
                         && s.getDayOfWeek().equals(dayOfWeek)
@@ -179,14 +175,18 @@ public class ShiftService {
                 .toList();
 
         for (Shift existingShift : existingDoctorShifts) {
-            if (isTimeOverlapping(startTime, endTime, existingShift.getStartTime(), existingShift.getEndTime())) {
-                throw new RuntimeException("Doctor already has a shift at this time on " + dayOfWeek +
-                        " (existing: " + existingShift.getStartTime() + "-" + existingShift.getEndTime() +
-                        ", new: " + startTime + "-" + endTime + ")");
+            if (isTimeOverlapping(startTime, endTime,
+                    existingShift.getStartTime(), existingShift.getEndTime())) {
+
+                throw new ConflictException(
+                        "Lekarz ma już dyżur w tym czasie w " + dayOfWeek +
+                                " (istniejący: " + existingShift.getStartTime() + "-" + existingShift.getEndTime() +
+                                ", nowy: " + startTime + "-" + endTime + ")"
+                );
             }
         }
 
-        // Check for overlapping shifts for the office (excluding current shift)
+        // Konflikt – gabinet zajęty
         List<Shift> existingOfficeShifts = shiftRepository.findAll().stream()
                 .filter(s -> s.getOffice().getId().equals(officeId)
                         && s.getDayOfWeek().equals(dayOfWeek)
@@ -194,10 +194,14 @@ public class ShiftService {
                 .toList();
 
         for (Shift existingShift : existingOfficeShifts) {
-            if (isTimeOverlapping(startTime, endTime, existingShift.getStartTime(), existingShift.getEndTime())) {
-                throw new RuntimeException("Office already has a shift at this time on " + dayOfWeek +
-                        " (existing: " + existingShift.getStartTime() + "-" + existingShift.getEndTime() +
-                        ", new: " + startTime + "-" + endTime + ")");
+            if (isTimeOverlapping(startTime, endTime,
+                    existingShift.getStartTime(), existingShift.getEndTime())) {
+
+                throw new ConflictException(
+                        "Gabinet jest już zajęty w tym czasie w " + dayOfWeek +
+                                " (istniejący: " + existingShift.getStartTime() + "-" + existingShift.getEndTime() +
+                                ", nowy: " + startTime + "-" + endTime + ")"
+                );
             }
         }
 
@@ -209,7 +213,4 @@ public class ShiftService {
 
         return shiftRepository.save(shift);
     }
-
-
-
 }

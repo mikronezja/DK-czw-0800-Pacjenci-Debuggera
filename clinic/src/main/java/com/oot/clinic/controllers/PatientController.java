@@ -3,6 +3,10 @@ package com.oot.clinic.controllers;
 import com.oot.clinic.DTOs.patient.PatientDTO;
 import com.oot.clinic.DTOs.patient.PatientRequestDTO;
 import com.oot.clinic.DTOs.patient.PatientResponseDTO;
+import com.oot.clinic.entities.Patient;
+import com.oot.clinic.exceptions.ConflictException;
+import com.oot.clinic.exceptions.ResourceNotFoundException;
+import com.oot.clinic.exceptions.ValidationException;
 import com.oot.clinic.services.PatientService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -32,6 +36,7 @@ public class PatientController {
                     description = "Invalid request data",
                     content = @Content(schema = @Schema()))
     })
+
     @PostMapping("/add")
     public ResponseEntity<?> addPatient(@RequestBody PatientRequestDTO patient) {
         try {
@@ -41,13 +46,23 @@ public class PatientController {
                     patient.getPesel(),
                     patient.getAddress()
             );
-            return ResponseEntity.status(HttpStatus.CREATED).body(addedPatient);
-        } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error creating patient");
+
+            return ResponseEntity
+                    .status(HttpStatus.CREATED)
+                    .body(addedPatient);
+
+        } catch (ValidationException ex) {
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body(ex.getMessage());
+
+        } catch (ConflictException ex) {
+            return ResponseEntity
+                    .status(HttpStatus.CONFLICT)
+                    .body(ex.getMessage());
         }
     }
+
 
 
     @Operation(summary = "Get all patients", description = "Shows all patients basic information")
@@ -74,15 +89,19 @@ public class PatientController {
                     description = "Patient not found",
                     content = @Content(schema = @Schema()))
     })
+
     @GetMapping("/{id}")
-    public ResponseEntity<PatientResponseDTO> getPatientById(@PathVariable Long id) {
+    public ResponseEntity<?> getPatientById(@PathVariable Long id) {
         try {
-            return ResponseEntity.ok(new PatientResponseDTO(patientService.getPatientById(id).get()));
-        } catch (Exception e) {
-            return ResponseEntity.notFound().build();
+            Patient patient = patientService.getPatientById(id);
+            return ResponseEntity.ok(patient);
+
+        } catch (ResourceNotFoundException ex) {
+            return ResponseEntity
+                    .status(HttpStatus.NOT_FOUND)
+                    .body(ex.getMessage());
         }
     }
-
 
     @Operation(summary = "Delete a patient", description = "Delete a patient from the system by id")
     @ApiResponses(value = {
@@ -92,12 +111,14 @@ public class PatientController {
                     description = "Patient not found",
                     content = @Content(schema = @Schema()))
     })
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletePatient(@PathVariable Long id) {
         try {
             patientService.deletePatientById(id);
             return ResponseEntity.noContent().build();
-        } catch (Exception e) {
+
+        } catch (ResourceNotFoundException ex) {
             return ResponseEntity.notFound().build();
         }
     }

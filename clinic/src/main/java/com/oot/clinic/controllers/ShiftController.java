@@ -2,6 +2,9 @@ package com.oot.clinic.controllers;
 
 import com.oot.clinic.DTOs.shift.ShiftRequestDTO;
 import com.oot.clinic.DTOs.shift.ShiftResponseDTO;
+import com.oot.clinic.exceptions.ConflictException;
+import com.oot.clinic.exceptions.ResourceNotFoundException;
+import com.oot.clinic.exceptions.ValidationException;
 import com.oot.clinic.services.ShiftService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -43,8 +46,9 @@ public class ShiftController {
             @ApiResponse(responseCode = "400",
                     description = "Invalid request data")
     })
+
     @PostMapping("/add")
-    public ResponseEntity<?> createShift(@RequestBody ShiftRequestDTO shiftRequest){
+    public ResponseEntity<?> createShift(@RequestBody ShiftRequestDTO shiftRequest) {
         try {
             ShiftResponseDTO shift = shiftService.createShift(
                     shiftRequest.getDoctorId(),
@@ -53,11 +57,25 @@ public class ShiftController {
                     shiftRequest.getStartTime(),
                     shiftRequest.getEndTime()
             );
-            return ResponseEntity.status(HttpStatus.CREATED).body(shift);
-        } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+
+            return ResponseEntity
+                    .status(HttpStatus.CREATED)
+                    .body(shift);
+
+        } catch (ValidationException ex) {
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body(ex.getMessage());
+
+        } catch (ResourceNotFoundException ex) {
+            return ResponseEntity
+                    .status(HttpStatus.NOT_FOUND)
+                    .body(ex.getMessage());
+
+        } catch (ConflictException ex) {
+            return ResponseEntity
+                    .status(HttpStatus.CONFLICT)
+                    .body(ex.getMessage());
         }
     }
 
@@ -69,16 +87,17 @@ public class ShiftController {
                     description = "Shift not found",
                     content = @Content(schema = @Schema()))
     })
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteShift(@PathVariable Long id) {
         try {
             shiftService.deleteShiftById(id);
             return ResponseEntity.noContent().build();
-        } catch (Exception e) {
+
+        } catch (ResourceNotFoundException ex) {
             return ResponseEntity.notFound().build();
         }
     }
-
 
     @Operation(summary = "Edit existing shift", description = "Allows to make any changes to an existing shift")
     @ApiResponses(value = {
@@ -88,21 +107,40 @@ public class ShiftController {
                     description = "Shift not found",
                     content = @Content(schema = @Schema()))
     })
+
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateShift(@PathVariable Long id, @RequestBody ShiftRequestDTO shiftRequest) {
+    public ResponseEntity<?> updateShift(
+            @PathVariable Long id,
+            @RequestBody ShiftRequestDTO shiftRequest
+    ) {
         try {
-            ShiftResponseDTO updated = new ShiftResponseDTO(shiftService.editShift(id,
-                    shiftRequest.getDoctorId(),
-                    shiftRequest.getOfficeId(),
-                    shiftRequest.getDayOfWeek(),
-                    shiftRequest.getStartTime(),
-                    shiftRequest.getEndTime()));
+            ShiftResponseDTO updated = new ShiftResponseDTO(
+                    shiftService.editShift(
+                            id,
+                            shiftRequest.getDoctorId(),
+                            shiftRequest.getOfficeId(),
+                            shiftRequest.getDayOfWeek(),
+                            shiftRequest.getStartTime(),
+                            shiftRequest.getEndTime()
+                    )
+            );
 
             return ResponseEntity.ok(updated);
-        } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        } catch (Exception e) {
-            return ResponseEntity.notFound().build();
+
+        } catch (ValidationException ex) {
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body(ex.getMessage());
+
+        } catch (ResourceNotFoundException ex) {
+            return ResponseEntity
+                    .status(HttpStatus.NOT_FOUND)
+                    .body(ex.getMessage());
+
+        } catch (ConflictException ex) {
+            return ResponseEntity
+                    .status(HttpStatus.CONFLICT)
+                    .body(ex.getMessage());
         }
     }
 }

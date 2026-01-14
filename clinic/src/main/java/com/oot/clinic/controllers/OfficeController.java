@@ -3,6 +3,9 @@ package com.oot.clinic.controllers;
 import com.oot.clinic.DTOs.office.OfficeRequestDTO;
 import com.oot.clinic.DTOs.office.OfficeResponseDTO;
 import com.oot.clinic.DTOs.shift.ShiftOfficeResponseDTO;
+import com.oot.clinic.exceptions.ConflictException;
+import com.oot.clinic.exceptions.ResourceNotFoundException;
+import com.oot.clinic.exceptions.ValidationException;
 import com.oot.clinic.services.OfficeService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -34,18 +37,28 @@ public class OfficeController {
                     description = "Invalid request data",
                     content = @Content(schema = @Schema()))
     })
+
     @PostMapping("/add")
     public ResponseEntity<?> addOffice(@RequestBody OfficeRequestDTO office) {
         try {
-            OfficeResponseDTO addedOffice = officeService.addOffice(office.getRoomNumber());
-            return ResponseEntity.status(HttpStatus.CREATED).body(addedOffice);
-        } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error creating office");
+            OfficeResponseDTO addedOffice =
+                    officeService.addOffice(office.getRoomNumber());
+
+            return ResponseEntity
+                    .status(HttpStatus.CREATED)
+                    .body(addedOffice);
+
+        } catch (ValidationException ex) {
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body(ex.getMessage());
+
+        } catch (ConflictException ex) {
+            return ResponseEntity
+                    .status(HttpStatus.CONFLICT)
+                    .body(ex.getMessage());
         }
     }
-
 
     @Operation(summary = "See offices", description = "Shows all existing offices")
     @ApiResponses(value = {
@@ -56,11 +69,11 @@ public class OfficeController {
                     description = "Invalid request data",
                     content = @Content(schema = @Schema()))
     })
+
     @GetMapping
     public List<OfficeResponseDTO> getOffices() {
         return officeService.getOffices();
     }
-
 
     @Operation(summary = "Delete an office", description = "Delete an office from the system by id")
     @ApiResponses(value = {
@@ -70,19 +83,22 @@ public class OfficeController {
                     description = "Office not found",
                     content = @Content(schema = @Schema()))
     })
+
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteOffice(@PathVariable Long id) {
         try {
             officeService.deleteOfficeById(id);
             return ResponseEntity.noContent().build();
-        } catch (Exception e) {
-            if (e.getMessage().contains("shifts")) {
-                return ResponseEntity.badRequest().body(e.getMessage());
-            }
+
+        } catch (ResourceNotFoundException ex) {
             return ResponseEntity.notFound().build();
+
+        } catch (ConflictException ex) {
+            return ResponseEntity
+                    .status(HttpStatus.CONFLICT)
+                    .body(ex.getMessage());
         }
     }
-
 
     @Operation(summary = "Get office shifts", description = "Returns a list of all shifts assigned to the office")
     @ApiResponses(value = {
@@ -92,11 +108,13 @@ public class OfficeController {
                     description = "Office not found",
                     content = @Content(schema = @Schema()))
     })
+
     @GetMapping("/{id}/shifts")
     public ResponseEntity<List<ShiftOfficeResponseDTO>> getOfficeShifts(@PathVariable Long id) {
         try {
             return ResponseEntity.ok(officeService.getShifts(id));
-        } catch (Exception e) {
+
+        } catch (ResourceNotFoundException ex) {
             return ResponseEntity.notFound().build();
         }
     }

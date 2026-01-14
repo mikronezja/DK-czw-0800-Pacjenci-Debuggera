@@ -4,6 +4,9 @@ import com.oot.clinic.DTOs.doctor.DoctorRequestDTO;
 import com.oot.clinic.DTOs.doctor.DoctorResponseDTO;
 import com.oot.clinic.DTOs.shift.ShiftDoctorResponseDTO;
 import com.oot.clinic.DTOs.doctor.DoctorDTO;
+import com.oot.clinic.exceptions.ConflictException;
+import com.oot.clinic.exceptions.ResourceNotFoundException;
+import com.oot.clinic.exceptions.ValidationException;
 import com.oot.clinic.services.DoctorService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -36,6 +39,7 @@ public class DoctorController {
                     description = "Invalid request data",
                     content = @Content(schema = @Schema()))
     })
+
     @PostMapping("/add")
     public ResponseEntity<?> addDoctor(@RequestBody DoctorRequestDTO doctor) {
         try {
@@ -46,14 +50,22 @@ public class DoctorController {
                     doctor.getAddress(),
                     doctor.getSpecialization()
             );
-            return ResponseEntity.status(HttpStatus.CREATED).body(addedDoctor);
-        } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error creating doctor");
+
+            return ResponseEntity
+                    .status(HttpStatus.CREATED)
+                    .body(addedDoctor);
+
+        } catch (ValidationException ex) {
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body(ex.getMessage());
+
+        } catch (ConflictException ex) {
+            return ResponseEntity
+                    .status(HttpStatus.CONFLICT)
+                    .body(ex.getMessage());
         }
     }
-
 
     @Operation(summary = "Get all doctors", description = "Shows all doctors basic information")
     @ApiResponses(value = {
@@ -64,11 +76,11 @@ public class DoctorController {
                     description = "Invalid request data",
                     content = @Content(schema = @Schema()))
     })
+
     @GetMapping
     public List<DoctorDTO> getDoctors() {
         return doctorService.getDoctors();
     }
-
 
     @Operation(summary = "Get doctor details", description = "Access doctor's details by his id")
     @ApiResponses(value = {
@@ -79,15 +91,18 @@ public class DoctorController {
                     description = "Doctor not found",
                     content = @Content(schema = @Schema()))
     })
+
     @GetMapping("/{id}")
     public ResponseEntity<DoctorDTO> getDoctorById(@PathVariable Long id) {
         try {
-            return ResponseEntity.ok(new DoctorDTO(doctorService.getDoctorById(id)));
-        } catch (Exception e) {
+            return ResponseEntity.ok(
+                    new DoctorDTO(doctorService.getDoctorById(id))
+            );
+
+        } catch (ResourceNotFoundException ex) {
             return ResponseEntity.notFound().build();
         }
     }
-
 
     @Operation(summary = "Delete a doctor", description = "Delete a doctor from the system by id")
     @ApiResponses(value = {
@@ -97,19 +112,22 @@ public class DoctorController {
                     description = "Doctor not found",
                     content = @Content(schema = @Schema()))
     })
+
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteDoctor(@PathVariable Long id) {
         try {
             doctorService.deleteDoctorById(id);
             return ResponseEntity.noContent().build();
-        } catch (Exception e) {
-            if (e.getMessage().contains("shifts")) {
-                return ResponseEntity.badRequest().body(e.getMessage());
-            }
+
+        } catch (ResourceNotFoundException ex) {
             return ResponseEntity.notFound().build();
+
+        } catch (ConflictException ex) {
+            return ResponseEntity
+                    .status(HttpStatus.CONFLICT)
+                    .body(ex.getMessage());
         }
     }
-
 
     @Operation(summary = "Get doctor's shifts", description = "Returns a list of all shifts assigned to a doctor")
     @ApiResponses(value = {
