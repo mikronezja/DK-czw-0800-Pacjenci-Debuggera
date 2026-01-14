@@ -17,6 +17,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.lang.reflect.Field;
 import java.time.DayOfWeek;
 import java.time.LocalTime;
 import java.util.List;
@@ -41,12 +42,23 @@ class ShiftServiceTests {
     @InjectMocks
     private ShiftService shiftService;
 
+    private void setId(Shift shift, Long id) {
+        try {
+            Field idField = Shift.class.getDeclaredField("id");
+            idField.setAccessible(true);
+            idField.set(shift, id);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     @Test
     void getAllShiftsShouldReturnListOfShiftResponseDTO() {
         // Given
         Doctor doctor = new Doctor("Jan", "Kowalski", "80010112345", Specialization.KARDIOLOG, "Warszawa");
         Office office = new Office(101);
         Shift shift = new Shift(doctor, office, DayOfWeek.MONDAY, LocalTime.of(9, 0), LocalTime.of(17, 0));
+        setId(shift, 1L);
         when(shiftRepository.findAll()).thenReturn(List.of(shift));
 
         // When
@@ -65,7 +77,11 @@ class ShiftServiceTests {
         when(doctorRepository.findById(1L)).thenReturn(Optional.of(doctor));
         when(officeRepository.findById(1L)).thenReturn(Optional.of(office));
         when(shiftRepository.findAll()).thenReturn(List.of());
-        when(shiftRepository.save(any(Shift.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        when(shiftRepository.save(any(Shift.class))).thenAnswer(invocation -> {
+            Shift savedShift = invocation.getArgument(0);
+            setId(savedShift, 1L);
+            return savedShift;
+        });
 
         // When
         ShiftResponseDTO result = shiftService.createShift(1L, 1L, DayOfWeek.MONDAY, LocalTime.of(9, 0), LocalTime.of(17, 0));
