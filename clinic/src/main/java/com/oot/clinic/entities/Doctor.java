@@ -20,6 +20,8 @@ public class Doctor {
     private String address;
     @OneToMany(mappedBy = "doctor")
     private List<Shift> shifts = new ArrayList<>();
+    @OneToMany(mappedBy = "doctor")
+    private List<Appointment> appointments = new ArrayList<>();
 
     public Doctor(String name, String surname, String pesel, Specialization specialization, String address) {
         this.name = name;
@@ -79,5 +81,9 @@ public class Doctor {
 
     public void setAddress(String address) {
         this.address = address;
+    }
+
+    public List<Appointment> getAppointments() {
+        return appointments;
     }
 }

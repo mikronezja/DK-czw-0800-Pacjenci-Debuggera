@@ -87,7 +87,6 @@ public class ShiftController {
                     description = "Shift not found",
                     content = @Content(schema = @Schema()))
     })
-
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteShift(@PathVariable Long id) {
         try {
@@ -107,7 +106,6 @@ public class ShiftController {
                     description = "Shift not found",
                     content = @Content(schema = @Schema()))
     })
-
     @PutMapping("/{id}")
     public ResponseEntity<?> updateShift(
             @PathVariable Long id,
