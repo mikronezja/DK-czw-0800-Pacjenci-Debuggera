@@ -4,7 +4,7 @@
 
 ![UML](assets/uml.png)
 
-![ShiftUML](assets/shift_relation.png)
+![PatientUML](assets/patient_uml.png)
 
 ## Zaimplementowane funkcjonalności m1
 
