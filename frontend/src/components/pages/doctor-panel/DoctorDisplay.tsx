@@ -1,13 +1,11 @@
-import React, { useEffect, useState } from "react";
-import axios from "axios";
-import { data, useNavigate } from "react-router-dom";
+import React, { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import type { Doctor } from "@/types/doctor";
 import {
   Table,
   TableBody,
   TableCaption,
   TableCell,
-  TableFooter,
   TableHead,
   TableHeader,
   TableRow,
@@ -15,6 +13,14 @@ import {
 import styled from "styled-components";
 import { Button } from "@/components/ui/button";
 import { Eye, X } from "lucide-react";
+import {
+  DOCTOR_DETAILS_ROUTE,
+  DOCTOR_SHIFT_PANEL_ROUTE,
+} from "@/constants/routes";
+import { callDeleteDoctor, callGetDoctors } from "@/api/doctor_calls";
+import { SPECIALIZATIONS } from "@/constants/specializations";
+import { toast } from "sonner";
+import type { ErrorType } from "@/types/error";
 
 interface DoctorDisplayProps {
   dataArray: Array<Doctor>;
@@ -27,50 +33,43 @@ const TableStyled = styled(Table)`
 `;
 
 const formatSpecialization = (specialization: string): string => {
-  const mapping: Record<string, string> = {
-    KARDIOLOG: "Kardiolog",
-    DERMATOLOG: "Dermatolog",
-    NEUROLOG: "Neurolog",
-    OKULISTA: "Okulista",
-    ORTOPEDA: "Ortopeda",
-    CHIRURG: "Chirurg",
-    PEDIATRA: "Pediatra",
-  };
-  return mapping[specialization] || specialization;
+  return SPECIALIZATIONS[specialization] || specialization;
 };
 
 const DoctorDisplay = ({ dataArray, setDataArray }: DoctorDisplayProps) => {
   const navigate = useNavigate();
-  const deleteDoctor = (id: number) => {
-    axios
-      .delete(`http://localhost:8080/doctors/${id}`)
-      .then((res) => {
-        console.log("worked!", res.data);
-      })
-      .catch((err) => console.error(err));
-    setDataArray(
-      dataArray.filter((doctor: { id: number }) => doctor.id !== id)
-    );
+  const deleteDoctor = async (id: number) => {
+    try {
+      await callDeleteDoctor(id);
+      setDataArray(
+        dataArray.filter((doctor: { id: number }) => doctor.id !== id)
+      );
+      toast.success("Lekarz został usunięty");
+    } catch (error: unknown) {
+      toast.error((error as ErrorType).response.data);
+    }
   };
 
-  const getDetailsPage = (id: number) => {
-    navigate(`/details/${id}`);
+  const goToDetails = (id: number) => {
+    navigate(`${DOCTOR_DETAILS_ROUTE}/${id}`);
   };
 
-  const fetchData = () => {
-    axios
-      .get("http://localhost:8080/doctors")
-      .then((res) => {
-        console.log("worked!", res.data);
-        console.log("Dane z backendu:", res.data);
-        console.log("Pierwsze id:", res.data[0]?.id); // Sprawdź pierwsze id
-        setDataArray(res.data);
-      })
-      .catch((err) => console.error(err));
+  const goToShifts = (id: number) => {
+    navigate(`${DOCTOR_SHIFT_PANEL_ROUTE}/${id}`);
+  };
+
+  const fetchDoctors = async () => {
+    try {
+      const response = await callGetDoctors();
+
+      setDataArray(response.data);
+    } catch (err) {
+      console.error("Error fetching doctors:", err);
+    }
   };
 
   useEffect(() => {
-    fetchData();
+    fetchDoctors();
   }, []);
 
   // map -> doctors for each doctor i can display
@@ -84,6 +83,7 @@ const DoctorDisplay = ({ dataArray, setDataArray }: DoctorDisplayProps) => {
           <TableHead className="text-right">Specjalizacja</TableHead>
           <TableHead className="text-right"></TableHead>
           <TableHead className="text-right"></TableHead>
+          <TableHead className="text-right"></TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
@@ -91,15 +91,26 @@ const DoctorDisplay = ({ dataArray, setDataArray }: DoctorDisplayProps) => {
           <TableRow key={index}>
             <TableCell>{name}</TableCell>
             <TableCell>{surname}</TableCell>
-            <TableCell className="text-right">{formatSpecialization(specialization)}</TableCell>
+            <TableCell className="text-right">
+              {formatSpecialization(specialization)}
+            </TableCell>
             <TableCell className="text-right">
               <Button
                 variant="outline"
                 size="sm"
                 className="rounded-full w-8 h-8"
-                onClick={() => getDetailsPage(id)}
+                onClick={() => goToDetails(id)}
               >
                 <Eye />
+              </Button>
+            </TableCell>
+            <TableCell className="text-right">
+              <Button
+                variant="outline"
+                className="rounded-full"
+                onClick={() => goToShifts(id)}
+              >
+                Dodaj zmianę
               </Button>
             </TableCell>
             <TableCell className="text-right">
@@ -118,6 +129,4 @@ const DoctorDisplay = ({ dataArray, setDataArray }: DoctorDisplayProps) => {
     </TableStyled>
   );
 };
-// /doctors/id=5 <- get
-// /doctors/id=5 <- delete
 export default DoctorDisplay;

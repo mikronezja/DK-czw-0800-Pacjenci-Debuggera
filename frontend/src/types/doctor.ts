@@ -1,3 +1,5 @@
+import type { Shift } from "./shifts";
+
 export interface Doctor {
   name: string;
   surname: string;
@@ -5,4 +7,5 @@ export interface Doctor {
   pesel: string | undefined;
   address: string | undefined;
   id: number;
+  shifts: Array<Shift>;
 }

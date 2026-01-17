@@ -1,10 +1,7 @@
 import React, { useState } from "react";
-import ActionButton from "./ActionButton";
-import axios from "axios";
 import type { Doctor } from "@/types/doctor";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import styled from "styled-components";
 import { Label } from "@/components/ui/label";
 import {
   Select,
@@ -13,20 +10,17 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { callAddDoctor } from "@/api/doctor_calls";
+import { SPECIALIZATIONS } from "@/constants/specializations";
+import { FormStyled } from "@/styles/styledcomponent";
+import { toast } from "sonner";
+import type { ErrorType } from "@/types/error";
 
 interface DoctorDisplayProps {
   dataArray: Array<Doctor>;
   setDataArray: React.Dispatch<React.SetStateAction<Array<Doctor>>>;
   setAddDoctorOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
-
-const FormStyled = styled.form`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  gap: 10px;
-`;
 
 const NewDoctorPanel = ({
   dataArray,
@@ -39,21 +33,23 @@ const NewDoctorPanel = ({
     pesel: "",
     specialization: "",
     address: "",
+    shifts: [],
   });
 
-  const saveDoctor = (e: React.SyntheticEvent) => {
+  const addDoctor = async (e: React.SyntheticEvent) => {
     e.preventDefault();
 
-    axios
-      .post("http://localhost:8080/doctors/add", formData)
-      .then((res) => {
-        console.log("Doctor saved:", res.data);
-        setDataArray([...dataArray, { ...formData, id: res.data.id }]);
-      })
-      .catch((err) => {
-        console.log(formData);
-        console.error("Error saving doctor:", err);
-      });
+    try {
+      const response = await callAddDoctor(formData);
+
+      setDataArray([...dataArray, { ...formData, id: response.data.id }]);
+      toast.success("Nowy lekarz został dodany");
+    } catch (err: unknown) {
+      toast.error(
+        (err as ErrorType).response?.data || "Lekarz nie mógł zostać dodany"
+      );
+    }
+
     setAddDoctorOpen(false);
   };
   const deleteDoctor = () => {
@@ -63,6 +59,7 @@ const NewDoctorPanel = ({
       pesel: "",
       specialization: "",
       address: "",
+      shifts: [],
     });
     setAddDoctorOpen(false);
   };
@@ -109,13 +106,11 @@ const NewDoctorPanel = ({
             <SelectValue placeholder="Wybierz specjalizację" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="KARDIOLOG">Kardiolog</SelectItem>
-            <SelectItem value="DERMATOLOG">Dermatolog</SelectItem>
-            <SelectItem value="NEUROLOG">Neurolog</SelectItem>
-            <SelectItem value="OKULISTA">Okulista</SelectItem>
-            <SelectItem value="ORTOPEDA">Ortopeda</SelectItem>
-            <SelectItem value="CHIRURG">Chirurg</SelectItem>
-            <SelectItem value="PEDIATRA">Pediatra</SelectItem>
+            {Object.entries(SPECIALIZATIONS).map(([key, val], id) => (
+              <SelectItem value={key} key={id}>
+                {val}
+              </SelectItem>
+            ))}
           </SelectContent>
         </Select>
       </Label>
@@ -132,7 +127,7 @@ const NewDoctorPanel = ({
         />
       </Label>
 
-      <Button variant="outline" size="sm" onClick={saveDoctor}>
+      <Button variant="outline" size="sm" onClick={addDoctor}>
         Zapisz
       </Button>
       <Button variant="outline" size="sm" onClick={deleteDoctor}>
