@@ -4,21 +4,21 @@ import com.oot.clinic.DTOs.doctor.DoctorDTO;
 import com.oot.clinic.DTOs.patient.PatientDTO;
 import com.oot.clinic.entities.Appointment;
 
-import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.time.LocalTime;
 
 public class AppointmentResponseDTO {
 
     private final DoctorDTO doctor;
     private final PatientDTO patient;
-    private final DayOfWeek dayOfWeek;
+    private final LocalDate date;
     private final LocalTime startTime;
     private final LocalTime endTime;
 
     public AppointmentResponseDTO(Appointment appointment) {
         this.doctor = new DoctorDTO(appointment.getDoctor());
         this.patient = new PatientDTO(appointment.getPatient());
-        this.dayOfWeek = appointment.getDayOfWeek();
+        this.date = appointment.getDate();
         this.startTime = appointment.getStartTime();
         this.endTime = appointment.getEndTime();
     }
@@ -33,8 +33,8 @@ public class AppointmentResponseDTO {
         return patient;
     }
 
-    public DayOfWeek getDayOfWeek() {
-        return dayOfWeek;
+    public LocalDate getDate() {
+        return date;
     }
 
     public LocalTime getStartTime() {

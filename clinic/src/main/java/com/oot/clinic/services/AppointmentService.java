@@ -1,6 +1,5 @@
 package com.oot.clinic.services;
 
-import com.oot.clinic.DTOs.appointment.AppointmentRequestDTO;
 import com.oot.clinic.DTOs.appointment.AppointmentResponseDTO;
 import com.oot.clinic.entities.Appointment;
 import com.oot.clinic.entities.Doctor;
@@ -12,6 +11,7 @@ import com.oot.clinic.repositories.PatientRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 
@@ -28,13 +28,13 @@ public class AppointmentService {
         this.patientRepository = patientRepository;
     }
 
-    public AppointmentResponseDTO createAppointment(Long doctorId, Long patientId, DayOfWeek dayOfWeek, LocalTime startTime, LocalTime endTime) {
+    public AppointmentResponseDTO createAppointment(Long doctorId, Long patientId, LocalDate date, LocalTime startTime, LocalTime endTime) {
         Doctor doctor = doctorRepository.findById(doctorId)
                 .orElseThrow(() -> new ResourceNotFoundException("Lekarz", doctorId));
         Patient patient = patientRepository.findById(patientId)
                 .orElseThrow(() -> new ResourceNotFoundException("Pacjent", patientId));
 
-        Appointment appointment = appointmentRepository.save(new Appointment(doctor, patient, dayOfWeek, startTime, endTime));
+        Appointment appointment = appointmentRepository.save(new Appointment(doctor, patient, date, startTime, endTime));
 
         return new AppointmentResponseDTO(appointment);
     }
@@ -43,7 +43,7 @@ public class AppointmentService {
         appointmentRepository.deleteById(id);
     }
 
-    public Appointment updateAppointment(Long id, Long doctorId, Long patientId, DayOfWeek dayOfWeek, LocalTime startTime, LocalTime endTime) {
+    public Appointment updateAppointment(Long id, Long doctorId, Long patientId, LocalDate date, LocalTime startTime, LocalTime endTime) {
         Appointment appointment = appointmentRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Wizyta lekarska", id));
 
@@ -55,7 +55,7 @@ public class AppointmentService {
 
         appointment.setDoctor(doctor);
         appointment.setPatient(patient);
-        appointment.setDayOfWeek(dayOfWeek);
+        appointment.setDate(date);
         appointment.setStartTime(startTime);
         appointment.setEndTime(endTime);
 

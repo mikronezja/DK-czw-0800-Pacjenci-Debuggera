@@ -3,6 +3,7 @@ package com.oot.clinic.entities;
 import jakarta.persistence.*;
 
 import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.time.LocalTime;
 
 @Entity
@@ -16,15 +17,14 @@ public class Appointment {
     @ManyToOne
     @JoinColumn(name = "patient_id")
     private Patient patient;
-    @Enumerated(EnumType.STRING)
-    private DayOfWeek dayOfWeek;
+    private LocalDate date;
     private LocalTime startTime;
     private LocalTime endTime;
 
-    public Appointment(Doctor doctor, Patient patient, DayOfWeek dayOfWeek, LocalTime startTime, LocalTime endTime) {
+    public Appointment(Doctor doctor, Patient patient, LocalDate date, LocalTime startTime, LocalTime endTime) {
         this.doctor = doctor;
         this.patient = patient;
-        this.dayOfWeek = dayOfWeek;
+        this.date = date;
         this.startTime = startTime;
         this.endTime = endTime;
     }
@@ -33,12 +33,12 @@ public class Appointment {
 
     // GETTERS AND SETTERS
 
-    public DayOfWeek getDayOfWeek() {
-        return dayOfWeek;
+    public LocalDate getDate() {
+        return date;
     }
 
-    public void setDayOfWeek(DayOfWeek dayOfWeek) {
-        this.dayOfWeek = dayOfWeek;
+    public void setDate(LocalDate date) {
+        this.date = date;
     }
 
     public LocalTime getStartTime() {

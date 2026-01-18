@@ -1,13 +1,14 @@
 package com.oot.clinic.DTOs.appointment;
 
 import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.time.LocalTime;
 
 public class AppointmentRequestDTO {
 
     private Long doctorId;
     private Long patientId;
-    private DayOfWeek dayOfWeek;
+    private LocalDate date;
     private LocalTime startTime;
     private LocalTime endTime;
 
@@ -21,8 +22,8 @@ public class AppointmentRequestDTO {
         return patientId;
     }
 
-    public DayOfWeek getDayOfWeek() {
-        return dayOfWeek;
+    public LocalDate getDate() {
+        return date;
     }
 
     public LocalTime getStartTime() {

@@ -2,8 +2,6 @@ package com.oot.clinic.controllers;
 
 import com.oot.clinic.DTOs.appointment.AppointmentRequestDTO;
 import com.oot.clinic.DTOs.appointment.AppointmentResponseDTO;
-import com.oot.clinic.DTOs.shift.ShiftRequestDTO;
-import com.oot.clinic.DTOs.shift.ShiftResponseDTO;
 import com.oot.clinic.exceptions.ConflictException;
 import com.oot.clinic.exceptions.ResourceNotFoundException;
 import com.oot.clinic.exceptions.ValidationException;
@@ -43,7 +41,7 @@ public class AppointmentController {
             AppointmentResponseDTO appointment = appointmentService.createAppointment(
                     appointmentRequest.getDoctorId(),
                     appointmentRequest.getPatientId(),
-                    appointmentRequest.getDayOfWeek(),
+                    appointmentRequest.getDate(),
                     appointmentRequest.getStartTime(),
                     appointmentRequest.getEndTime()
             );
@@ -97,7 +95,7 @@ public class AppointmentController {
             return ResponseEntity.ok(new AppointmentResponseDTO(appointmentService.updateAppointment(id,
                     appointment.getDoctorId(),
                     appointment.getPatientId(),
-                    appointment.getDayOfWeek(),
+                    appointment.getDate(),
                     appointment.getStartTime(),
                     appointment.getEndTime())));
         } catch (RuntimeException e) {
