@@ -1,7 +1,9 @@
 package com.oot.clinic.services;
 
+import com.oot.clinic.DTOs.appointment.AppointmentPatientResponseDTO;
 import com.oot.clinic.DTOs.patient.PatientDTO;
 import com.oot.clinic.DTOs.patient.PatientResponseDTO;
+import com.oot.clinic.entities.Appointment;
 import com.oot.clinic.entities.Patient;
 import com.oot.clinic.exceptions.ConflictException;
 import com.oot.clinic.exceptions.ResourceNotFoundException;
@@ -95,5 +97,12 @@ public class PatientService {
                 .orElseThrow(() -> new ResourceNotFoundException("Pacjent", id));
 
         patientRepository.delete(patient);
+    }
+
+    public List<AppointmentPatientResponseDTO> getAppointments(Long id){
+        return getPatientById(id).getAppointments()
+                .stream()
+                .map(AppointmentPatientResponseDTO::new)
+                .toList();
     }
 }

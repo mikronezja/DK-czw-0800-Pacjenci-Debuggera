@@ -1,5 +1,6 @@
 package com.oot.clinic.controllers;
 
+import com.oot.clinic.DTOs.appointment.AppointmentPatientResponseDTO;
 import com.oot.clinic.DTOs.patient.PatientDTO;
 import com.oot.clinic.DTOs.patient.PatientRequestDTO;
 import com.oot.clinic.DTOs.patient.PatientResponseDTO;
@@ -64,7 +65,6 @@ public class PatientController {
     }
 
 
-
     @Operation(summary = "Get all patients", description = "Shows all patients basic information")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200",
@@ -89,7 +89,6 @@ public class PatientController {
                     description = "Patient not found",
                     content = @Content(schema = @Schema()))
     })
-
     @GetMapping("/{id}")
     public ResponseEntity<?> getPatientById(@PathVariable Long id) {
         try {
@@ -103,6 +102,29 @@ public class PatientController {
         }
     }
 
+
+    @Operation(summary = "Get patients appointments", description = "Access patient's appointment list by his id")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200",
+                    description = "Patient appointment list accessed successfully",
+                    content = @Content(schema = @Schema(implementation =  AppointmentPatientResponseDTO.class))),
+            @ApiResponse(responseCode = "404",
+                    description = "Patient not found",
+                    content = @Content(schema = @Schema()))
+    })
+    @GetMapping("/{id}/appointments")
+    public ResponseEntity<?> getPatientsAppointments(@PathVariable Long id) {
+        try {
+            return ResponseEntity.ok(patientService.getAppointments(id));
+
+        } catch (ResourceNotFoundException ex) {
+            return ResponseEntity
+                    .status(HttpStatus.NOT_FOUND)
+                    .body(ex.getMessage());
+        }
+    }
+
+
     @Operation(summary = "Delete a patient", description = "Delete a patient from the system by id")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204",
@@ -111,7 +133,6 @@ public class PatientController {
                     description = "Patient not found",
                     content = @Content(schema = @Schema()))
     })
-
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletePatient(@PathVariable Long id) {
         try {

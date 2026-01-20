@@ -1,5 +1,6 @@
 package com.oot.clinic.controllers;
 
+import com.oot.clinic.DTOs.appointment.AppointmentDoctorResponseDTO;
 import com.oot.clinic.DTOs.doctor.DoctorRequestDTO;
 import com.oot.clinic.DTOs.doctor.DoctorResponseDTO;
 import com.oot.clinic.DTOs.shift.ShiftDoctorResponseDTO;
@@ -39,7 +40,6 @@ public class DoctorController {
                     description = "Invalid request data",
                     content = @Content(schema = @Schema()))
     })
-
     @PostMapping("/add")
     public ResponseEntity<?> addDoctor(@RequestBody DoctorRequestDTO doctor) {
         try {
@@ -67,6 +67,7 @@ public class DoctorController {
         }
     }
 
+
     @Operation(summary = "Get all doctors", description = "Shows all doctors basic information")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200",
@@ -76,11 +77,11 @@ public class DoctorController {
                     description = "Invalid request data",
                     content = @Content(schema = @Schema()))
     })
-
     @GetMapping
     public List<DoctorDTO> getDoctors() {
         return doctorService.getDoctors();
     }
+
 
     @Operation(summary = "Get doctor details", description = "Access doctor's details by his id")
     @ApiResponses(value = {
@@ -91,7 +92,6 @@ public class DoctorController {
                     description = "Doctor not found",
                     content = @Content(schema = @Schema()))
     })
-
     @GetMapping("/{id}")
     public ResponseEntity<DoctorDTO> getDoctorById(@PathVariable Long id) {
         try {
@@ -104,6 +104,7 @@ public class DoctorController {
         }
     }
 
+
     @Operation(summary = "Delete a doctor", description = "Delete a doctor from the system by id")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204",
@@ -112,7 +113,6 @@ public class DoctorController {
                     description = "Doctor not found",
                     content = @Content(schema = @Schema()))
     })
-
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteDoctor(@PathVariable Long id) {
         try {
@@ -129,6 +129,7 @@ public class DoctorController {
         }
     }
 
+
     @Operation(summary = "Get doctor's shifts", description = "Returns a list of all shifts assigned to a doctor")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200",
@@ -142,6 +143,25 @@ public class DoctorController {
     public ResponseEntity<List<ShiftDoctorResponseDTO>> getDoctorShifts(@PathVariable Long id) {
         try {
             return ResponseEntity.ok(doctorService.getShifts(id));
+        } catch (Exception e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+
+    @Operation(summary = "Get doctor's appointments", description = "Returns a list of all appointments scheduled with the doctor")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200",
+                    description = "Appointments list accessed successfully",
+                    content = @Content(schema = @Schema(implementation =  AppointmentDoctorResponseDTO.class))),
+            @ApiResponse(responseCode = "404",
+                    description = "Doctor not found",
+                    content = @Content(schema = @Schema()))
+    })
+    @GetMapping("/{id}/appointments")
+    public ResponseEntity<?> getDoctorAppointments(@PathVariable Long id) {
+        try {
+            return ResponseEntity.ok(doctorService.getAppointments(id));
         } catch (Exception e) {
             return ResponseEntity.notFound().build();
         }

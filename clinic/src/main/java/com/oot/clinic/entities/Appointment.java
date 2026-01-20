@@ -2,7 +2,6 @@ package com.oot.clinic.entities;
 
 import jakarta.persistence.*;
 
-import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
