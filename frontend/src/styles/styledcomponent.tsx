@@ -54,7 +54,7 @@ export const FormBorder = styled(FormStyled)`
   padding: 40px 30px;
   border-radius: 5px;
   border: 1px solid #e0e0e0;
-  min-width: 250px;
+  min-width: 300px;
   overflow-y: auto;
   min-height: 0;
   max-height: 400px;

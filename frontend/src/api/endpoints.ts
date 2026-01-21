@@ -4,3 +4,5 @@ export const DOCTOR_ENDPOINT = DOMAIN + "/doctors";
 export const OFFICE_ENDPOINT = DOMAIN + "/offices";
 export const SHIFT_ENDPOINT = DOMAIN + "/shifts";
 export const SHIFT = "shifts";
+export const AVAILABILITIES = "availabilities";
+export const APPOINTMENT_ENDPOINT = DOMAIN + "/appointments";
