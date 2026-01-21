@@ -8,23 +8,22 @@ import com.oot.clinic.entities.Doctor;
 import com.oot.clinic.entities.Patient;
 import com.oot.clinic.entities.Shift;
 import com.oot.clinic.entities.enumeration.Specialization;
+import com.oot.clinic.exceptions.InavailabilityException;
 import com.oot.clinic.exceptions.ResourceNotFoundException;
+import com.oot.clinic.exceptions.ValidationException;
 import com.oot.clinic.repositories.AppointmentRepository;
 import com.oot.clinic.repositories.DoctorRepository;
 import com.oot.clinic.repositories.PatientRepository;
 import com.oot.clinic.repositories.ShiftRepository;
-import org.springframework.cglib.core.Local;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
-import static java.util.List.copyOf;
 import static java.util.stream.Collectors.groupingBy;
 
 @Service
@@ -43,14 +42,30 @@ public class AppointmentService {
     }
 
     public AppointmentResponseDTO createAppointment(Long doctorId, Long patientId, LocalDate date, LocalTime startTime, LocalTime endTime) {
+        if (!startTime.isBefore(endTime)) {
+            throw new ValidationException("Godzina rozpoczęcia musi być wcześniejsza niż godzina zakończenia");
+        }
+
         Doctor doctor = doctorRepository.findById(doctorId)
                 .orElseThrow(() -> new ResourceNotFoundException("Lekarz", doctorId));
         Patient patient = patientRepository.findById(patientId)
                 .orElseThrow(() -> new ResourceNotFoundException("Pacjent", patientId));
 
-        Appointment appointment = appointmentRepository.save(new Appointment(doctor, patient, date, startTime, endTime));
+        List<DoctorAvailabilityDTO> doctorsAvailability = availableAppointments(date, doctor.getSpecialization());
+        DoctorAvailabilityDTO doctorAvailability = doctorsAvailability.stream()
+                .filter(availability -> Objects.equals(availability.getDoctorId(), doctorId))
+                .toList().getFirst();
 
-        return new AppointmentResponseDTO(appointment);
+        for(TimeRangeDTO timeRange : doctorAvailability.getTimeRanges()){
+
+            if((startTime.isAfter(timeRange.startTime()) || startTime.equals(timeRange.startTime()))
+                && (endTime.isBefore(timeRange.endTime()) || endTime.equals(timeRange.endTime()))){
+
+                Appointment appointment = appointmentRepository.save(new Appointment(doctor, patient, date, startTime, endTime));
+                return new AppointmentResponseDTO(appointment);
+            }
+        }
+        throw new InavailabilityException("Lekarz nie jest dostępny dla tego terminu.");
     }
 
     public void deleteAppointment(Long id) {
@@ -81,20 +96,34 @@ public class AppointmentService {
     }
 
     public List<DoctorAvailabilityDTO> availableAppointments(LocalDate date, Specialization specialization) {
+        if(date.isBefore(LocalDate.now())){
+            throw new ValidationException("Data jest z przeszłości.");
+        }
+
+        List<DoctorAvailabilityDTO> availabilities = new ArrayList<>();
+
         List<Doctor> doctors = doctorRepository.findBySpecialization(specialization);
+        if(doctors.isEmpty()){
+            throw new InavailabilityException("Nie ma lekarzy tej specjalizacji.");
+        }
         List<Shift> shifts = shiftRepository.findShiftsByDoctorInAndDayOfWeek(doctors, date.getDayOfWeek());
         List<Appointment> appointments = appointmentRepository.findByDoctorInAndDate(doctors, date);
+
+//        System.out.println("Requested data: " + specialization + ", " + date);
+//        System.out.println("Found doctors: " + doctors.size());
+//        System.out.println("Found shifts: " + shifts.size());
+//        System.out.println("Found appointments: " + appointments.size());
 
         Map<Long, List<Shift>> shiftsByDoctor = shifts.stream()
                 .collect(groupingBy(s -> s.getDoctor().getId()));
         Map<Long, List<Appointment>> appointmentsByDoctor = appointments.stream()
                 .collect(groupingBy(a -> a.getDoctor().getId()));
 
-        List<DoctorAvailabilityDTO> availabilities = new ArrayList<>();
 
         for (Doctor doctor : doctors) {
             List<Shift> doctorShifts = shiftsByDoctor.getOrDefault(doctor.getId(), List.of());
             if (doctorShifts.isEmpty()) {
+//                System.out.println("This doctor has no shifts, going onto the next one");
                 continue;
             }
 
@@ -144,6 +173,12 @@ public class AppointmentService {
                     availableSlots
             ));
         }
+
+        if(availabilities.isEmpty()){
+            throw new InavailabilityException("Nie ma dostępnych specjalistów dla tego terminu.");
+        }
+
+//        System.out.println("Final availabilities size: " + availabilities.size());
 
         return availabilities;
     }
