@@ -4,17 +4,20 @@ import com.oot.clinic.entities.Doctor;
 import com.oot.clinic.entities.Office;
 import com.oot.clinic.entities.Patient;
 import com.oot.clinic.entities.Shift;
+import com.oot.clinic.entities.Appointment;
 import com.oot.clinic.entities.enumeration.Specialization;
 import com.oot.clinic.repositories.DoctorRepository;
 import com.oot.clinic.repositories.OfficeRepository;
 import com.oot.clinic.repositories.PatientRepository;
 import com.oot.clinic.repositories.ShiftRepository;
+import com.oot.clinic.repositories.AppointmentRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
 import java.time.DayOfWeek;
 import java.time.LocalTime;
 import java.util.List;
+import java.time.LocalDate;
 
 @Component
 public class SampleDataLoader implements CommandLineRunner {
@@ -23,17 +26,20 @@ public class SampleDataLoader implements CommandLineRunner {
     private final OfficeRepository officeRepository;
     private final ShiftRepository shiftRepository;
     private final DoctorRepository doctorRepository;
+    private final AppointmentRepository appointmentRepository;
 
     public SampleDataLoader(
             PatientRepository patientRepository,
             OfficeRepository officeRepository,
             ShiftRepository shiftRepository,
-            DoctorRepository doctorRepository
+            DoctorRepository doctorRepository,
+            AppointmentRepository appointmentRepository
     ) {
         this.patientRepository = patientRepository;
         this.officeRepository = officeRepository;
         this.shiftRepository = shiftRepository;
         this.doctorRepository = doctorRepository;
+        this.appointmentRepository = appointmentRepository;
     }
 
     @Override
@@ -140,5 +146,41 @@ public class SampleDataLoader implements CommandLineRunner {
         s3.setEndTime(LocalTime.of(15, 30));
 
         shiftRepository.saveAll(List.of(s1, s2, s3));
+
+        // ------------------ SPOTKANIA ------------------
+
+        Appointment a1 = new Appointment(
+                d1,
+                p1,
+                LocalDate.now().plusDays(1),
+                LocalTime.of(8, 30),
+                LocalTime.of(9, 0)
+        );
+
+        Appointment a2 = new Appointment(
+                d1,
+                p2,
+                LocalDate.now().plusDays(1),
+                LocalTime.of(9, 0),
+                LocalTime.of(9, 30)
+        );
+
+        Appointment a3 = new Appointment(
+                d2,
+                p3,
+                LocalDate.now().plusDays(2),
+                LocalTime.of(8, 0),
+                LocalTime.of(8, 30)
+        );
+
+        Appointment a4 = new Appointment(
+                d3,
+                p4,
+                LocalDate.now().plusDays(3),
+                LocalTime.of(10, 0),
+                LocalTime.of(10, 30)
+        );
+
+        appointmentRepository.saveAll(List.of(a1, a2, a3, a4));
     }
 }

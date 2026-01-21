@@ -1,5 +1,6 @@
 package com.oot.clinic.controllers;
 
+import com.oot.clinic.DTOs.appointment.AppointmentAvailabilityRequestDTO;
 import com.oot.clinic.DTOs.appointment.AppointmentRequestDTO;
 import com.oot.clinic.DTOs.appointment.AppointmentResponseDTO;
 import com.oot.clinic.exceptions.ConflictException;
@@ -66,6 +67,7 @@ public class AppointmentController {
         }
     }
 
+
     @Operation(summary = "Get all appointments", description = "Returns a list of all appointments in the system")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200",
@@ -80,6 +82,7 @@ public class AppointmentController {
             throw new RuntimeException(e);
         }
     }
+
 
     @Operation(summary = "Edit existing appointment", description = "Allows to make any changes to an existing appointment")
     @ApiResponses(value = {
@@ -103,6 +106,7 @@ public class AppointmentController {
         }
     }
 
+
     @Operation(summary = "Delete an appointment", description = "Delete an appointment from the system by id")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204",
@@ -115,6 +119,18 @@ public class AppointmentController {
     public void deleteAppointment(@PathVariable Long id){
         try {
             appointmentService.deleteAppointment(id);
+        } catch (RuntimeException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    // get possible appointments
+    @PostMapping("/availabilities")
+    public ResponseEntity<?> getAvailableAppointments(@RequestBody AppointmentAvailabilityRequestDTO appointmentRequest){
+        try{
+            return ResponseEntity.ok(appointmentService.availableAppointments(
+                    appointmentRequest.date(),
+                    appointmentRequest.specialization()));
         } catch (RuntimeException e) {
             throw new RuntimeException(e);
         }
