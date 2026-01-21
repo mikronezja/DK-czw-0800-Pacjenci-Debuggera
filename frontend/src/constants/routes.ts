@@ -8,6 +8,7 @@ export const DOCTOR_SHIFT_PANEL_ROUTE = DOCTOR_PANEL_ROUTE + "/shift";
 export const DOCTOR_DETAILS_ROUTE = "/details/doctor";
 export const PATIENT_DETAILS_ROUTE = "/details/patient";
 export const OFFICE_DETAILS_ROUTE = "/details/office";
+export const APPOINTMENT_ROUTE = "/appointment";
 
 // routes that can be gotten through navbar
 export const ROUTES = {

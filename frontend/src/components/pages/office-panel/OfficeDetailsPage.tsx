@@ -8,11 +8,7 @@ import {
 import { OFFICE_DISPLAY_VALS } from "@/constants/displaying";
 import { SPECIALIZATIONS } from "@/constants/specializations";
 import { WEEKDAYS } from "@/constants/weekdays";
-import {
-  Divider,
-  SectionTitle,
-  TableDetailsStyled,
-} from "@/styles/styledcomponent";
+import { SectionTitle, TableDetailsStyled } from "@/styles/styledcomponent";
 import type { Office } from "@/types/office";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
@@ -31,7 +27,6 @@ const OfficeDetailsPage = () => {
   return (
     <div>
       <DisplayOfficeInfo officeId={Number(idValue)} />
-      <Divider />
       <TableDetailsStyled>
         <TableHeader>
           <TableRow>
@@ -102,7 +97,11 @@ const DisplayOfficeInfo = ({ officeId }: { officeId: number }) => {
   const offices = useOfficeDetails(officeId);
   return (
     <SectionTitle>
-      {offices[0] ? `Numer gabinetu: ${offices[0].roomNumber}` : "Brak danych"}
+      <b>
+        {offices[0]
+          ? `Numer gabinetu: ${offices[0].roomNumber}`
+          : "Brak danych"}
+      </b>
     </SectionTitle>
   );
 };

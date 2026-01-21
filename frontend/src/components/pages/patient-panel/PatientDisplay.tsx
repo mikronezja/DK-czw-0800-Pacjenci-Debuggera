@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { useNavigate } from "react-router-dom";
 import type { Pacient } from "@/types/pacient";
 import {
@@ -11,47 +11,26 @@ import {
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Eye, X } from "lucide-react";
-import { PATIENT_DETAILS_ROUTE } from "@/constants/routes";
-import { callDeletePatient, callGetPatients } from "@/api/patient_calls";
+import { APPOINTMENT_ROUTE, PATIENT_DETAILS_ROUTE } from "@/constants/routes";
+import { callDeletePatient } from "@/api/patient_calls";
 import { TableStyled } from "@/styles/styledcomponent";
-// import { PATIENT_DETAILS_ROUTE } from "@/text/navbar";
+import { useGetPatients } from "@/hooks/useGetPatients";
+import { toast } from "sonner";
+import type { ErrorType } from "@/types/error";
 
 interface PacientDisplayProps {
   dataArray: Array<Pacient>;
   setDataArray: React.Dispatch<React.SetStateAction<Array<Pacient>>>;
 }
 
-const PatientDisplay = ({ dataArray, setDataArray }: PacientDisplayProps) => {
-  const navigate = useNavigate();
+interface DeleteButtonProps {
+  dataArray: Array<Pacient>;
+  setDataArray: React.Dispatch<React.SetStateAction<Array<Pacient>>>;
+  id: number;
+}
 
-  const fetchPatients = async () => {
-    try {
-      const response = await callGetPatients();
-
-      setDataArray(response.data);
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
-  const deletePacient = async (id: number) => {
-    try {
-      await callDeletePatient(id);
-
-      setDataArray(
-        dataArray.filter((pacient: { id: number }) => pacient.id !== id)
-      );
-    } catch (err) {
-      console.log(err);
-    }
-  };
-  const getDetailsPage = (id: number) => {
-    navigate(`${PATIENT_DETAILS_ROUTE}/${id}`);
-  };
-
-  useEffect(() => {
-    fetchPatients();
-  }, []);
+const PatientDisplay = ({ setDataArray }: PacientDisplayProps) => {
+  const dataArray = useGetPatients();
 
   return (
     <TableStyled>
@@ -62,6 +41,7 @@ const PatientDisplay = ({ dataArray, setDataArray }: PacientDisplayProps) => {
           <TableHead className="w-[100px]">Nazwisko</TableHead>
           <TableHead className="text-right"></TableHead>
           <TableHead className="text-right"></TableHead>
+          <TableHead className="text-right"></TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
@@ -70,29 +50,86 @@ const PatientDisplay = ({ dataArray, setDataArray }: PacientDisplayProps) => {
             <TableCell>{name}</TableCell>
             <TableCell>{surname}</TableCell>
             <TableCell className="text-right">
-              <Button
-                variant="outline"
-                size="sm"
-                className="rounded-full w-8 h-8"
-                onClick={() => getDetailsPage(id)}
-              >
-                <Eye />
-              </Button>
+              <DetailsButton id={id} />
             </TableCell>
             <TableCell className="text-right">
-              <Button
-                variant="outline"
-                size="sm"
-                className="rounded-full w-8 h-8"
-                onClick={() => deletePacient(id)}
-              >
-                <X />
-              </Button>
+              <MakeAppointmentButton id={id} />
+            </TableCell>
+            <TableCell className="text-right">
+              <DeleteButton
+                id={id}
+                dataArray={dataArray}
+                setDataArray={setDataArray}
+              />
             </TableCell>
           </TableRow>
         ))}
       </TableBody>
     </TableStyled>
+  );
+};
+
+const DetailsButton = ({ id }: { id: number }) => {
+  const navigate = useNavigate();
+
+  const getDetailsPage = (id: number) => {
+    navigate(`${PATIENT_DETAILS_ROUTE}/${id}`);
+  };
+
+  return (
+    <Button
+      variant="outline"
+      size="sm"
+      className="rounded-full w-8 h-8"
+      onClick={() => getDetailsPage(id)}
+    >
+      <Eye />
+    </Button>
+  );
+};
+
+const MakeAppointmentButton = ({ id }: { id: number }) => {
+  const navigate = useNavigate();
+
+  const getDetailsPage = (id: number) => {
+    navigate(`${APPOINTMENT_ROUTE}/${id}`);
+  };
+
+  return (
+    <Button
+      variant="outline"
+      className="rounded-full"
+      onClick={() => getDetailsPage(id)}
+    >
+      Umów wizytę
+    </Button>
+  );
+};
+
+const DeleteButton = ({ id, dataArray, setDataArray }: DeleteButtonProps) => {
+  const deletePacient = async (id: number) => {
+    try {
+      await callDeletePatient(id);
+
+      setDataArray(
+        dataArray.filter((pacient: { id: number }) => pacient.id !== id)
+      );
+      toast.success("Pacjent został usunięty");
+    } catch (err) {
+      toast.error(
+        (err as ErrorType).response?.data || "Nie można było usunąć gabinetu"
+      );
+    }
+  };
+  return (
+    <Button
+      variant="outline"
+      size="sm"
+      className="rounded-full w-8 h-8"
+      onClick={() => deletePacient(id)}
+    >
+      <X />
+    </Button>
   );
 };
 
