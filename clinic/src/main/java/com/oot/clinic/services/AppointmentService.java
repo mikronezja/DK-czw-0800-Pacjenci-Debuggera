@@ -51,15 +51,21 @@ public class AppointmentService {
         Patient patient = patientRepository.findById(patientId)
                 .orElseThrow(() -> new ResourceNotFoundException("Pacjent", patientId));
 
-        List<DoctorAvailabilityDTO> doctorsAvailability = availableAppointments(date, doctor.getSpecialization());
-        DoctorAvailabilityDTO doctorAvailability = doctorsAvailability.stream()
-                .filter(availability -> Objects.equals(availability.getDoctorId(), doctorId))
-                .toList().getFirst();
 
-        for(TimeRangeDTO timeRange : doctorAvailability.getTimeRanges()){
+        DoctorAvailabilityDTO doctorAvailability;
+        try {
+            List<DoctorAvailabilityDTO> doctorsAvailability = availableAppointments(date, doctor.getSpecialization());
+            doctorAvailability = doctorsAvailability.stream()
+                    .filter(availability -> Objects.equals(availability.getDoctorId(), doctorId))
+                    .toList().getFirst();
+        } catch (InavailabilityException e) {
+            throw new InavailabilityException("Lekarz nie jest dostępny tego dnia");
+        }
 
-            if((startTime.isAfter(timeRange.startTime()) || startTime.equals(timeRange.startTime()))
-                && (endTime.isBefore(timeRange.endTime()) || endTime.equals(timeRange.endTime()))){
+        for (TimeRangeDTO timeRange : doctorAvailability.getTimeRanges()) {
+
+            if ((startTime.isAfter(timeRange.startTime()) || startTime.equals(timeRange.startTime()))
+                    && (endTime.isBefore(timeRange.endTime()) || endTime.equals(timeRange.endTime()))) {
 
                 Appointment appointment = appointmentRepository.save(new Appointment(doctor, patient, date, startTime, endTime));
                 return new AppointmentResponseDTO(appointment);

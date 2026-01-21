@@ -9,6 +9,7 @@ import java.time.LocalTime;
 
 public class AppointmentResponseDTO {
 
+    private final Long id;
     private final DoctorDTO doctor;
     private final PatientDTO patient;
     private final LocalDate date;
@@ -16,6 +17,7 @@ public class AppointmentResponseDTO {
     private final LocalTime endTime;
 
     public AppointmentResponseDTO(Appointment appointment) {
+        this.id = appointment.getId();
         this.doctor = new DoctorDTO(appointment.getDoctor());
         this.patient = new PatientDTO(appointment.getPatient());
         this.date = appointment.getDate();
@@ -24,6 +26,10 @@ public class AppointmentResponseDTO {
     }
 
     // GETTERS
+
+    public Long getId() {
+        return id;
+    }
 
     public DoctorDTO getDoctor() {
         return doctor;

@@ -102,7 +102,7 @@ public class AppointmentController {
                     appointment.getStartTime(),
                     appointment.getEndTime())));
         } catch (RuntimeException e) {
-            throw new RuntimeException(e);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
 
@@ -116,11 +116,12 @@ public class AppointmentController {
                     content = @Content(schema = @Schema()))
     })
     @DeleteMapping("/{id}")
-    public void deleteAppointment(@PathVariable Long id){
+    public ResponseEntity<Void> deleteAppointment(@PathVariable Long id){
         try {
             appointmentService.deleteAppointment(id);
+            return ResponseEntity.noContent().build();
         } catch (RuntimeException e) {
-            throw new RuntimeException(e);
+            return ResponseEntity.notFound().build();
         }
     }
 
