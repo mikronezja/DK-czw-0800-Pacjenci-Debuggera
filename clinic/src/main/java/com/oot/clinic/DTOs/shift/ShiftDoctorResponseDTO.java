@@ -8,12 +8,14 @@ import java.time.LocalTime;
 
 public class ShiftDoctorResponseDTO {
 
+    private Long id;
     private OfficeResponseDTO office;
     private DayOfWeek dayOfWeek;
     private LocalTime startTime;
     private LocalTime endTime;
 
     public ShiftDoctorResponseDTO(Shift shift) {
+        this.id = shift.getId();
         this.office = new OfficeResponseDTO(shift.getOffice());
         this.dayOfWeek = shift.getDayOfWeek();
         this.startTime = shift.getStartTime();
@@ -52,5 +54,13 @@ public class ShiftDoctorResponseDTO {
 
     public void setEndTime(LocalTime endTime) {
         this.endTime = endTime;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 }
