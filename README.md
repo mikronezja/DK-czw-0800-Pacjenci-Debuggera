@@ -57,6 +57,38 @@
 
 Dodane zostało zapytanie o **dyżury lekarza** - `GET /doctors/{id}/shifts`
 
+## Zaimplementowane funkcjonalności m3
+
+### Zarządzanie wizytami (Appointment)
+
+1. **Dodanie wizyty** - `POST /appointments/add`
+   - Pola: id lekarza, id pacjenta, data, godzina rozpoczęcia i zakończenia
+   - Walidacja: wizyta możliwa tylko gdy lekarz ma dyżur w danym terminie
+   - Walidacja: wykrywanie konfliktów z istniejącymi wizytami
+
+2. **Wyświetlenie listy wizyt** - `GET /appointments`
+   - Zwraca: informacje o lekarzu, pacjencie, dacie i godzinach
+
+3. **Edycja wizyty** - `PUT /appointments/{id}`
+   - Pozwala na zmianę lekarza, pacjenta, daty i godzin
+
+4. **Usunięcie wizyty** - `DELETE /appointments/{id}`
+
+5. **Sprawdzenie dostępności** - `POST /appointments/availabilities`
+   - Pola: data, specjalizacja
+   - Zwraca: listę lekarzy z ich dostępnymi przedziałami czasowymi
+
+### Rozszerzenie zarządzania pacjentami
+
+1. **Wyświetlenie wizyt pacjenta** - `GET /patients/{id}/appointments`
+   - Zwraca: listę wizyt danego pacjenta z informacjami o lekarzu
+
+### Testy jednostkowe
+
+Dodane testy dla wszystkich serwisów:
+- `AppointmentServiceTests` - 38 testów
+- `PatientServiceTests` - 35 testów
+
 ## Uruchomienie backendu
 
 ```bash
