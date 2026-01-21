@@ -11,9 +11,7 @@ export const useGetDoctors = () => {
         const response = await callGetDoctors();
 
         setDoctor(response.data);
-      } catch (err) {
-        console.log(err);
-      }
+      } catch (err) {}
     };
 
     fetchDoctors();

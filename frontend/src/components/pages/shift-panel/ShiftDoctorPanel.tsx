@@ -67,7 +67,6 @@ const ShiftDoctorPanel = () => {
   const addShift = async () => {
     try {
       await callAddShift(data);
-      console.log("udało sie dodać zmiane");
       toast.success("Zmiana została dodana");
     } catch (err: unknown) {
       toast.error(

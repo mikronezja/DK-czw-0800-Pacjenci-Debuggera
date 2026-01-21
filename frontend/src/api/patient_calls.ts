@@ -29,9 +29,5 @@ export const callAddPatient = async (data: dataType) => {
 export const callGetPatientAppointments = async (
   data: PatientAppointmentsProps
 ) => {
-  console.log(
-    "HEELloo",
-    [PATIENT_ENDPOINT, data.patientId, APPOINTMENTS].join("/")
-  );
   return axios.get([PATIENT_ENDPOINT, data.patientId, APPOINTMENTS].join("/")); // to be deleted later
 };

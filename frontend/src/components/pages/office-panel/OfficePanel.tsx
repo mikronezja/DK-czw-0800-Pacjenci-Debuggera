@@ -47,9 +47,7 @@ const OfficePanel = () => {
     try {
       const response = await callGetOffices();
       setDataArray(response.data);
-    } catch (err) {
-      console.log(err);
-    }
+    } catch (err) {}
   };
 
   const deleteOffice = async (id: number) => {

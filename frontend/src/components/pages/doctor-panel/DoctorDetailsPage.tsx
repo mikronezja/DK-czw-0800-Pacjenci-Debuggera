@@ -41,7 +41,6 @@ interface ShiftDisplayProps {
 
 const deleteShift = async (id: number) => {
   try {
-    console.log("Deleting shift with ID:", id);
     await callDeleteShift(id);
     toast.success("Usunięty dyżur!");
   } catch (err: any) {

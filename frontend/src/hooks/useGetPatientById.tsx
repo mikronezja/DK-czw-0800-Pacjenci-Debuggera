@@ -11,9 +11,7 @@ export const useGetPatientById = (id: number) => {
         const response = await callGetPatientById(id);
 
         setPatient(response.data);
-      } catch (err) {
-        console.log(err);
-      }
+      } catch (err) {}
     };
 
     fetchPatient();

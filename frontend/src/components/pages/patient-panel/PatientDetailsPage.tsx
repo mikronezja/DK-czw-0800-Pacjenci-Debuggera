@@ -42,9 +42,7 @@ const PatientDetailsPage = () => {
       const response = await callGetPatientById(Number(idValue));
 
       setPatient(response.data);
-    } catch (err) {
-      console.log(err);
-    }
+    } catch (err) {}
   };
 
   useEffect(() => {
@@ -79,15 +77,12 @@ const PatientDetailsPage = () => {
 
 const usePatientAppointments = (patientId: number) => {
   const [appointments, setAppointments] = useState<PacientAppointment[]>([]);
-  console.log("Patient ID in hook:", patientId);
   useEffect(() => {
     const fetchAppointments = async () => {
       try {
         const response = await callGetPatientAppointments({ patientId });
         setAppointments(response.data);
-      } catch (err) {
-        console.log(err);
-      }
+      } catch (err) {}
     };
     fetchAppointments();
   }, [patientId]);
@@ -105,7 +100,6 @@ const deleteAppointment = async (appointmentId: number) => {
 
 const DisplayAppointmentInfo = ({ patientId }: { patientId: number }) => {
   const [appointments, setAppointments] = usePatientAppointments(patientId);
-  console.log("Appointments:", patientId, appointments);
   return (
     <>
       {appointments.length === 0 ? (

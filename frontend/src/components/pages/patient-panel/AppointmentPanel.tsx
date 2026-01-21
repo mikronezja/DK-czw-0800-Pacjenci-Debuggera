@@ -76,11 +76,6 @@ const AppointmentPanel = () => {
         });
         setAvailabilities(response.data);
       } catch (err: any) {
-        console.log();
-        console.log({
-          specialization: specialization!,
-          date: data.date,
-        });
         toast.error(
           err.response?.data || "Wystąpił błąd podczas pobierania dostępności"
         );

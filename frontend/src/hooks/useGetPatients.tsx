@@ -11,9 +11,7 @@ export const useGetPatients = () => {
         const response = await callGetPatients();
 
         setPatients(response.data);
-      } catch (err) {
-        console.log(err);
-      }
+      } catch (err) {}
     };
 
     fetchPatients();

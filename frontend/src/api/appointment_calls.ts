@@ -21,7 +21,6 @@ export const callGetAppointments = async () => {
 export const callAppointmentAvailabilities = async (
   data: AppointmentAvailabilitiesProps
 ) => {
-  console.log([APPOINTMENT_ENDPOINT, AVAILABILITIES].join("/"), data);
   return axios.post([APPOINTMENT_ENDPOINT, AVAILABILITIES].join("/"), data);
 };
 

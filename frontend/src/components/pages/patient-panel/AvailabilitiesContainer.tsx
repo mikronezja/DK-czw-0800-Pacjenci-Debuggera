@@ -73,7 +73,6 @@ const postAppointment = async (data: AppointmentCallProps) => {
       startTime: data.startTime!,
       endTime: data.endTime!,
     };
-    console.log("Posting appointment with data:", properties);
     await callAddAppointment(properties);
     toast.success("Wizyta została zarezerwowana!");
   } catch (err) {
@@ -122,7 +121,6 @@ const DoctorSelect = ({ availabilities, setData }: Props) => {
       <FieldLabel>Lekarz</FieldLabel>
       <Select
         onValueChange={(val) => {
-          console.log("Selected doctorId:", val);
           setData((prev) => ({ ...prev, doctorId: parseInt(val) }));
         }}
       >
