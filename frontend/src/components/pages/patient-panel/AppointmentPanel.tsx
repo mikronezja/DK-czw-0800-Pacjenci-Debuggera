@@ -5,11 +5,10 @@ import {
   SelectItem,
   SelectValue,
 } from "@/components/ui/select";
-import { useGetDoctors } from "@/hooks/useGetDoctors";
+import { SPECIALIZATIONS } from "@/constants/specializations";
 import { useGetPatientById } from "@/hooks/useGetPatientById";
 import {
   FormBorder,
-  FormStyled,
   Layout,
   SelectTriggerStyled,
 } from "@/styles/styledcomponent";
@@ -20,11 +19,11 @@ import { useParams } from "react-router-dom";
 
 const AppointmentPanel = () => {
   const { idValue } = useParams();
-  const doctors = useGetDoctors();
   const pacient = useGetPatientById(Number(idValue)) || {
     name: "",
     surname: "",
   };
+  const [specialization, setSpecializations] = useState<string | null>(null);
 
   const [data, setData] = useState<Appointment>({
     doctorId: Number(idValue),
@@ -43,22 +42,24 @@ const AppointmentPanel = () => {
 
         <FormBorder>
           <Field>
-            <FieldLabel>Lekarz</FieldLabel>
+            <FieldLabel>Specjalizacja</FieldLabel>
             <Select
               onValueChange={(val) => {
-                setData({ ...data, doctorId: Number(val) });
+                setSpecializations(val);
               }}
             >
               <SelectTriggerStyled className="w-[180px]">
-                <SelectValue placeholder="Lekarz..." />
+                <SelectValue placeholder="Specjalizacja..." />
                 <ChevronDown />
               </SelectTriggerStyled>
               <SelectContent>
-                {doctors.map(({ id, name, surname }, key) => (
-                  <SelectItem key={key} value={id.toString()}>
-                    {name} {surname}
-                  </SelectItem>
-                ))}
+                {Object.entries(SPECIALIZATIONS).map(
+                  ([spec, displayName], key) => (
+                    <SelectItem key={key} value={spec}>
+                      {displayName}
+                    </SelectItem>
+                  )
+                )}
               </SelectContent>
             </Select>
           </Field>
