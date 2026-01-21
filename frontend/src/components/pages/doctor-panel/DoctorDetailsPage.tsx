@@ -20,12 +20,18 @@ import {
   DOCTOR_DISPLAY_VALS,
   SHIFT_DISPLAY_VALS,
 } from "@/constants/displaying";
+import { Button } from "@/components/ui/button";
+import { Trash } from "lucide-react";
 
 type ShiftType = {
   office: { id: number; roomNumber: number };
   dayOfWeek: string;
   startTime: string;
   endTime: string;
+};
+
+const deleteShift = async (shiftId: number) => {
+  // Implement shift deletion logic here
 };
 
 const DoctorDetailsPage = () => {
@@ -122,6 +128,7 @@ const DisplayDoctorShifts = ({ doctorId }: { doctorId: number }) => {
                 <TableHead key={head}>{head}</TableHead>
               ))}
             </TableRow>
+            <TableRow />
           </TableHeader>
           <TableBody>
             <ShiftDisplay shifts={shifts} />
@@ -139,6 +146,11 @@ const ShiftDisplay = ({ shifts }: { shifts: ShiftType[] }) => {
       <TableCell>{shift.startTime}</TableCell>
       <TableCell>{shift.endTime}</TableCell>
       <TableCell>{shift.office.roomNumber}</TableCell>
+      <TableCell>
+        <Button variant="outline" onClick={() => {}}>
+          <Trash />
+        </Button>
+      </TableCell>
     </TableRow>
   ));
 };
