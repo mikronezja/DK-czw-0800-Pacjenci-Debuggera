@@ -3,7 +3,7 @@ package com.oot.clinic.controllers;
 import com.oot.clinic.DTOs.appointment.AppointmentAvailabilityRequestDTO;
 import com.oot.clinic.DTOs.appointment.AppointmentRequestDTO;
 import com.oot.clinic.DTOs.appointment.AppointmentResponseDTO;
-import com.oot.clinic.exceptions.ConflictException;
+import com.oot.clinic.exceptions.InavailabilityException;
 import com.oot.clinic.exceptions.ResourceNotFoundException;
 import com.oot.clinic.exceptions.ValidationException;
 import com.oot.clinic.services.AppointmentService;
@@ -60,7 +60,7 @@ public class AppointmentController {
                     .status(HttpStatus.NOT_FOUND)
                     .body(ex.getMessage());
 
-        } catch (ConflictException ex) {
+        } catch (InavailabilityException ex) {
             return ResponseEntity
                     .status(HttpStatus.CONFLICT)
                     .body(ex.getMessage());
@@ -124,15 +124,26 @@ public class AppointmentController {
         }
     }
 
-    // get possible appointments
+
+    @Operation(summary = "Check available appointment times", description = "Access a list of doctors with their availability hours for specific date")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204",
+                    description = "List accessed successfully")
+    })
     @PostMapping("/availabilities")
     public ResponseEntity<?> getAvailableAppointments(@RequestBody AppointmentAvailabilityRequestDTO appointmentRequest){
         try{
             return ResponseEntity.ok(appointmentService.availableAppointments(
                     appointmentRequest.date(),
                     appointmentRequest.specialization()));
-        } catch (RuntimeException e) {
-            throw new RuntimeException(e);
+        } catch (ValidationException e) {
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body(e.getMessage());
+        } catch (InavailabilityException e) {
+            return ResponseEntity
+                    .status(HttpStatus.CONFLICT)
+                    .body(e.getMessage());
         }
     }
 
