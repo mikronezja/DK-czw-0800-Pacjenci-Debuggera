@@ -1,9 +1,13 @@
 import axios from "axios";
-import { PATIENT_ENDPOINT } from "./endpoints";
+import { APPOINTMENTS, PATIENT_ENDPOINT } from "./endpoints";
 
 interface dataType {
   name: string;
   surname: string;
+}
+
+interface PatientAppointmentsProps {
+  patientId: number;
 }
 
 export const callGetPatients = async () => {
@@ -20,4 +24,14 @@ export const callDeletePatient = async (id: number) => {
 
 export const callAddPatient = async (data: dataType) => {
   return axios.post(PATIENT_ENDPOINT + "/add", data); // to be deleted later
+};
+
+export const callGetPatientAppointments = async (
+  data: PatientAppointmentsProps
+) => {
+  console.log(
+    "HEELloo",
+    [PATIENT_ENDPOINT, data.patientId, APPOINTMENTS].join("/")
+  );
+  return axios.get([PATIENT_ENDPOINT, data.patientId, APPOINTMENTS].join("/")); // to be deleted later
 };

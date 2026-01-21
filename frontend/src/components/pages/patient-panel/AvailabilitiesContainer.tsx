@@ -7,10 +7,11 @@ import {
   SelectItem,
   SelectValue,
 } from "@/components/ui/select";
+import { PATIENT_PANEL_ROUTE } from "@/constants/routes";
 import { SelectTriggerStyled } from "@/styles/styledcomponent";
 import type {
-  Appointment,
   AppointmentAvailabilitiesType,
+  AppointmentCallProps,
 } from "@/types/appointment";
 import type { ErrorType } from "@/types/error";
 import { ChevronDown } from "lucide-react";
@@ -20,14 +21,14 @@ import styled from "styled-components";
 
 interface AvailabilitiesContainerProps {
   availabilities: AppointmentAvailabilitiesType[];
-  setData: React.Dispatch<React.SetStateAction<Appointment>>;
-  data: Appointment;
+  setData: React.Dispatch<React.SetStateAction<AppointmentCallProps>>;
+  data: AppointmentCallProps;
 }
 
 interface Props {
   availabilities: AppointmentAvailabilitiesType[];
-  setData: React.Dispatch<React.SetStateAction<Appointment>>;
-  data?: Appointment;
+  setData: React.Dispatch<React.SetStateAction<AppointmentCallProps>>;
+  data?: AppointmentCallProps;
 }
 
 const OtherPropertiesStyled = styled.div`
@@ -63,11 +64,11 @@ const generateTimeSlots = (startTime: string, endTime: string): string[] => {
   return slots;
 };
 
-const postAppointment = async (data: Appointment) => {
+const postAppointment = async (data: AppointmentCallProps) => {
   try {
     const properties = {
       doctorId: data.doctorId!,
-      pacientId: data.pacientId!,
+      patientId: data.patientId!,
       date: data.date!,
       startTime: data.startTime!,
       endTime: data.endTime!,
@@ -98,17 +99,19 @@ export const AvailabilitiesContainer = ({
       )}
       {data.startTime && (
         <EndTimeStyled>
-          <FieldLabel>Czas zakończenia: {data.endTime}</FieldLabel>
+          <FieldLabel>Czas zakończenia: {data.endTime.slice(0, -3)}</FieldLabel>
         </EndTimeStyled>
       )}
-      <Button
-        onClick={() => {
-          postAppointment(data);
-          navigate(-1);
-        }}
-      >
-        Zarezerwuj wizytę
-      </Button>
+      {data.startTime && (
+        <Button
+          onClick={() => {
+            postAppointment(data);
+            navigate(`${PATIENT_PANEL_ROUTE}`);
+          }}
+        >
+          Zarezerwuj wizytę
+        </Button>
+      )}
     </OtherPropertiesStyled>
   );
 };
@@ -147,8 +150,8 @@ const TimeSlotsSelect = ({ availabilities, setData, data }: Props) => {
         onValueChange={(val) => {
           setData((prev) => ({
             ...prev,
-            startTime: val,
-            endTime: addTime(val),
+            startTime: val + ":00",
+            endTime: addTime(val) + ":00",
           }));
         }}
       >

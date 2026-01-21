@@ -8,7 +8,7 @@ interface AppointmentAvailabilitiesProps {
 
 interface AddingAppointmentProps {
   doctorId: number;
-  pacientId: number;
+  patientId: number;
   date: string;
   startTime: string;
   endTime: string;

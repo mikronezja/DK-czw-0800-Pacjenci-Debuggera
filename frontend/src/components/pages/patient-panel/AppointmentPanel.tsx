@@ -9,16 +9,11 @@ import {
 } from "@/components/ui/select";
 import { SPECIALIZATIONS } from "@/constants/specializations";
 import { useGetPatientById } from "@/hooks/useGetPatientById";
-import {
-  FormBorder,
-  Layout,
-  SelectTriggerStyled,
-} from "@/styles/styledcomponent";
+import { Layout, SelectTriggerStyled } from "@/styles/styledcomponent";
 import type {
-  Appointment,
   AppointmentAvailabilitiesType,
+  AppointmentCallProps,
 } from "@/types/appointment";
-import type { ErrorType } from "@/types/error";
 import { ChevronDown } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
@@ -27,8 +22,8 @@ import styled from "styled-components";
 import { AvailabilitiesContainer } from "./AvailabilitiesContainer";
 
 interface CalendarContainerProps {
-  data: Appointment;
-  setData: React.Dispatch<React.SetStateAction<Appointment>>;
+  data: AppointmentCallProps;
+  setData: React.Dispatch<React.SetStateAction<AppointmentCallProps>>;
 }
 
 const PropertiesStyled = styled.div`
@@ -64,9 +59,9 @@ const AppointmentPanel = () => {
   const [availabilities, setAvailabilities] = useState<
     AppointmentAvailabilitiesType[] | undefined
   >(undefined);
-  const [data, setData] = useState<Appointment>({
+  const [data, setData] = useState<AppointmentCallProps>({
     doctorId: undefined,
-    pacientId: Number(idValue),
+    patientId: Number(idValue),
     date: "",
     startTime: "",
     endTime: "",
@@ -80,8 +75,16 @@ const AppointmentPanel = () => {
           date: data.date,
         });
         setAvailabilities(response.data);
-      } catch (err) {
-        toast.error((err as ErrorType).response.data);
+      } catch (err: any) {
+        console.log();
+        console.log({
+          specialization: specialization!,
+          date: data.date,
+        });
+        toast.error(
+          err.response?.data || "Wystąpił błąd podczas pobierania dostępności"
+        );
+        setAvailabilities([]);
       }
       setFetched(true);
     };
@@ -106,9 +109,7 @@ const AppointmentPanel = () => {
                 setData={setData}
                 data={data}
               />
-            ) : (
-              "Brak dostępności dla wybranej specjalizacji i daty"
-            ))}
+            ) : null)}
         </OtherPropertiesStyled>
         <div style={{ flex: 1 }}>
           <CalendarContainer data={data} setData={setData} />
