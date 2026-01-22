@@ -123,6 +123,17 @@ public class ShiftService {
         Shift shift = shiftRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Dyżur", id));
 
+        Doctor doctor = doctorRepository.findById(shift.getDoctor().getId())
+                .orElseThrow(() -> new ResourceNotFoundException("Lekarz", id));
+
+        int appointmentsDuringShift = doctor.getAppointments()
+                .stream()
+                .filter(a -> a.getStartTime().isAfter(shift.getStartTime()) && a.getEndTime().isBefore(shift.getEndTime()))
+                .toList().size();
+
+        if (appointmentsDuringShift > 0) {
+            throw new ConflictException("Na ten dyżur są już umówione wizyty!");
+        }
         shiftRepository.delete(shift);
     }
 
