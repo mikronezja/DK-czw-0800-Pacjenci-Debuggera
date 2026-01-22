@@ -185,6 +185,10 @@ W szczegółach pacjentów można usunąć też wizytę
 
 Należy najpierw wybrać specjalizację i datę w kalendarzu i następnie będą sie pokazywaały następne parametry
 
+![after-filling-appointment](assets/after-filling-appointment.png)
+
+Po wypełnieniu wizyty
+
 #### Dodawanie pacjentów
 
 ![add-patient](assets/add-patient.png)
