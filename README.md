@@ -132,8 +132,9 @@ Przykładowo klikając na **Panel lekarza** mamy wyświetloną listę wszystkich
 - Aby wyświetlić szczegóły klikamy w oko
 - Aby usunąć lekarza klikamy w x
 - Aby dodać lekarza klikamy w +
+- Aby dodać zmianę klikamy w Dodaj zmianę
 
-#### Wyświetlanie szczegółów
+#### Wyświetlanie szczegółów lekarza
 
 ![doctor-details](assets/doctor-details.png)
 
@@ -143,17 +144,34 @@ W szczegółach można też usunąć dyżur
 
 ![add-doctor](assets/add-doctor.png)
 
+#### Dodanie zmiany
+
+![add-shift](assets/add-shift.png)
+
 ### Dodane panele
 
-#### Panele gabinetów - można dodawać gabinety (+) lub je usuwać (x)
+#### Panele gabinetów
+
+- Aby wyświetlić szczegóły klikamy w oko
+- Aby usunąć gabinet klikamy w x
+- Aby dodać gabinet klikamy w +
 
 ![offices](assets/offices.png)
+
+##### Dodawanie gabinetów
+
+![add-office](assets/add-office.png)
 
 ##### Szczegóły gabinetów
 
 ![office-details](assets/office-details.png)
 
 #### Panel pacjentów
+
+- Aby wyświetlić szczegóły klikamy w oko
+- Aby usunąć pacjenta klikamy w x
+- Aby dodać pacjenta klikamy w +
+- Aby umówić wizytę klikamy w Umów wizytę
 
 ![patients](assets/patients.png)
 
@@ -162,6 +180,12 @@ W szczegółach można też usunąć dyżur
 ![patient-details](assets/patient-details.png)
 
 W szczegółach pacjentów można usunąć też wizytę
+
+#### Dodawanie wizyty
+
+![add-appointment](assets/add-appointment.png)
+
+Należy najpierw wybrać specjalizację i datę w kalendarzu i następnie będą sie pokazywaały następne parametry
 
 #### Dodawanie pacjentów
 
