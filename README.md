@@ -4,7 +4,6 @@
 
 ![UML](assets/uml.png)
 
-
 ## Zaimplementowane funkcjonalności m1
 
 ### Zarządzanie lekarzami
@@ -61,14 +60,17 @@ Dodane zostało zapytanie o **dyżury lekarza** - `GET /doctors/{id}/shifts`
 ### Zarządzanie wizytami (Appointment)
 
 1. **Dodanie wizyty** - `POST /appointments/add`
+
    - Pola: id lekarza, id pacjenta, data, godzina rozpoczęcia i zakończenia
    - Walidacja: wizyta możliwa tylko gdy lekarz ma dyżur w danym terminie
    - Walidacja: wykrywanie konfliktów z istniejącymi wizytami
 
 2. **Wyświetlenie listy wizyt** - `GET /appointments`
+
    - Zwraca: informacje o lekarzu, pacjencie, dacie i godzinach
 
 3. **Edycja wizyty** - `PUT /appointments/{id}`
+
    - Pozwala na zmianę lekarza, pacjenta, daty i godzin
 
 4. **Usunięcie wizyty** - `DELETE /appointments/{id}`
@@ -85,6 +87,7 @@ Dodane zostało zapytanie o **dyżury lekarza** - `GET /doctors/{id}/shifts`
 ### Testy jednostkowe
 
 Dodane testy dla wszystkich serwisów:
+
 - `AppointmentServiceTests` - 38 testów
 - `PatientServiceTests` - 35 testów
 
@@ -114,25 +117,31 @@ Na początku znajdujemy się na stronie głównej
 
 ![HOME](assets/home-page.png)
 
-Aby zmienić stronę klikamy w Selecta i zmieniamy na Panel Admina
+Aby zmienić stronę klikamy w Selecta i zmieniamy na dowolny panel
 
 ![Select](assets/select.png)
 
-Teraz mamy wyświetloną listę wszystkich dostępnych lekarzy
+Przykładowo klikając na **Panel lekarza** mamy wyświetloną listę wszystkich dostępnych lekarzy
 
 ### Funkcjonalności w panelu lekarza
+
+#### Wyświetlanie lekarzy
 
 ![Doctors](assets/doctors.png)
 
 - Aby wyświetlić szczegóły klikamy w oko
-
-![add-doctor](assets/doctor-details.png)
-
+- Aby usunąć lekarza klikamy w x
 - Aby dodać lekarza klikamy w +
 
-![add-doctor](assets/add-doctor.png)
+#### Wyświetlanie szczegółów
 
-- Aby usunąć lekarza klikamy w x
+![doctor-details](assets/doctor-details.png)
+
+W szczegółach można też usunąć dyżur
+
+#### Dodawanie lekarza
+
+![add-doctor](assets/add-doctor.png)
 
 ### Dodane panele
 
@@ -140,18 +149,20 @@ Teraz mamy wyświetloną listę wszystkich dostępnych lekarzy
 
 ![offices](assets/offices.png)
 
-Szczegóły gabinetów
+##### Szczegóły gabinetów
 
 ![office-details](assets/office-details.png)
 
 #### Panel pacjentów
 
-![pacients](assets/pacients.png)
+![patients](assets/patients.png)
 
-Szczegóły pacjentów
+##### Szczegóły pacjentów
 
-![pacient-details](assets/pacient-details.png)
+![patient-details](assets/patient-details.png)
 
-Pacjentów też można dodać
+W szczegółach pacjentów można usunąć też wizytę
 
-![add-pacient](assets/add-pacient.png)
+#### Dodawanie pacjentów
+
+![add-patient](assets/add-patient.png)

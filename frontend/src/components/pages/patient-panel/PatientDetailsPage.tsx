@@ -11,14 +11,24 @@ import {
   callGetPatientAppointments,
   callGetPatientById,
 } from "@/api/patient_calls";
-import { TableDetailsStyled } from "@/styles/styledcomponent";
+import { Divider, TableDetailsStyled } from "@/styles/styledcomponent";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { callDeleteAppointments } from "@/api/appointment_calls";
-import type { Appointment } from "@/types/appointment";
 import { Trash } from "lucide-react";
 import type { Doctor } from "@/types/doctor";
 import { SPECIALIZATIONS } from "@/constants/specializations";
+import styled from "styled-components";
+
+const CenterText = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
+const AppointmentWrapper = styled.div`
+  margin-top: 20px;
+`;
 
 type PacientAppointment = {
   doctor: Doctor;
@@ -70,7 +80,11 @@ const PatientDetailsPage = () => {
           </TableBody>
         </div>
       </TableDetailsStyled>
-      <DisplayAppointmentInfo patientId={Number(idValue)} />
+      <Divider />
+      <AppointmentWrapper>
+        <CenterText>Wizyty</CenterText>
+        <DisplayAppointmentInfo patientId={Number(idValue)} />
+      </AppointmentWrapper>
     </>
   );
 };
