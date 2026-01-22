@@ -148,9 +148,7 @@ W szczegółach można też usunąć dyżur
 
 ![add-shift](assets/add-shift.png)
 
-### Dodane panele
-
-#### Panele gabinetów
+### Panel gabinetów
 
 - Aby wyświetlić szczegóły klikamy w oko
 - Aby usunąć gabinet klikamy w x
@@ -158,15 +156,15 @@ W szczegółach można też usunąć dyżur
 
 ![offices](assets/offices.png)
 
-##### Dodawanie gabinetów
+#### Dodawanie gabinetów
 
 ![add-office](assets/add-office.png)
 
-##### Szczegóły gabinetów
+#### Szczegóły gabinetów
 
 ![office-details](assets/office-details.png)
 
-#### Panel pacjentów
+### Panel pacjentów
 
 - Aby wyświetlić szczegóły klikamy w oko
 - Aby usunąć pacjenta klikamy w x
@@ -175,7 +173,7 @@ W szczegółach można też usunąć dyżur
 
 ![patients](assets/patients.png)
 
-##### Szczegóły pacjentów
+#### Szczegóły pacjentów
 
 ![patient-details](assets/patient-details.png)
 
