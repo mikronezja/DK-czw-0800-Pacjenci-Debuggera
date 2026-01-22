@@ -11,7 +11,11 @@ import {
   callGetPatientAppointments,
   callGetPatientById,
 } from "@/api/patient_calls";
-import { Divider, TableDetailsStyled } from "@/styles/styledcomponent";
+import {
+  Divider,
+  SectionTitle,
+  TableDetailsStyled,
+} from "@/styles/styledcomponent";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { callDeleteAppointments } from "@/api/appointment_calls";
@@ -28,6 +32,7 @@ const CenterText = styled.div`
 
 const AppointmentWrapper = styled.div`
   margin-top: 20px;
+  margin-bottom: 20px;
 `;
 
 type PacientAppointment = {
@@ -82,7 +87,9 @@ const PatientDetailsPage = () => {
       </TableDetailsStyled>
       <Divider />
       <AppointmentWrapper>
-        <CenterText>Wizyty</CenterText>
+        <SectionTitle>
+          <b>Wizyty</b>
+        </SectionTitle>
         <DisplayAppointmentInfo patientId={Number(idValue)} />
       </AppointmentWrapper>
     </>
