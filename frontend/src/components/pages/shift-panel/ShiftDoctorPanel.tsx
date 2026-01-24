@@ -7,6 +7,7 @@ import { Select, SelectContent, SelectItem } from "@/components/ui/select";
 import TimePicker from "@/components/utils/TimePicker";
 import { WEEKDAYS } from "@/constants/weekdays";
 import {
+  FormBorder,
   FormStyled,
   Layout,
   SelectTriggerStyled,
@@ -20,17 +21,6 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
 import styled from "styled-components";
-
-const FormBorder = styled(FormStyled)`
-  margin-top: 10px;
-  padding: 40px 30px;
-  border-radius: 5px;
-  border: 1px solid #e0e0e0;
-  min-width: 250px;
-  overflow-y: auto;
-  min-height: 0;
-  max-height: 400px;
-`;
 
 const ShiftTime = styled.div`
   display: flex;
@@ -77,7 +67,6 @@ const ShiftDoctorPanel = () => {
   const addShift = async () => {
     try {
       await callAddShift(data);
-      console.log("udało sie dodać zmiane");
       toast.success("Zmiana została dodana");
     } catch (err: unknown) {
       toast.error(

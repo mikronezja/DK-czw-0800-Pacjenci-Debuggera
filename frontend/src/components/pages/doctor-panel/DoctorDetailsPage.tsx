@@ -20,12 +20,34 @@ import {
   DOCTOR_DISPLAY_VALS,
   SHIFT_DISPLAY_VALS,
 } from "@/constants/displaying";
+import { Button } from "@/components/ui/button";
+import { Trash } from "lucide-react";
+import { callDeleteShift } from "@/api/shift_calls";
+import { toast } from "sonner";
+import type { ErrorType } from "@/types/error";
 
 type ShiftType = {
+  id: number;
   office: { id: number; roomNumber: number };
   dayOfWeek: string;
   startTime: string;
   endTime: string;
+};
+
+interface ShiftDisplayProps {
+  shifts: ShiftType[];
+  setShifts: React.Dispatch<React.SetStateAction<ShiftType[]>>;
+}
+
+const deleteShift = async (id: number) => {
+  try {
+    await callDeleteShift(id);
+    toast.success("Usunięty dyżur!");
+  } catch (err: any) {
+    toast.error(
+      (err as ErrorType).response.data || "Błąd podczas usuwania dyżuru"
+    );
+  }
 };
 
 const DoctorDetailsPage = () => {
@@ -75,7 +97,7 @@ const DoctorDetailsPage = () => {
   );
 };
 
-const getDoctorShifts = (doctorId: number) => {
+const useDoctorShifts = (doctorId: number) => {
   const [shifts, setShifts] = useState<ShiftType[]>([]);
 
   useEffect(() => {
@@ -86,14 +108,14 @@ const getDoctorShifts = (doctorId: number) => {
         const response = await callGetDoctorShifts(Number(doctorId));
         setShifts(response.data);
       } catch (err) {
-        console.error("Error getting shifts:", err);
+        console.error("Error fetching doctor shifts:", err);
       }
     };
 
     getShifts();
   }, [doctorId]);
 
-  return shifts;
+  return [shifts, setShifts] as const;
 };
 
 const DisplayDoctorInfo = ({ doctor }: { doctor: Doctor }) => {
@@ -108,7 +130,7 @@ const DisplayDoctorInfo = ({ doctor }: { doctor: Doctor }) => {
 };
 
 const DisplayDoctorShifts = ({ doctorId }: { doctorId: number }) => {
-  const shifts = getDoctorShifts(doctorId);
+  const [shifts, setShifts] = useDoctorShifts(doctorId);
 
   return (
     <>
@@ -122,9 +144,10 @@ const DisplayDoctorShifts = ({ doctorId }: { doctorId: number }) => {
                 <TableHead key={head}>{head}</TableHead>
               ))}
             </TableRow>
+            <TableRow />
           </TableHeader>
           <TableBody>
-            <ShiftDisplay shifts={shifts} />
+            <ShiftDisplay shifts={shifts} setShifts={setShifts} />
           </TableBody>
         </TableDetailsStyled>
       )}
@@ -132,13 +155,26 @@ const DisplayDoctorShifts = ({ doctorId }: { doctorId: number }) => {
   );
 };
 
-const ShiftDisplay = ({ shifts }: { shifts: ShiftType[] }) => {
+const ShiftDisplay = ({ shifts, setShifts }: ShiftDisplayProps) => {
   return shifts.map((shift) => (
     <TableRow key={`${shift.dayOfWeek}-${shift.startTime}`}>
       <TableCell>{WEEKDAYS[shift.dayOfWeek]}</TableCell>
       <TableCell>{shift.startTime}</TableCell>
       <TableCell>{shift.endTime}</TableCell>
       <TableCell>{shift.office.roomNumber}</TableCell>
+      <TableCell>
+        <Button
+          variant="outline"
+          onClick={() => {
+            deleteShift(shift.id);
+            setShifts((prevShifts) =>
+              prevShifts.filter((s) => s.id !== shift.id)
+            );
+          }}
+        >
+          <Trash />
+        </Button>
+      </TableCell>
     </TableRow>
   ));
 };

@@ -11,14 +11,16 @@ import {
   PATIENT_PANEL_ROUTE,
   OFFICE_DETAILS_ROUTE,
   DOCTOR_SHIFT_PANEL_ROUTE,
+  APPOINTMENT_ROUTE,
 } from "./constants/routes";
 import PatientPanel from "./components/pages/patient-panel/PatientPanel";
-import DoctorDetailsPage from "./components/pages/details/DoctorDetailsPage";
-import PatientDetailsPage from "./components/pages/details/PatientDetailsPage";
+import DoctorDetailsPage from "./components/pages/doctor-panel/DoctorDetailsPage";
+import PatientDetailsPage from "./components/pages/patient-panel/PatientDetailsPage";
 import OfficePanel from "./components/pages/office-panel/OfficePanel";
-import OfficeDetailsPage from "./components/pages/details/OfficeDetailsPage";
+import OfficeDetailsPage from "./components/pages/office-panel/OfficeDetailsPage";
 import ShiftDoctorPanel from "./components/pages/shift-panel/ShiftDoctorPanel";
 import { Toaster } from "sonner";
+import AppointmentPanel from "./components/pages/patient-panel/AppointmentPanel";
 
 function App() {
   return (
@@ -33,6 +35,10 @@ function App() {
         <Route
           path={`${DOCTOR_SHIFT_PANEL_ROUTE}/:idValue`}
           element={<ShiftDoctorPanel />}
+        />
+        <Route
+          path={`${APPOINTMENT_ROUTE}/:idValue`}
+          element={<AppointmentPanel />}
         />
 
         {/* ///////// */}

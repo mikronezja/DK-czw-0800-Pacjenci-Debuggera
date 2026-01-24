@@ -3,6 +3,10 @@ package com.oot.clinic.entities;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 public class Patient {
@@ -14,6 +18,8 @@ public class Patient {
     private String surname;
     private String address;
     private String pesel;
+    @OneToMany(mappedBy = "patient")
+    private List<Appointment> appointments = new ArrayList<>();
 
     public Patient(String name, String surname, String address, String pesel) {
         this.name = name;
@@ -62,5 +68,9 @@ public class Patient {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public List<Appointment> getAppointments() {
+        return appointments;
     }
 }

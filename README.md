@@ -4,8 +4,6 @@
 
 ![UML](assets/uml.png)
 
-![PatientUML](assets/patient_uml.png)
-
 ## Zaimplementowane funkcjonalności m1
 
 ### Zarządzanie lekarzami
@@ -57,6 +55,42 @@
 
 Dodane zostało zapytanie o **dyżury lekarza** - `GET /doctors/{id}/shifts`
 
+## Zaimplementowane funkcjonalności m3
+
+### Zarządzanie wizytami (Appointment)
+
+1. **Dodanie wizyty** - `POST /appointments/add`
+
+   - Pola: id lekarza, id pacjenta, data, godzina rozpoczęcia i zakończenia
+   - Walidacja: wizyta możliwa tylko gdy lekarz ma dyżur w danym terminie
+   - Walidacja: wykrywanie konfliktów z istniejącymi wizytami
+
+2. **Wyświetlenie listy wizyt** - `GET /appointments`
+
+   - Zwraca: informacje o lekarzu, pacjencie, dacie i godzinach
+
+3. **Edycja wizyty** - `PUT /appointments/{id}`
+
+   - Pozwala na zmianę lekarza, pacjenta, daty i godzin
+
+4. **Usunięcie wizyty** - `DELETE /appointments/{id}`
+
+5. **Sprawdzenie dostępności** - `POST /appointments/availabilities`
+   - Pola: data, specjalizacja
+   - Zwraca: listę lekarzy z ich dostępnymi przedziałami czasowymi
+
+### Rozszerzenie zarządzania pacjentami
+
+1. **Wyświetlenie wizyt pacjenta** - `GET /patients/{id}/appointments`
+   - Zwraca: listę wizyt danego pacjenta z informacjami o lekarzu
+
+### Testy jednostkowe
+
+Dodane testy dla wszystkich serwisów:
+
+- `AppointmentServiceTests` - 38 testów
+- `PatientServiceTests` - 35 testów
+
 ## Uruchomienie backendu
 
 ```bash
@@ -83,44 +117,78 @@ Na początku znajdujemy się na stronie głównej
 
 ![HOME](assets/home-page.png)
 
-Aby zmienić stronę klikamy w Selecta i zmieniamy na Panel Admina
+Aby zmienić stronę klikamy w Selecta i zmieniamy na dowolny panel
 
 ![Select](assets/select.png)
 
-Teraz mamy wyświetloną listę wszystkich dostępnych lekarzy
+Przykładowo klikając na **Panel lekarza** mamy wyświetloną listę wszystkich dostępnych lekarzy
 
 ### Funkcjonalności w panelu lekarza
+
+#### Wyświetlanie lekarzy
 
 ![Doctors](assets/doctors.png)
 
 - Aby wyświetlić szczegóły klikamy w oko
-
-![add-doctor](assets/doctor-details.png)
-
+- Aby usunąć lekarza klikamy w x
 - Aby dodać lekarza klikamy w +
+- Aby dodać zmianę klikamy w Dodaj zmianę
+
+#### Wyświetlanie szczegółów lekarza
+
+![doctor-details](assets/doctor-details.png)
+
+W szczegółach można też usunąć dyżur
+
+#### Dodawanie lekarza
 
 ![add-doctor](assets/add-doctor.png)
 
-- Aby usunąć lekarza klikamy w x
+#### Dodanie zmiany
 
-### Dodane panele
+![add-shift](assets/add-shift.png)
 
-#### Panele gabinetów - można dodawać gabinety (+) lub je usuwać (x)
+### Panel gabinetów
+
+- Aby wyświetlić szczegóły klikamy w oko
+- Aby usunąć gabinet klikamy w x
+- Aby dodać gabinet klikamy w +
 
 ![offices](assets/offices.png)
 
-Szczegóły gabinetów
+#### Dodawanie gabinetów
+
+![add-office](assets/add-office.png)
+
+#### Szczegóły gabinetów
 
 ![office-details](assets/office-details.png)
 
-#### Panel pacjentów
+### Panel pacjentów
 
-![pacients](assets/pacients.png)
+- Aby wyświetlić szczegóły klikamy w oko
+- Aby usunąć pacjenta klikamy w x
+- Aby dodać pacjenta klikamy w +
+- Aby umówić wizytę klikamy w Umów wizytę
 
-Szczegóły pacjentów
+![patients](assets/patients.png)
 
-![pacient-details](assets/pacient-details.png)
+#### Szczegóły pacjentów
 
-Pacjentów też można dodać
+![patient-details](assets/patient-details.png)
 
-![add-pacient](assets/add-pacient.png)
+W szczegółach pacjentów można usunąć też wizytę
+
+#### Dodawanie wizyty
+
+![add-appointment](assets/add-appointment.png)
+
+Należy najpierw wybrać specjalizację i datę w kalendarzu i następnie będą sie pokazywaały następne parametry
+
+![after-filling-appointment](assets/after-filling-appointment.png)
+
+Po wypełnieniu wizyty
+
+#### Dodawanie pacjentów
+
+![add-patient](assets/add-patient.png)

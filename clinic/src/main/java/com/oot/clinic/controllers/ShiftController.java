@@ -87,15 +87,18 @@ public class ShiftController {
                     description = "Shift not found",
                     content = @Content(schema = @Schema()))
     })
-
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteShift(@PathVariable Long id) {
+    public ResponseEntity<?> deleteShift(@PathVariable Long id) {
         try {
             shiftService.deleteShiftById(id);
             return ResponseEntity.noContent().build();
 
         } catch (ResourceNotFoundException ex) {
             return ResponseEntity.notFound().build();
+        } catch (ConflictException ex) {
+            return ResponseEntity
+                    .status(HttpStatus.CONFLICT)
+                    .body(ex.getMessage());
         }
     }
 
@@ -107,7 +110,6 @@ public class ShiftController {
                     description = "Shift not found",
                     content = @Content(schema = @Schema()))
     })
-
     @PutMapping("/{id}")
     public ResponseEntity<?> updateShift(
             @PathVariable Long id,

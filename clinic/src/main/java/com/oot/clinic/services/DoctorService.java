@@ -1,5 +1,6 @@
 package com.oot.clinic.services;
 
+import com.oot.clinic.DTOs.appointment.AppointmentDoctorResponseDTO;
 import com.oot.clinic.DTOs.doctor.DoctorResponseDTO;
 import com.oot.clinic.DTOs.shift.ShiftDoctorResponseDTO;
 import com.oot.clinic.entities.Doctor;
@@ -112,6 +113,13 @@ public class DoctorService {
         return getDoctorById(id).getShifts()
                 .stream()
                 .map(ShiftDoctorResponseDTO::new)
+                .toList();
+    }
+
+    public List<AppointmentDoctorResponseDTO> getAppointments(Long id){
+        return getDoctorById(id).getAppointments()
+                .stream()
+                .map(AppointmentDoctorResponseDTO::new)
                 .toList();
     }
 }
