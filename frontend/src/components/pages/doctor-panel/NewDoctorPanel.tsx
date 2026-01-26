@@ -46,7 +46,7 @@ const NewDoctorPanel = ({
       toast.success("Nowy lekarz został dodany");
     } catch (err: unknown) {
       toast.error(
-        (err as ErrorType).response?.data || "Lekarz nie mógł zostać dodany"
+        (err as ErrorType).response?.data || "Lekarz nie mógł zostać dodany",
       );
     }
 
@@ -127,7 +127,7 @@ const NewDoctorPanel = ({
         />
       </Label>
 
-      <Button variant="outline" size="sm" onClick={addDoctor}>
+      <Button size="sm" onClick={addDoctor}>
         Zapisz
       </Button>
       <Button variant="outline" size="sm" onClick={deleteDoctor}>

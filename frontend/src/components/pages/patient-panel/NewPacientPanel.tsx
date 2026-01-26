@@ -36,7 +36,7 @@ const NewPacientPanel = ({
       toast.success("Nowy pacjent został dodany");
     } catch (err) {
       toast.error(
-        (err as ErrorType).response?.data || "Nie można było dodać pacjenta"
+        (err as ErrorType).response?.data || "Nie można było dodać pacjenta",
       );
     }
 
@@ -91,7 +91,7 @@ const NewPacientPanel = ({
           }}
         />
       </Label>
-      <Button variant="outline" size="sm" onClick={addPacient}>
+      <Button size="sm" onClick={addPacient}>
         Zapisz
       </Button>
       <Button variant="outline" size="sm" onClick={deletePacient}>

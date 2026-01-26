@@ -58,7 +58,7 @@ const NewOfficePanel = ({
       toast.success("Nowy gabinet został dodany");
     } catch (err: unknown) {
       toast.error(
-        (err as ErrorType).response?.data || "Nie można było dodać gabinetu"
+        (err as ErrorType).response?.data || "Nie można było dodać gabinetu",
       );
     }
     setAddOfficeOpen(false);
@@ -79,7 +79,7 @@ const NewOfficePanel = ({
           setFormData({ ...formData, roomNumber: Number(e.target.value) });
         }}
       />
-      <Button variant="outline" size="sm" onClick={addOffice}>
+      <Button size="sm" onClick={addOffice}>
         Zapisz
       </Button>
       <Button variant="outline" size="sm" onClick={deleteOffice}>

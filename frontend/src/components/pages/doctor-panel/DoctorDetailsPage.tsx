@@ -39,13 +39,17 @@ interface ShiftDisplayProps {
   setShifts: React.Dispatch<React.SetStateAction<ShiftType[]>>;
 }
 
-const deleteShift = async (id: number) => {
+const deleteShift = async (
+  id: number,
+  setShifts: React.Dispatch<React.SetStateAction<ShiftType[]>>,
+) => {
   try {
     await callDeleteShift(id);
     toast.success("Usunięty dyżur!");
+    setShifts((prevShifts) => prevShifts.filter((s) => s.id !== id));
   } catch (err: any) {
     toast.error(
-      (err as ErrorType).response.data || "Błąd podczas usuwania dyżuru"
+      (err as ErrorType).response.data || "Błąd podczas usuwania dyżuru",
     );
   }
 };
@@ -166,10 +170,7 @@ const ShiftDisplay = ({ shifts, setShifts }: ShiftDisplayProps) => {
         <Button
           variant="outline"
           onClick={() => {
-            deleteShift(shift.id);
-            setShifts((prevShifts) =>
-              prevShifts.filter((s) => s.id !== shift.id)
-            );
+            deleteShift(shift.id, setShifts);
           }}
         >
           <Trash />

@@ -68,9 +68,10 @@ const ShiftDoctorPanel = () => {
     try {
       await callAddShift(data);
       toast.success("Zmiana została dodana");
+      navigate(-1);
     } catch (err: unknown) {
       toast.error(
-        (err as ErrorType).response?.data || "Nie można było dodać zmiany"
+        (err as ErrorType).response?.data || "Nie można było dodać zmiany",
       );
     }
   };
@@ -160,7 +161,6 @@ const ShiftDoctorPanel = () => {
           </Select>
         </Field>
         <Button
-          variant="outline"
           size="sm"
           onClick={(e) => {
             e.preventDefault();
